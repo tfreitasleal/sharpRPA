@@ -260,6 +260,7 @@
     <EmbeddedResource Include="UI\Forms\UIForm.resx">
       <DependentUpon>UIForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -295,6 +296,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="Resources\documentIcon48.png" />
   </ItemGroup>
   <ItemGroup>

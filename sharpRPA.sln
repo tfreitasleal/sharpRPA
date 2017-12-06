@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sharpRPAclient", "sharpRPA\sharpRPAclient.csproj", "{C1BE3204-94D1-4A9A-AE30-C3E302383182}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sharpRPAserver", "C:\Users\Jason\Source\Repos\TestServer\TestServer\sharpRPAserver.csproj", "{AA989947-B7DD-48D8-B3F0-DD7D7A95EDEB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{C1BE3204-94D1-4A9A-AE30-C3E302383182}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1BE3204-94D1-4A9A-AE30-C3E302383182}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1BE3204-94D1-4A9A-AE30-C3E302383182}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA989947-B7DD-48D8-B3F0-DD7D7A95EDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA989947-B7DD-48D8-B3F0-DD7D7A95EDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA989947-B7DD-48D8-B3F0-DD7D7A95EDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA989947-B7DD-48D8-B3F0-DD7D7A95EDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
