@@ -180,6 +180,7 @@ namespace sharpRPA.UI.Forms
                 formHeight += 50;
                 //apply friendly translation
                 var propertyAttributesAssigned = inputField.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.PropertyAttributes.PropertyDescription), true);
+
                 if (propertyAttributesAssigned.Length > 0)
                 {
                     var attribute = (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyDescription)propertyAttributesAssigned[0];
@@ -190,14 +191,33 @@ namespace sharpRPA.UI.Forms
                     inputLabel.Text = inputField.Name;
                 }
 
-
-
+                              
+             
                 var inputControl = GenerateInputControl(inputField, currentCommand);
 
                 formHeight += inputControl.Height;
 
                 //add label and input control to flow layout
                 flw_InputVariables.Controls.Add(inputLabel);
+
+                //determine if variables are allowed and add selectable element
+                var propertyAllowsVars = inputField.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.PropertyAttributes.PropertyAllowsVariables), true);
+
+                if (propertyAllowsVars.Length > 0)
+                {
+                    var attribute = (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyAllowsVariables)propertyAllowsVars[0];
+                    if (attribute.propertyAllowsVariables)
+                    {
+                        //show variable selector
+                        sharpRPA.UI.CustomControls.CommandItemControl variableInsertion = new sharpRPA.UI.CustomControls.CommandItemControl();
+                        variableInsertion.CommandImage = UI.Images.GetUIImage("VariableCommand");
+                        variableInsertion.CommandDisplay = "Insert Variable";
+                        variableInsertion.ForeColor = Color.Black;
+                        variableInsertion.Tag = inputControl;
+                        variableInsertion.Click += ShowVariableSelector;
+                        flw_InputVariables.Controls.Add(variableInsertion);
+                    }
+                }
 
 
                 //these types get a helper button to launch another form
@@ -219,10 +239,10 @@ namespace sharpRPA.UI.Forms
                     newitm.CommandImage = UI.Images.GetUIImage(mouseCommand.CommandName);
                     newitm.CommandDisplay = "Click here to Capture Mouse Position";
                     newitm.ForeColor = Color.Black;
-                   newitm.Click += ShowMouseCaptureForm;
+                    newitm.Click += ShowMouseCaptureForm;
                     flw_InputVariables.Controls.Add(newitm);
                 }
-
+    
                 //add to flow layout
                 flw_InputVariables.Controls.Add(inputControl);
 
@@ -400,7 +420,7 @@ namespace sharpRPA.UI.Forms
 
             
             }
-            else if (inputField.Name == "v_userVariableName")
+            else if ((inputField.Name == "v_userVariableName") || (inputField.Name == "v_applyToVariableName"))
             {
                 InputControl = new ComboBox();
                 foreach (var scriptVariable in scriptVariables)
@@ -812,7 +832,6 @@ System.EventArgs e)
                 frm.WindowState = FormWindowState.Normal;
             }
         }
-
         private void ShowMouseCaptureForm(object sender, EventArgs e)
         {
 
@@ -836,6 +855,38 @@ System.EventArgs e)
             }
 
         }
+        private void ShowVariableSelector(object sender, EventArgs e)
+        {
+
+            UI.Forms.Supplemental.frmVariableSelector newVariableSelector = new Supplemental.frmVariableSelector();
+
+            if (scriptVariables.Count == 0)
+            {
+                MessageBox.Show("There are currently no variables defined!");
+                return;
+            }
+
+            foreach (var scriptVariable in scriptVariables)
+            {
+                if (scriptVariable.variableName == null)
+                    continue;
+
+               newVariableSelector.lstVariables.Items.Add(scriptVariable.variableName);
+            }
+
+            if (newVariableSelector.ShowDialog() == DialogResult.OK)
+            {
+
+             CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
+             TextBox targetTextbox = (TextBox)inputBox.Tag;
+             targetTextbox.Text = targetTextbox.Text + string.Concat("[", newVariableSelector.lstVariables.SelectedItem.ToString(), "]");
+
+            }
+
+         
+
+        }
+    
 
 #endregion
 

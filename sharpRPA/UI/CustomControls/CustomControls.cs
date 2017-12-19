@@ -329,6 +329,8 @@ namespace sharpRPA.UI
         uiImages.Add("SeleniumBrowserElementActionCommand", sharpRPA.Properties.Resources.web);
         uiImages.Add("SMTPSendEmailCommand", sharpRPA.Properties.Resources.navigate);
         uiImages.Add("ErrorHandlingCommand", sharpRPA.Properties.Resources.error);
+        uiImages.Add("StringSubstringCommand", sharpRPA.Properties.Resources._string);
+        uiImages.Add("StringSplitCommand", sharpRPA.Properties.Resources._string);
 
         return uiImages;
     }

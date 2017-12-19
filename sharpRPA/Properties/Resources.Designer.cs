@@ -63,6 +63,16 @@ namespace sharpRPA.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _string {
+            get {
+                object obj = ResourceManager.GetObject("_string", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap added {
             get {
                 object obj = ResourceManager.GetObject("added", resourceCulture);

@@ -20,6 +20,7 @@ namespace sharpRPA.UI.Forms
         private System.Diagnostics.Stopwatch sw;
         public frmScriptBuilder callBackForm { get; set; }
         public List<Core.Script.ScriptVariable> variableList { get; set; }
+
         public Dictionary<string, object> appInstances { get; set; }
         private bool isPaused { get; set; }
         public Core.AutomationCommands.ErrorHandlingCommand errorHandling;
@@ -76,8 +77,10 @@ namespace sharpRPA.UI.Forms
       
             //track variables and app instances
             variableList = automationScript.Variables;
-            appInstances = new Dictionary<string, object>();
 
+            appInstances = new Dictionary<string, object>();
+            
+        
 
             //create execution
             foreach (var executionCommand in automationScript.Commands)

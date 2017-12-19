@@ -39,7 +39,7 @@
             this.ForeColor = System.Drawing.Color.Black;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "CommandItemControl";
-            this.Size = new System.Drawing.Size(258, 20);
+            this.Size = new System.Drawing.Size(258, 18);
             this.Load += new System.EventHandler(this.CommandItemControl_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.CommandItemControl_Paint);
             this.MouseEnter += new System.EventHandler(this.CommandItemControl_MouseEnter);

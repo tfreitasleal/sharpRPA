@@ -131,6 +131,12 @@
     <Compile Include="UI\Forms\frmSettings.Designer.cs">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Forms\Supplement Forms\frmVariableSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Supplement Forms\frmVariableSelector.Designer.cs">
+      <DependentUpon>frmVariableSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Forms\UIForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -257,6 +263,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Forms\Supplement Forms\frmVariableSelector.resx">
+      <DependentUpon>frmVariableSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Forms\UIForm.resx">
       <DependentUpon>UIForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -308,6 +317,7 @@
     </Content>
     <None Include="Resources\worldwide.png" />
     <None Include="Resources\error.png" />
+    <None Include="Resources\string.png" />
     <Content Include="rpalogo_RHA_icon.ico" />
     <None Include="Resources\infinity.png" />
     <None Include="FodyWeavers.xml" />

@@ -8,26 +8,27 @@ using System.Windows.Forms;
 using System.Xml;
 
 namespace sharpRPA.Core.Script
+{
+    #region Script and Variables
+    public class Script
     {
-        #region Script and Variables
-        public class Script
+        public List<ScriptVariable> Variables { get; set; }
+
+        public List<ScriptAction> Commands;
+        public Script()
         {
-            public List<ScriptVariable> Variables { get; set; }
+            Variables = new List<ScriptVariable>();
 
-            public List<ScriptAction> Commands;
-            public Script()
-            {
-                Variables = new List<ScriptVariable>();
-                Commands = new List<ScriptAction>();
-            }
+            Commands = new List<ScriptAction>();
+        }
 
-            public ScriptAction AddNewParentCommand(Core.AutomationCommands.ScriptCommand scriptCommand)
-            {
+        public ScriptAction AddNewParentCommand(Core.AutomationCommands.ScriptCommand scriptCommand)
+        {
             ScriptAction newExecutionCommand = new ScriptAction() { ScriptCommand = scriptCommand };
-                Commands.Add(newExecutionCommand);
-                return newExecutionCommand;
+            Commands.Add(newExecutionCommand);
+            return newExecutionCommand;
 
-            }
+        }
 
         public static Script SerializeScript(string scriptFilePath, ListView.ListViewItemCollection scriptCommands, List<ScriptVariable> scriptVariables)
         {
@@ -123,7 +124,7 @@ namespace sharpRPA.Core.Script
 
         public static Script DeserializeXML(string scriptXML)
         {
-            System.IO.StringReader reader = new System.IO.StringReader(scriptXML);       
+            System.IO.StringReader reader = new System.IO.StringReader(scriptXML);
             XmlSerializer serializer = new XmlSerializer(typeof(Script));
             Script deserializedData = (Script)serializer.Deserialize(reader);
             return deserializedData;
@@ -131,29 +132,44 @@ namespace sharpRPA.Core.Script
 
     }
 
-        public class ScriptAction
+    public class ScriptAction
+    {
+        [XmlElement(Order = 1)]
+        public Core.AutomationCommands.ScriptCommand ScriptCommand { get; set; }
+        [XmlElement(Order = 2)]
+        public List<ScriptAction> AdditionalScriptCommands = new List<ScriptAction>();
+
+        public ScriptAction AddAdditionalAction(Core.AutomationCommands.ScriptCommand scriptCommand)
         {
-            [XmlElement(Order = 1)]
-            public Core.AutomationCommands.ScriptCommand ScriptCommand { get; set; }
-            [XmlElement(Order = 2)]
-            public List<ScriptAction> AdditionalScriptCommands = new List<ScriptAction>();
-
-            public ScriptAction AddAdditionalAction(Core.AutomationCommands.ScriptCommand scriptCommand)
-            {
             ScriptAction newExecutionCommand = new ScriptAction() { ScriptCommand = scriptCommand };
-                AdditionalScriptCommands.Add(newExecutionCommand);
-                return newExecutionCommand;
-            }
-
+            AdditionalScriptCommands.Add(newExecutionCommand);
+            return newExecutionCommand;
         }
 
-        public class ScriptVariable
-        {
-            public string variableName { get; set; }
-            public string variableValue { get; set; }
-        
     }
 
-     #endregion
+    public class ScriptVariable
+    {
+        public string variableName { get; set; }
+        public int currentPosition = 0;
+        public object variableValue { get; set; }
+
+        public string GetDisplayValue()
+        {
+            if (variableValue is string)
+            {
+                return (string)variableValue;
+            }
+            else
+            {
+                List<string> requiredValue = (List<string>)variableValue;
+                return requiredValue[currentPosition];
+            }
+        }
+     
+    }
+    #endregion
 }
+
+
 

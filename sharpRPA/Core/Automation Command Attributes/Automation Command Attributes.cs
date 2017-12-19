@@ -48,6 +48,15 @@ namespace sharpRPA.Core.AutomationCommands.Attributes.PropertyAttributes
             this.propertyDescription = description;
         }
     }
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public sealed class PropertyAllowsVariables : System.Attribute
+    {
+        public bool propertyAllowsVariables;
+        public PropertyAllowsVariables(bool allowed)
+        {
+            this.propertyAllowsVariables = allowed;
+        }
+    }
     [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public sealed class PropertyUISelectionOption : System.Attribute
     {

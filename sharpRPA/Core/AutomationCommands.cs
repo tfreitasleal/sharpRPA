@@ -56,6 +56,8 @@ namespace sharpRPA.Core.AutomationCommands
     [XmlInclude(typeof(SeleniumBrowserElementActionCommand))]
     [XmlInclude(typeof(SMTPSendEmailCommand))]
     [XmlInclude(typeof(ErrorHandlingCommand))]
+    [XmlInclude(typeof(StringSubstringCommand))]
+    [XmlInclude(typeof(StringSplitCommand))]
     [Serializable]
     public abstract class ScriptCommand
     {
@@ -1483,6 +1485,7 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the message to be displayed.")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_Message { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Close After X (Seconds) - 0 to bypass")]
@@ -1714,7 +1717,34 @@ namespace sharpRPA.Core.AutomationCommands
                 if (varCheck != null)
                 {
                     var searchVariable = "[" + potentialVariable + "]";
-                    replacementString = replacementString.Replace(searchVariable, varCheck.variableValue);
+
+                    if (replacementString.Contains(searchVariable))
+                    {
+                        replacementString = replacementString.Replace(searchVariable, (string)varCheck.GetDisplayValue());
+                    }
+                    else if (replacementString.Contains(potentialVariable))
+                    {
+                        replacementString = replacementString.Replace(potentialVariable, (string)varCheck.GetDisplayValue());
+                    }
+
+                    //get value based on conditions
+                    //if (replacementString.Contains(searchVariable) && varCheck.displayValue == null)
+                    //{
+                    //    replacementString = replacementString.Replace(searchVariable, (string)varCheck.variableValue);
+                    //}
+                    //else if (replacementString.Contains(searchVariable) && varCheck.displayValue != null)
+                    //{
+                    //    replacementString = replacementString.Replace(searchVariable, varCheck.displayValue);
+                    //}
+                    //else if (varCheck.displayValue == null)
+                    //{
+                    //    replacementString = replacementString.Replace(potentialVariable, (string)varCheck.variableValue);
+                    //}
+                    //else if (varCheck.displayValue != null)
+                    //{
+                    //    replacementString = replacementString.Replace(potentialVariable, varCheck.displayValue);
+                    //}
+
                 }
 
             }
@@ -1758,7 +1788,8 @@ namespace sharpRPA.Core.AutomationCommands
         }
 
     }
-     [Serializable]
+   
+    [Serializable]
     [Attributes.ClassAttributes.Group("Clipboard Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to get text from the clipboard.")]
     [Attributes.ClassAttributes.ImplementationDescription("This command implements actions against the VariableList from the scripting engine using System.Windows.Forms.Clipboard.")]
@@ -2151,9 +2182,14 @@ namespace sharpRPA.Core.AutomationCommands
     public class BeginLoopCommand : ScriptCommand
     {
         [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Enter the amount of times to loop")]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select style of loop to perform")]
+        [Attributes.PropertyAttributes.PropertyUISelectionOption("Loop Number Of Times")]
+        [Attributes.PropertyAttributes.PropertyUISelectionOption("Loop Through List")]
+        public string v_LoopType { get; set; }
+
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Loop Parameter (Number or Variable List Name)")]
         public string v_LoopParameter { get; set; }
-    
 
         public BeginLoopCommand()
         {
@@ -2167,12 +2203,30 @@ namespace sharpRPA.Core.AutomationCommands
         {
             Core.AutomationCommands.BeginLoopCommand loopCommand = (Core.AutomationCommands.BeginLoopCommand)parentCommand.ScriptCommand;
             var engineForm = (UI.Forms.frmScriptEngine)sender;
-            var loopTimes = int.Parse(loopCommand.v_LoopParameter);
 
-            
+
+            int loopTimes;
+            Script.ScriptVariable complexVarible = null;
+            if (v_LoopType == "Loop Number Of Times")
+            {
+                loopTimes = int.Parse(loopCommand.v_LoopParameter);
+            }
+            else
+            {
+                complexVarible = engineForm.variableList.Where(x => x.variableName == v_LoopParameter).FirstOrDefault();
+                var listToLoop = (List<string>)complexVarible.variableValue;
+                loopTimes = listToLoop.Count();
+            }
+
+
+
             for (int i = 0; i < loopTimes; i++)
             {
-                bgw.ReportProgress(0, new object[] { loopCommand.LineNumber, "Starting Loop Number " + (i + 1) + "/" + loopTimes + " From Line " + loopCommand.LineNumber});
+                if (complexVarible != null)
+                    complexVarible.currentPosition = i;
+
+
+                bgw.ReportProgress(0, new object[] { loopCommand.LineNumber, "Starting Loop Number " + (i + 1) + "/" + loopTimes + " From Line " + loopCommand.LineNumber });
 
                 foreach (var cmd in parentCommand.AdditionalScriptCommands)
                 {
@@ -2182,17 +2236,26 @@ namespace sharpRPA.Core.AutomationCommands
                 }
 
                 bgw.ReportProgress(0, new object[] { loopCommand.LineNumber, "Finished Loop From Line " + loopCommand.LineNumber });
+
             }
 
-
-
-
         }
 
+        
         public override string GetDisplayValue()
         {
-            return "Loop " + v_LoopParameter + " Times";
+
+            if (v_LoopType == "Loop Number Of Times")
+            {
+                return "Loop " + v_LoopParameter + " Times";
+            }
+            else
+            {
+                return "Loop List Variable '" + v_LoopParameter + "'";
+            }
+               
         }
+
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Loop Commands")]
@@ -2518,8 +2581,115 @@ namespace sharpRPA.Core.AutomationCommands
             return base.GetDisplayValue() + " [Save On Close: " + v_ExcelSaveOnExit + ", Instance Name: '" + v_InstanceName + "']";
         }
     }
-    
+
     #endregion
+
+    #region String Commands
+    [Serializable]
+    [Attributes.ClassAttributes.Group("String Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to trim a string")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command uses the String.Substring method to achieve automation.")]
+    public class StringSubstringCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select a variable to modify")]
+        public string v_userVariableName { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Start from Position")]
+        public int v_startIndex { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Optional - Length (-1 to keep remainder)")]
+        public int v_stringLength { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select the variable to receive the changes")]
+        public string v_applyToVariableName { get; set; }
+        public StringSubstringCommand()
+        {
+            this.CommandName = "StringSubstringCommand";
+            this.SelectionName = "String - Substring";
+            this.CommandEnabled = true;
+            v_stringLength = -1;
+        }
+        public override void RunCommand(object sender)
+        {
+
+            VariableCommand newVariableCommand = new VariableCommand();
+
+            var stringVariable = newVariableCommand.VariablizeString(sender, v_userVariableName);
+
+            //apply substring
+            if (v_stringLength >= 0)
+            {
+                stringVariable = stringVariable.Substring(v_startIndex, v_stringLength);
+            }
+            else
+            {
+                stringVariable = stringVariable.Substring(v_startIndex);
+            }
+
+            newVariableCommand.v_userVariableName = v_applyToVariableName;
+            newVariableCommand.v_Input = stringVariable;
+            newVariableCommand.RunCommand(sender);
+
+
+
+
+
+
+        }
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Apply Substring to '" + v_userVariableName + "']";
+        }
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("String Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to split a string")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command uses the String.Split method to achieve automation.")]
+    public class StringSplitCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select a variable to split")]
+        public string v_userVariableName { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Input Delimiter")]
+        public char v_splitCharacter { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select the list variable which will contain the results")]
+        public string v_applyToVariableName { get; set; }
+        public StringSplitCommand()
+        {
+            this.CommandName = "StringSplitCommand";
+            this.SelectionName = "String - Split";
+            this.v_applyToVariableName = "default";
+            this.CommandEnabled = true;
+ 
+        }
+        public override void RunCommand(object sender)
+        {
+
+            VariableCommand newVariableCommand = new VariableCommand();
+            var stringVariable = newVariableCommand.VariablizeString(sender, v_userVariableName);
+
+            var splitString = stringVariable.Split(v_splitCharacter).ToList();
+
+            var sendingInstance = (UI.Forms.frmScriptEngine)sender;
+
+            //get complex variable from engine and assign
+            var requiredComplexVariable = sendingInstance.variableList.Where(x => x.variableName == v_applyToVariableName).FirstOrDefault();
+            requiredComplexVariable.variableValue = splitString;
+
+
+
+
+        }
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Split '" + v_userVariableName + "' by '" + v_splitCharacter + "' and apply to '" + v_applyToVariableName + "']";
+        }
+    }
+    #endregion
+
 }
 
 
