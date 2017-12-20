@@ -62,11 +62,11 @@
             this.flw_InputVariables.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flw_InputVariables.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flw_InputVariables.Font = new System.Drawing.Font("Raleway Medium", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flw_InputVariables.Location = new System.Drawing.Point(6, 50);
-            this.flw_InputVariables.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.flw_InputVariables.Location = new System.Drawing.Point(2, 47);
+            this.flw_InputVariables.Margin = new System.Windows.Forms.Padding(2);
             this.flw_InputVariables.Name = "flw_InputVariables";
             this.flw_InputVariables.Padding = new System.Windows.Forms.Padding(10, 9, 10, 9);
-            this.flw_InputVariables.Size = new System.Drawing.Size(544, 417);
+            this.flw_InputVariables.Size = new System.Drawing.Size(552, 423);
             this.flw_InputVariables.TabIndex = 3;
             this.flw_InputVariables.WrapContents = false;
             // 

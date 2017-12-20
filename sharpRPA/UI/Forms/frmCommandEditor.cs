@@ -265,7 +265,7 @@ namespace sharpRPA.UI.Forms
             }
             
             //add additional offset
-            this.Height = formHeight + 150;
+            this.Height = formHeight + 200;
 
         }
 
@@ -876,6 +876,12 @@ System.EventArgs e)
 
             if (newVariableSelector.ShowDialog() == DialogResult.OK)
             {
+
+                if (newVariableSelector.lstVariables.SelectedItem == null)
+                {
+                    MessageBox.Show("There were no variables selected!");
+                    return;
+                }
 
              CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
              TextBox targetTextbox = (TextBox)inputBox.Tag;

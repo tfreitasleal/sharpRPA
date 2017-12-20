@@ -138,6 +138,7 @@
             this.txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtMessage.Size = new System.Drawing.Size(660, 159);
             this.txtMessage.TabIndex = 20;
+            this.txtMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
             // 
             // frmDialog
             // 
@@ -151,6 +152,7 @@
             this.Text = "Dialog";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.frmDialog_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmDialog_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnOk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnCancel)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);

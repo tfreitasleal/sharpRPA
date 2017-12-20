@@ -24,6 +24,12 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void uiBtnOk_Click(object sender, EventArgs e)
         {
+            if (lstVariables.SelectedItem == null)
+            {
+                MessageBox.Show("There are no variables selected! Select a variable and Ok or select Cancel");
+                return;
+            }
+
             this.DialogResult = DialogResult.OK;
         }
 

@@ -64,6 +64,10 @@ namespace sharpRPA.UI.Forms
         private void uiBtnOK_Click(object sender, EventArgs e)
         {
             dgvVariables.EndEdit();
+
+            //remove potential null values
+            ds.Where(f => f.variableName == null).ToList().ForEach(x => ds.Remove(x));
+            
             this.DialogResult = DialogResult.OK;
         }
 

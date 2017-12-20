@@ -87,7 +87,23 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void frmDialog_Load(object sender, EventArgs e)
         {
+            this.Focus();
+        }
 
+        private void frmDialog_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        private void txtMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }

@@ -230,6 +230,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the URL to navigate to")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_URL { get; set; }
 
         public IEBrowserNavigateCommand()
@@ -662,6 +663,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the URL to navigate to")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_URL { get; set; }
 
         public SeleniumBrowserNavigateURLCommand()
@@ -1527,9 +1529,11 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please enter the name or path to the program (ex. notepad, calc)")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_ProgramName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please enter any arguments (if applicable)")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_ProgramArgs { get; set; }
 
         public StartProcessCommand()
@@ -1657,6 +1661,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_userVariableName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please define the input to be set to above variable")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_Input { get; set; }
         public VariableCommand()
         {
@@ -1834,6 +1839,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_ScreenshotWindowName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please indicate the path to save the image")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_FilePath { get; set; }
         public ScreenshotCommand()
         {
@@ -1866,27 +1872,35 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Host Name")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPHost { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Port")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public int v_SMTPPort { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Username")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPUserName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Password")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPPassword { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("From Email")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPFromEmail { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("To Email")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPToEmail { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Subject")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPSubject { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Body")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_SMTPBody { get; set; }
         public SMTPSendEmailCommand()
         {
@@ -1938,6 +1952,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_WindowName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter text to send")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_TextToSend { get; set; }
 
         public SendKeysCommand()
@@ -1968,7 +1983,7 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override string GetDisplayValue()
         {
-            return base.GetDisplayValue() + " [Send '" + v_TextToSend + " to '" + v_WindowName + "']";
+            return base.GetDisplayValue() + " [Send '" + v_TextToSend + "' to '" + v_WindowName + "']";
         }
 
     }
@@ -2425,9 +2440,11 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter text to set")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_TextToSet { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Cell Location (ex. A1 or B2)")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_ExcelCellAddress { get; set; }
         public ExcelSetCellCommand()
         {
@@ -2468,6 +2485,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Cell Location (ex. A1 or B2)")]
+        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
         public string v_ExcelCellAddress { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Assign to Variable")]
@@ -2593,6 +2611,7 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select a variable to modify")]
+
         public string v_userVariableName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Start from Position")]
@@ -2602,6 +2621,7 @@ namespace sharpRPA.Core.AutomationCommands
         public int v_stringLength { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the variable to receive the changes")]
+
         public string v_applyToVariableName { get; set; }
         public StringSubstringCommand()
         {
@@ -2653,7 +2673,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_userVariableName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Input Delimiter")]
-        public char v_splitCharacter { get; set; }
+        public string v_splitCharacter { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the list variable which will contain the results")]
         public string v_applyToVariableName { get; set; }
@@ -2671,7 +2691,17 @@ namespace sharpRPA.Core.AutomationCommands
             VariableCommand newVariableCommand = new VariableCommand();
             var stringVariable = newVariableCommand.VariablizeString(sender, v_userVariableName);
 
-            var splitString = stringVariable.Split(v_splitCharacter).ToList();
+            List<string> splitString;
+            if (v_splitCharacter == "[crLF]")
+            {
+                splitString = stringVariable.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            }
+            else
+            {
+                splitString = stringVariable.Split(new string[] { v_splitCharacter }, StringSplitOptions.None).ToList();
+            }
+
+            
 
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
 
