@@ -25,11 +25,14 @@ namespace sharpRPA.UI.Forms
 
         private ListViewItem rowSelectedForCopy { get; set; }
         private List<Core.Script.ScriptVariable> scriptVariables;
+  
         private ImageList uiImages;
         private WebSocket4Net.WebSocket webSocket;
         private string webSocketConnectionID;
         public Core.ApplicationSettings appSettings;
         private string streamedXMLData { get; set; }
+        private List<List<ListViewItem>> undoList;
+        private int undoIndex = -1;
         public frmScriptBuilder()
         {
             InitializeComponent();
@@ -74,6 +77,8 @@ namespace sharpRPA.UI.Forms
         private void frmScriptBuilder_Load(object sender, EventArgs e)
         {
 
+            //create undo list
+            undoList = new List<List<ListViewItem>>();
 
             //get app settings
             var appSettingClass = new Core.ApplicationSettings();
@@ -319,6 +324,8 @@ namespace sharpRPA.UI.Forms
                 return;
             }
 
+            CreateUndoSnapshot();
+
             //Returns the location of the mouse pointer in the ListView control.
             Point cp = lstScriptActions.PointToClient(new Point(e.X, e.Y));
             //Obtain the item that is located at the specified location of the mouse pointer.
@@ -392,35 +399,159 @@ namespace sharpRPA.UI.Forms
                 {
                     lstScriptActions.Items.Remove(itm);
                 }
+
+                CreateUndoSnapshot();
                 FormatCommandListView();
             }
             else if ((e.Control) && (e.KeyCode == Keys.C))
             {
-                if (lstScriptActions.SelectedItems.Count == 1)
-                {
-                    rowSelectedForCopy = lstScriptActions.SelectedItems[0];
-                }
+                //if (lstScriptActions.SelectedItems.Count == 1)
+                //{
+                //    rowSelectedForCopy = lstScriptActions.SelectedItems[0];
+                //}
+
+                CopyRow();
 
             }
             else if ((e.Control) && (e.KeyCode == Keys.V))
             {
 
-                if (rowSelectedForCopy != null)
-                {
-                    Core.AutomationCommands.ScriptCommand duplicatedCommand = (Core.AutomationCommands.ScriptCommand)Core.Common.Clone(rowSelectedForCopy.Tag);
-                    lstScriptActions.Items.Insert(lstScriptActions.SelectedIndices[0], CreateScriptCommandListViewItem(duplicatedCommand));
-                    FormatCommandListView();
-                }
+                //if (rowSelectedForCopy != null)
+                //{
+                //    Core.AutomationCommands.ScriptCommand duplicatedCommand = (Core.AutomationCommands.ScriptCommand)Core.Common.Clone(rowSelectedForCopy.Tag);
+                //    lstScriptActions.Items.Insert(lstScriptActions.SelectedIndices[0], CreateScriptCommandListViewItem(duplicatedCommand));
+                //    FormatCommandListView();
+                //}
 
+                PasteRow();
 
             }
+            else if ((e.Control) && (e.KeyCode == Keys.Z))
+            {
+      
+                UndoChange();
+                
+            }
+            else if ((e.Control) && (e.KeyCode == Keys.R))
+            {
+              
+                RedoChange();
+              
+            }
+
+
+        }
+
+        private void CopyRow()
+        {
+            if (lstScriptActions.SelectedItems.Count == 1)
+            {
+                rowSelectedForCopy = lstScriptActions.SelectedItems[0];
+            }
+        }
+
+        private void PasteRow()
+        {
+       
+
+            if (rowSelectedForCopy != null)
+            {
+                Core.AutomationCommands.ScriptCommand duplicatedCommand = (Core.AutomationCommands.ScriptCommand)Core.Common.Clone(rowSelectedForCopy.Tag);
+                lstScriptActions.Items.Insert(lstScriptActions.SelectedIndices[0], CreateScriptCommandListViewItem(duplicatedCommand));
+                FormatCommandListView();
+            }
+
+            CreateUndoSnapshot();
+
+        }
+
+        private void UndoChange()
+        {
+
+            if (undoList.Count > 0)
+            {
+     
+                if ((undoIndex < 0) || (undoIndex >= undoList.Count))
+                {
+                    undoIndex = undoList.Count - 1;
+                }
+
+                
+                lstScriptActions.Items.Clear();
+
+                foreach (ListViewItem rowItem in undoList[undoIndex])
+                {
+                    lstScriptActions.Items.Add(rowItem);
+                }
+
+                undoIndex--;
+
+                FormatCommandListView();
+
+            }
+
+        }
+
+        private void RedoChange()
+        {
+            if (undoList.Count > 0)
+            {
+                
+                undoIndex++;
+
+                if (undoIndex > undoList.Count - 1)
+                {
+                    undoIndex = undoList.Count - 1;
+                }
+
+            
+
+                lstScriptActions.Items.Clear();
+
+                foreach (ListViewItem rowItem in undoList[undoIndex])
+                {
+                    lstScriptActions.Items.Add(rowItem);
+                }
+
+              
+                FormatCommandListView();
+
+   
+        }
+
+    }
+
+            private void CreateUndoSnapshot()
+        {
+
+            
+                   
+
+
+
+            List<ListViewItem> itemList = new List<ListViewItem>();
+            foreach (ListViewItem rowItem in lstScriptActions.Items)
+            { 
+                itemList.Add(rowItem);
+            }
+
+            undoList.Add(itemList);
+
+            if (undoList.Count > 10)
+            {
+                undoList.RemoveAt(0);
+            }
+
+
+            undoIndex = itemList.Count - 1;
+
 
 
         }
 
         private void lstScriptActions_DoubleClick(object sender, EventArgs e)
         {
-
+     
             if (lstScriptActions.SelectedItems.Count != 1)
             {
                 return;
@@ -434,7 +565,6 @@ namespace sharpRPA.UI.Forms
 
             //creation mode edit locks form to current command
             editCommand.creationMode = UI.Forms.frmCommandEditor.CreationMode.Edit;
-
 
             //set selected command from the listview item tag object which was assigned to the command
             var currentCommand = (Core.AutomationCommands.ScriptCommand)selectedCommandItem.Tag;
@@ -473,6 +603,7 @@ namespace sharpRPA.UI.Forms
 
         private void AddCommandToListView(Core.AutomationCommands.ScriptCommand selectedCommand)
         {
+          
 
             lstScriptActions.Items.Add(CreateScriptCommandListViewItem(selectedCommand));
 
@@ -480,6 +611,8 @@ namespace sharpRPA.UI.Forms
             {
                 lstScriptActions.Items.Add(CreateScriptCommandListViewItem(new Core.AutomationCommands.EndLoopCommand()));
             }
+
+            CreateUndoSnapshot();
 
             FormatCommandListView();
         }
@@ -489,6 +622,8 @@ namespace sharpRPA.UI.Forms
         #region ListView Comment and Coloring
         private void FormatCommandListView()
         {
+
+       
 
             if (pnlCommandHelper.Visible)
                 pnlCommandHelper.Hide();
@@ -1107,7 +1242,15 @@ namespace sharpRPA.UI.Forms
 
         }
 
+        private void copySelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyRow();
+        }
 
+        private void pasteSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PasteRow();
+        }
     }
     }
 

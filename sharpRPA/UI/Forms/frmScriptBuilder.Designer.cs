@@ -31,18 +31,26 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmScriptBuilder));
             this.tlpControls = new System.Windows.Forms.TableLayoutPanel();
-            this.splitContainer1 = new sharpRPA.UI.CustomControls.UISplitContainer();
-            this.tvCommands = new sharpRPA.UI.CustomControls.UITreeView();
-            this.pnlCommandHelper = new System.Windows.Forms.Panel();
-            this.pbNote = new System.Windows.Forms.PictureBox();
-            this.lstScriptActions = new sharpRPA.UI.CustomControls.UIListView();
-            this.commandColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblCoordinatorInfo = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lblMainLogo = new System.Windows.Forms.Label();
             this.pnlStatus = new System.Windows.Forms.Panel();
             this.pnlControlContainer = new System.Windows.Forms.Panel();
+            this.tmrNotify = new System.Windows.Forms.Timer(this.components);
+            this.lstContextStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.enableSelectedCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableSelectedCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pauseBeforeExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copySelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new sharpRPA.UI.CustomControls.UISplitContainer();
+            this.tvCommands = new sharpRPA.UI.CustomControls.UITreeView();
+            this.pnlCommandHelper = new System.Windows.Forms.Panel();
+            this.lblNote = new System.Windows.Forms.Label();
+            this.pbNote = new System.Windows.Forms.PictureBox();
+            this.lstScriptActions = new sharpRPA.UI.CustomControls.UIListView();
+            this.commandColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.uiGroupBox3 = new sharpRPA.UI.CustomControls.UIGroupBox();
             this.uiBtnRunScript = new sharpRPA.UI.CustomControls.UIPictureButton();
             this.uiBtnScheduleManagement = new sharpRPA.UI.CustomControls.UIPictureButton();
@@ -55,22 +63,17 @@
             this.uiBtnSave = new sharpRPA.UI.CustomControls.UIPictureButton();
             this.uiBtnNew = new sharpRPA.UI.CustomControls.UIPictureButton();
             this.uiBtnOpen = new sharpRPA.UI.CustomControls.UIPictureButton();
-            this.tmrNotify = new System.Windows.Forms.Timer(this.components);
-            this.lstContextStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.enableSelectedCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.disableSelectedCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pauseBeforeExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblNote = new System.Windows.Forms.Label();
             this.tlpControls.SuspendLayout();
+            this.pnlHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.pnlControlContainer.SuspendLayout();
+            this.lstContextStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.pnlCommandHelper.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbNote)).BeginInit();
-            this.pnlHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.pnlControlContainer.SuspendLayout();
             this.uiGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnRunScript)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnScheduleManagement)).BeginInit();
@@ -83,7 +86,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnSave)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnNew)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnOpen)).BeginInit();
-            this.lstContextStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpControls
@@ -109,88 +111,6 @@
             this.tlpControls.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.tlpControls.Size = new System.Drawing.Size(1029, 631);
             this.tlpControls.TabIndex = 2;
-            // 
-            // splitContainer1
-            // 
-            this.tlpControls.SetColumnSpan(this.splitContainer1, 3);
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 134);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Transparent;
-            this.splitContainer1.Panel1.Controls.Add(this.tvCommands);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.Transparent;
-            this.splitContainer1.Panel2.Controls.Add(this.pnlCommandHelper);
-            this.splitContainer1.Panel2.Controls.Add(this.lstScriptActions);
-            this.splitContainer1.Size = new System.Drawing.Size(1023, 462);
-            this.splitContainer1.SplitterDistance = 226;
-            this.splitContainer1.TabIndex = 4;
-            // 
-            // tvCommands
-            // 
-            this.tvCommands.BackColor = System.Drawing.Color.White;
-            this.tvCommands.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tvCommands.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvCommands.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tvCommands.Location = new System.Drawing.Point(0, 0);
-            this.tvCommands.Name = "tvCommands";
-            this.tvCommands.ShowLines = false;
-            this.tvCommands.Size = new System.Drawing.Size(226, 462);
-            this.tvCommands.TabIndex = 8;
-            this.tvCommands.DoubleClick += new System.EventHandler(this.tvCommands_DoubleClick);
-            // 
-            // pnlCommandHelper
-            // 
-            this.pnlCommandHelper.Controls.Add(this.lblNote);
-            this.pnlCommandHelper.Controls.Add(this.pbNote);
-            this.pnlCommandHelper.Location = new System.Drawing.Point(3, 3);
-            this.pnlCommandHelper.Name = "pnlCommandHelper";
-            this.pnlCommandHelper.Size = new System.Drawing.Size(468, 108);
-            this.pnlCommandHelper.TabIndex = 7;
-            // 
-            // pbNote
-            // 
-            this.pbNote.Image = global::sharpRPA.Properties.Resources.added;
-            this.pbNote.Location = new System.Drawing.Point(5, 6);
-            this.pbNote.Name = "pbNote";
-            this.pbNote.Size = new System.Drawing.Size(96, 96);
-            this.pbNote.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbNote.TabIndex = 0;
-            this.pbNote.TabStop = false;
-            // 
-            // lstScriptActions
-            // 
-            this.lstScriptActions.AllowDrop = true;
-            this.lstScriptActions.BackColor = System.Drawing.Color.White;
-            this.lstScriptActions.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstScriptActions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.commandColumn});
-            this.lstScriptActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstScriptActions.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstScriptActions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lstScriptActions.Location = new System.Drawing.Point(0, 0);
-            this.lstScriptActions.Name = "lstScriptActions";
-            this.lstScriptActions.Size = new System.Drawing.Size(793, 462);
-            this.lstScriptActions.TabIndex = 6;
-            this.lstScriptActions.UseCompatibleStateImageBehavior = false;
-            this.lstScriptActions.View = System.Windows.Forms.View.Details;
-            this.lstScriptActions.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lstScriptActions_ItemDrag);
-            this.lstScriptActions.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstScriptActions_DragDrop);
-            this.lstScriptActions.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstScriptActions_DragEnter);
-            this.lstScriptActions.DoubleClick += new System.EventHandler(this.lstScriptActions_DoubleClick);
-            this.lstScriptActions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstScriptActions_KeyDown);
-            this.lstScriptActions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstScriptActions_MouseClick);
-            // 
-            // commandColumn
-            // 
-            this.commandColumn.Text = "Script Commands";
-            this.commandColumn.Width = 771;
             // 
             // pnlHeader
             // 
@@ -268,6 +188,152 @@
             this.pnlControlContainer.Size = new System.Drawing.Size(1029, 82);
             this.pnlControlContainer.TabIndex = 7;
             this.pnlControlContainer.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlControlContainer_Paint);
+            // 
+            // tmrNotify
+            // 
+            this.tmrNotify.Enabled = true;
+            this.tmrNotify.Interval = 500;
+            this.tmrNotify.Tick += new System.EventHandler(this.tmrNotify_Tick);
+            // 
+            // lstContextStrip
+            // 
+            this.lstContextStrip.Font = new System.Drawing.Font("Eras Light ITC", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstContextStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableSelectedCodeToolStripMenuItem,
+            this.disableSelectedCodeToolStripMenuItem,
+            this.pauseBeforeExecutionToolStripMenuItem,
+            this.copySelectedToolStripMenuItem,
+            this.pasteSelectedToolStripMenuItem});
+            this.lstContextStrip.Name = "lstContextStrip";
+            this.lstContextStrip.Size = new System.Drawing.Size(233, 124);
+            // 
+            // enableSelectedCodeToolStripMenuItem
+            // 
+            this.enableSelectedCodeToolStripMenuItem.Name = "enableSelectedCodeToolStripMenuItem";
+            this.enableSelectedCodeToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
+            this.enableSelectedCodeToolStripMenuItem.Text = "Enable Selected Code";
+            this.enableSelectedCodeToolStripMenuItem.Click += new System.EventHandler(this.enableSelectedCodeToolStripMenuItem_Click);
+            // 
+            // disableSelectedCodeToolStripMenuItem
+            // 
+            this.disableSelectedCodeToolStripMenuItem.Name = "disableSelectedCodeToolStripMenuItem";
+            this.disableSelectedCodeToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
+            this.disableSelectedCodeToolStripMenuItem.Text = "Disable Selected Code";
+            this.disableSelectedCodeToolStripMenuItem.Click += new System.EventHandler(this.disableSelectedCodeToolStripMenuItem_Click);
+            // 
+            // pauseBeforeExecutionToolStripMenuItem
+            // 
+            this.pauseBeforeExecutionToolStripMenuItem.Name = "pauseBeforeExecutionToolStripMenuItem";
+            this.pauseBeforeExecutionToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
+            this.pauseBeforeExecutionToolStripMenuItem.Text = "Pause Before Execution";
+            this.pauseBeforeExecutionToolStripMenuItem.Click += new System.EventHandler(this.pauseBeforeExecutionToolStripMenuItem_Click);
+            // 
+            // copySelectedToolStripMenuItem
+            // 
+            this.copySelectedToolStripMenuItem.Name = "copySelectedToolStripMenuItem";
+            this.copySelectedToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
+            this.copySelectedToolStripMenuItem.Text = "Copy Selected Action";
+            this.copySelectedToolStripMenuItem.Click += new System.EventHandler(this.copySelectedToolStripMenuItem_Click);
+            // 
+            // pasteSelectedToolStripMenuItem
+            // 
+            this.pasteSelectedToolStripMenuItem.Name = "pasteSelectedToolStripMenuItem";
+            this.pasteSelectedToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
+            this.pasteSelectedToolStripMenuItem.Text = "Paste Selected Action";
+            this.pasteSelectedToolStripMenuItem.Click += new System.EventHandler(this.pasteSelectedToolStripMenuItem_Click);
+            // 
+            // splitContainer1
+            // 
+            this.tlpControls.SetColumnSpan(this.splitContainer1, 3);
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 134);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Transparent;
+            this.splitContainer1.Panel1.Controls.Add(this.tvCommands);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.Transparent;
+            this.splitContainer1.Panel2.Controls.Add(this.pnlCommandHelper);
+            this.splitContainer1.Panel2.Controls.Add(this.lstScriptActions);
+            this.splitContainer1.Size = new System.Drawing.Size(1023, 462);
+            this.splitContainer1.SplitterDistance = 226;
+            this.splitContainer1.TabIndex = 4;
+            // 
+            // tvCommands
+            // 
+            this.tvCommands.BackColor = System.Drawing.Color.White;
+            this.tvCommands.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tvCommands.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvCommands.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tvCommands.Location = new System.Drawing.Point(0, 0);
+            this.tvCommands.Name = "tvCommands";
+            this.tvCommands.ShowLines = false;
+            this.tvCommands.Size = new System.Drawing.Size(226, 462);
+            this.tvCommands.TabIndex = 8;
+            this.tvCommands.DoubleClick += new System.EventHandler(this.tvCommands_DoubleClick);
+            // 
+            // pnlCommandHelper
+            // 
+            this.pnlCommandHelper.Controls.Add(this.lblNote);
+            this.pnlCommandHelper.Controls.Add(this.pbNote);
+            this.pnlCommandHelper.Location = new System.Drawing.Point(3, 3);
+            this.pnlCommandHelper.Name = "pnlCommandHelper";
+            this.pnlCommandHelper.Size = new System.Drawing.Size(468, 108);
+            this.pnlCommandHelper.TabIndex = 7;
+            // 
+            // lblNote
+            // 
+            this.lblNote.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNote.ForeColor = System.Drawing.Color.SteelBlue;
+            this.lblNote.Location = new System.Drawing.Point(105, 6);
+            this.lblNote.Name = "lblNote";
+            this.lblNote.Size = new System.Drawing.Size(358, 96);
+            this.lblNote.TabIndex = 1;
+            this.lblNote.Text = "Start building automation by selecting \"Add\" at the top or quick-adding a command" +
+    " from the list to the left.";
+            // 
+            // pbNote
+            // 
+            this.pbNote.Image = global::sharpRPA.Properties.Resources.added;
+            this.pbNote.Location = new System.Drawing.Point(5, 6);
+            this.pbNote.Name = "pbNote";
+            this.pbNote.Size = new System.Drawing.Size(96, 96);
+            this.pbNote.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbNote.TabIndex = 0;
+            this.pbNote.TabStop = false;
+            // 
+            // lstScriptActions
+            // 
+            this.lstScriptActions.AllowDrop = true;
+            this.lstScriptActions.BackColor = System.Drawing.Color.White;
+            this.lstScriptActions.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstScriptActions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.commandColumn});
+            this.lstScriptActions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstScriptActions.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstScriptActions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstScriptActions.Location = new System.Drawing.Point(0, 0);
+            this.lstScriptActions.Name = "lstScriptActions";
+            this.lstScriptActions.Size = new System.Drawing.Size(793, 462);
+            this.lstScriptActions.TabIndex = 6;
+            this.lstScriptActions.UseCompatibleStateImageBehavior = false;
+            this.lstScriptActions.View = System.Windows.Forms.View.Details;
+            this.lstScriptActions.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lstScriptActions_ItemDrag);
+            this.lstScriptActions.DragDrop += new System.Windows.Forms.DragEventHandler(this.lstScriptActions_DragDrop);
+            this.lstScriptActions.DragEnter += new System.Windows.Forms.DragEventHandler(this.lstScriptActions_DragEnter);
+            this.lstScriptActions.DoubleClick += new System.EventHandler(this.lstScriptActions_DoubleClick);
+            this.lstScriptActions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstScriptActions_KeyDown);
+            this.lstScriptActions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstScriptActions_MouseClick);
+            // 
+            // commandColumn
+            // 
+            this.commandColumn.Text = "Script Commands";
+            this.commandColumn.Width = 771;
             // 
             // uiGroupBox3
             // 
@@ -464,54 +530,6 @@
             this.uiBtnOpen.TabStop = false;
             this.uiBtnOpen.Click += new System.EventHandler(this.uiBtnOpen_Click);
             // 
-            // tmrNotify
-            // 
-            this.tmrNotify.Enabled = true;
-            this.tmrNotify.Interval = 500;
-            this.tmrNotify.Tick += new System.EventHandler(this.tmrNotify_Tick);
-            // 
-            // lstContextStrip
-            // 
-            this.lstContextStrip.Font = new System.Drawing.Font("Eras Light ITC", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstContextStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableSelectedCodeToolStripMenuItem,
-            this.disableSelectedCodeToolStripMenuItem,
-            this.pauseBeforeExecutionToolStripMenuItem});
-            this.lstContextStrip.Name = "lstContextStrip";
-            this.lstContextStrip.Size = new System.Drawing.Size(233, 76);
-            // 
-            // enableSelectedCodeToolStripMenuItem
-            // 
-            this.enableSelectedCodeToolStripMenuItem.Name = "enableSelectedCodeToolStripMenuItem";
-            this.enableSelectedCodeToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
-            this.enableSelectedCodeToolStripMenuItem.Text = "Enable Selected Code";
-            this.enableSelectedCodeToolStripMenuItem.Click += new System.EventHandler(this.enableSelectedCodeToolStripMenuItem_Click);
-            // 
-            // disableSelectedCodeToolStripMenuItem
-            // 
-            this.disableSelectedCodeToolStripMenuItem.Name = "disableSelectedCodeToolStripMenuItem";
-            this.disableSelectedCodeToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
-            this.disableSelectedCodeToolStripMenuItem.Text = "Disable Selected Code";
-            this.disableSelectedCodeToolStripMenuItem.Click += new System.EventHandler(this.disableSelectedCodeToolStripMenuItem_Click);
-            // 
-            // pauseBeforeExecutionToolStripMenuItem
-            // 
-            this.pauseBeforeExecutionToolStripMenuItem.Name = "pauseBeforeExecutionToolStripMenuItem";
-            this.pauseBeforeExecutionToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
-            this.pauseBeforeExecutionToolStripMenuItem.Text = "Pause Before Execution";
-            this.pauseBeforeExecutionToolStripMenuItem.Click += new System.EventHandler(this.pauseBeforeExecutionToolStripMenuItem_Click);
-            // 
-            // lblNote
-            // 
-            this.lblNote.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.ForeColor = System.Drawing.Color.SteelBlue;
-            this.lblNote.Location = new System.Drawing.Point(105, 6);
-            this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(358, 96);
-            this.lblNote.TabIndex = 1;
-            this.lblNote.Text = "Start building automation by selecting \"Add\" at the top or quick-adding a command" +
-    " from the list to the left.";
-            // 
             // frmScriptBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -526,16 +544,17 @@
             this.Shown += new System.EventHandler(this.frmScriptBuilder_Shown);
             this.SizeChanged += new System.EventHandler(this.frmScriptBuilder_SizeChanged);
             this.tlpControls.ResumeLayout(false);
+            this.pnlHeader.ResumeLayout(false);
+            this.pnlHeader.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.pnlControlContainer.ResumeLayout(false);
+            this.lstContextStrip.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.pnlCommandHelper.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbNote)).EndInit();
-            this.pnlHeader.ResumeLayout(false);
-            this.pnlHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.pnlControlContainer.ResumeLayout(false);
             this.uiGroupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnRunScript)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnScheduleManagement)).EndInit();
@@ -548,7 +567,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnSave)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnNew)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiBtnOpen)).EndInit();
-            this.lstContextStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -585,6 +603,8 @@
         private System.Windows.Forms.Panel pnlCommandHelper;
         private System.Windows.Forms.PictureBox pbNote;
         private System.Windows.Forms.Label lblNote;
+        private System.Windows.Forms.ToolStripMenuItem copySelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteSelectedToolStripMenuItem;
     }
 }
 
