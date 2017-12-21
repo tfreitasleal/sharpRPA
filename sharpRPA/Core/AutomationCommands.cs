@@ -1831,7 +1831,7 @@ namespace sharpRPA.Core.AutomationCommands
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
     [Attributes.ClassAttributes.Description("This command takes a screenshot and saves it to a location")]
-    [Attributes.ClassAttributes.ImplementationDescription("NOT IMPLEMENTED")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements User32 CaptureWindow to achieve automation")]
     public class ScreenshotCommand : ScriptCommand
     {
         [XmlAttribute]
@@ -1867,7 +1867,7 @@ namespace sharpRPA.Core.AutomationCommands
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to send email using SMTP.")]
-    [Attributes.ClassAttributes.ImplementationDescription("This command is for visual purposes only")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements the System.Net Namespace to achieve automation")]
     public class SMTPSendEmailCommand : ScriptCommand
     {
         [XmlAttribute]
