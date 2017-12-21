@@ -858,33 +858,33 @@ System.EventArgs e)
         private void ShowVariableSelector(object sender, EventArgs e)
         {
 
+            //create variable selector form
             UI.Forms.Supplemental.frmVariableSelector newVariableSelector = new Supplemental.frmVariableSelector();
 
-            if (scriptVariables.Count == 0)
-            {
-                MessageBox.Show("There are currently no variables defined!");
-                return;
-            }
+            //create class instance for variable command which generates system variables
+            Core.AutomationCommands.VariableCommand newVariableCommand = new Core.AutomationCommands.VariableCommand();
 
-            foreach (var scriptVariable in scriptVariables)
-            {
-                if (scriptVariable.variableName == null)
-                    continue;
+            //get copy of user variables and append system variables, then load to combobox
+            var variableList = scriptVariables.Select(f => f.variableName).ToList();
+            variableList.AddRange(newVariableCommand.GenerateSystemVariables().Select(f => f.variableName));
+            newVariableSelector.lstVariables.Items.AddRange(variableList.ToArray());
 
-               newVariableSelector.lstVariables.Items.Add(scriptVariable.variableName);
-            }
-
+            //if user pressed "OK"
             if (newVariableSelector.ShowDialog() == DialogResult.OK)
             {
-
+                //ensure that a variable was actually selected
                 if (newVariableSelector.lstVariables.SelectedItem == null)
                 {
+                    //return out as nothing was selected
                     MessageBox.Show("There were no variables selected!");
                     return;
                 }
 
+            //grab the referenced input assigned to the 'insert variable' button instance
              CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
+            //currently variable insertion is only available for simply textboxes
              TextBox targetTextbox = (TextBox)inputBox.Tag;
+            //concat variable name with brackets [vVariable] as engine searches for the same
              targetTextbox.Text = targetTextbox.Text + string.Concat("[", newVariableSelector.lstVariables.SelectedItem.ToString(), "]");
 
             }

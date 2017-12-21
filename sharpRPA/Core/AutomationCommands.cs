@@ -1692,7 +1692,7 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override string GetDisplayValue()
         {
-            return base.GetDisplayValue() + " [Apply '" + v_Input + "' to Variable: " + v_userVariableName + "]";
+            return base.GetDisplayValue() + " [Apply '" + v_Input + "' to Variable '" + v_userVariableName + "']";
         }
 
         public string VariablizeString(object sender, string replacementString)
