@@ -125,7 +125,7 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "IEBrowserCreateCommand";
             this.SelectionName = "IE Browser - Create Browser";
             this.v_InstanceName = "default";
-            this.CommandEnabled = false;
+            this.CommandEnabled = true;
         }
 
 
@@ -165,7 +165,7 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "IEBrowserFindBrowserCommand";
             this.SelectionName = "IE Browser - Find Browser";
             this.v_InstanceName = "default";
-            this.CommandEnabled = false;
+            this.CommandEnabled = true;
         }
 
 
@@ -238,7 +238,7 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "WebBrowserNavigateCommand";
             this.SelectionName = "IE Browser - Navigate";
             this.v_InstanceName = "default";
-            this.CommandEnabled = false;
+            this.CommandEnabled = true;
         }
 
 
@@ -299,7 +299,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.CommandName = "IEBrowserCloseCommand";
             this.SelectionName = "IE Browser - Close Browser";
-            this.CommandEnabled = false;
+            this.CommandEnabled = true;
             this.v_InstanceName = "default";
 
         }
@@ -353,7 +353,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.CommandName = "IEBrowserElementCommand";
             this.SelectionName = "IE Browser - Element Action";
-            this.CommandEnabled = false;
+            this.CommandEnabled = true;
             this.v_InstanceName = "default";
 
             this.v_WebSearchTable = new System.Data.DataTable();
