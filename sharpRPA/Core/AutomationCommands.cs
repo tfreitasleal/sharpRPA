@@ -58,6 +58,9 @@ namespace sharpRPA.Core.AutomationCommands
     [XmlInclude(typeof(ErrorHandlingCommand))]
     [XmlInclude(typeof(StringSubstringCommand))]
     [XmlInclude(typeof(StringSplitCommand))]
+    [XmlInclude(typeof(BeginIfCommand))]
+    [XmlInclude(typeof(EndIfCommand))]
+    [XmlInclude(typeof(ElseCommand))]
     [Serializable]
     public abstract class ScriptCommand
     {
@@ -2716,6 +2719,212 @@ namespace sharpRPA.Core.AutomationCommands
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Split '" + v_userVariableName + "' by '" + v_splitCharacter + "' and apply to '" + v_applyToVariableName + "']";
+        }
+    }
+    #endregion
+
+    #region If Commands
+    [Serializable]
+    [Attributes.ClassAttributes.Group("If Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to evaluate a logical statement to determine if the statement is true.  Any 'BeginIf' command must have a following 'EndIf' command.")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command evaluates supplied arguments and if evaluated to true runs sub elements")]
+    public class BeginIfCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please select type of If Command")]
+        [Attributes.PropertyAttributes.PropertyUISelectionOption("Value")]
+        public string v_IfActionType { get; set; }
+
+        [XmlElement]
+        [Attributes.PropertyAttributes.PropertyDescription("Additional Parameters")]
+        public DataTable v_IfActionParameterTable { get; set; }
+
+        public BeginIfCommand()
+        {
+            this.CommandName = "BeginIfCommand";
+            this.SelectionName = "If - Begin If";
+            this.CommandEnabled = true;
+
+            //define parameter table
+            this.v_IfActionParameterTable = new System.Data.DataTable();
+            this.v_IfActionParameterTable.TableName = DateTime.Now.ToString("IfActionParamTable" + DateTime.Now.ToString("MMddyy.hhmmss"));
+            this.v_IfActionParameterTable.Columns.Add("Parameter Name");
+            this.v_IfActionParameterTable.Columns.Add("Parameter Value");
+
+        }
+
+
+        public override void RunCommand(object sender, Core.Script.ScriptAction parentCommand, System.ComponentModel.BackgroundWorker bgw)
+        {
+            var engineForm = (UI.Forms.frmScriptEngine)sender;
+
+            if (v_IfActionType == "Value")
+            {
+                string value1 = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                  where rw.Field<string>("Parameter Name") == "Value1"
+                                  select rw.Field<string>("Parameter Value")).FirstOrDefault());
+                string operand = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                   where rw.Field<string>("Parameter Name") == "Operand"
+                                   select rw.Field<string>("Parameter Value")).FirstOrDefault());
+                string value2 = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                  where rw.Field<string>("Parameter Name") == "Value2"
+                                  select rw.Field<string>("Parameter Value")).FirstOrDefault());
+
+                //variablize if needed
+                VariableCommand variableCommand = new VariableCommand();
+                value1 = variableCommand.VariablizeString(sender, value1);
+                value2 = variableCommand.VariablizeString(sender, value2);
+
+                bool ifResult = false;
+
+
+
+                decimal cdecValue1, cdecValue2;
+
+                switch (operand)
+                {
+                    case "is equal to":
+                        ifResult = (value1 == value2);
+                        break;
+                    case "is not equal to":
+                        ifResult = (value1 != value2);
+                        break;
+                     case "is greater than":
+                        cdecValue1 = Convert.ToDecimal(value1);
+                        cdecValue2 = Convert.ToDecimal(value2);
+                        ifResult = (cdecValue1 > cdecValue2);                                   
+                        break;
+                    case "is greater than or equal to":
+                        cdecValue1 = Convert.ToDecimal(value1);
+                        cdecValue2 = Convert.ToDecimal(value2);
+                        ifResult = (cdecValue1 >= cdecValue2);
+                        break;
+                    case "is less than":
+                        cdecValue1 = Convert.ToDecimal(value1);
+                        cdecValue2 = Convert.ToDecimal(value2);
+                        ifResult = (cdecValue1 < cdecValue2);
+                        break;
+                    case "is less than or equal to":
+                        cdecValue1 = Convert.ToDecimal(value1);
+                        cdecValue2 = Convert.ToDecimal(value2);
+                        ifResult = (cdecValue1 <= cdecValue2);
+                        break;
+
+                }
+
+
+
+
+                int startIndex, endIndex, elseIndex;
+                if (parentCommand.AdditionalScriptCommands.Any(item => item.ScriptCommand is Core.AutomationCommands.ElseCommand))
+                {
+                    elseIndex = parentCommand.AdditionalScriptCommands.FindIndex(a => a.ScriptCommand is Core.AutomationCommands.ElseCommand);
+
+                    if (ifResult)
+                    {
+                        startIndex = 0;
+                        endIndex = elseIndex;
+                    }
+                    else
+                    {
+                        startIndex = elseIndex + 1;
+                        endIndex = parentCommand.AdditionalScriptCommands.Count;
+                    }          
+                }              
+                else if (ifResult)
+                {
+                    startIndex = 0;
+                    endIndex = parentCommand.AdditionalScriptCommands.Count;
+                }
+                else
+                {
+                    return;
+                }
+
+
+                for (int i = startIndex; i < endIndex; i++)
+                {
+                    if (bgw.CancellationPending)
+                        return;
+                    engineForm.ExecuteCommand(parentCommand.AdditionalScriptCommands[i], bgw);
+                }
+
+            }
+
+
+
+
+        }
+
+   
+
+
+        public override string GetDisplayValue()
+        {
+            switch (v_IfActionType)
+            {
+                case "Value":
+
+                    string value1 = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                     where rw.Field<string>("Parameter Name") == "Value1"
+                                     select rw.Field<string>("Parameter Value")).FirstOrDefault());
+                    string operand = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                      where rw.Field<string>("Parameter Name") == "Operand"
+                                      select rw.Field<string>("Parameter Value")).FirstOrDefault());
+                    string value2 = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                       where rw.Field<string>("Parameter Name") == "Value2"
+                                       select rw.Field<string>("Parameter Value")).FirstOrDefault());
+
+                    return "If (" + value1 + " " + operand + " " + value2 + ")";
+
+                default:
+                    break;
+            }
+
+            return "";
+        }
+
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("If Commands")]
+    [Attributes.ClassAttributes.Description("This command signifies the exit point of If actions.  Required for all Begin Ifs.")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command is used by the serializer to signify the end point of an if.")]
+    public class EndIfCommand : ScriptCommand
+    {
+
+        public EndIfCommand()
+        {
+            this.DefaultPause = 0;
+            this.CommandName = "EndIfCommand";
+            this.SelectionName = "If - End If";
+            this.CommandEnabled = true;
+        }
+
+
+        public override string GetDisplayValue()
+        {
+            return "End If";
+        }
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("If Commands")]
+    [Attributes.ClassAttributes.Description("TBD")]
+    [Attributes.ClassAttributes.ImplementationDescription("TBD")]
+    public class ElseCommand : ScriptCommand
+    {
+
+        public ElseCommand()
+        {
+            this.DefaultPause = 0;
+            this.CommandName = "ElseCommand";
+            this.SelectionName = "If - Else";
+            this.CommandEnabled = true;
+        }
+
+
+        public override string GetDisplayValue()
+        {
+            return "Else";
         }
     }
     #endregion

@@ -611,6 +611,10 @@ namespace sharpRPA.UI.Forms
             {
                 lstScriptActions.Items.Add(CreateScriptCommandListViewItem(new Core.AutomationCommands.EndLoopCommand()));
             }
+            else if (selectedCommand is Core.AutomationCommands.BeginIfCommand)
+            {
+                lstScriptActions.Items.Add(CreateScriptCommandListViewItem(new Core.AutomationCommands.EndIfCommand()));
+            }
 
             CreateUndoSnapshot();
 
@@ -633,21 +637,27 @@ namespace sharpRPA.UI.Forms
             foreach (ListViewItem rowItem in lstScriptActions.Items)
             {
 
-                if (rowItem.Tag is Core.AutomationCommands.BeginLoopCommand)
+                if ((rowItem.Tag is Core.AutomationCommands.BeginLoopCommand) || (rowItem.Tag is Core.AutomationCommands.BeginIfCommand))
                 {
                     indent += 2;
                     rowItem.IndentCount = indent;
                     indent += 2;
                 }
-                else if (rowItem.Tag is Core.AutomationCommands.EndLoopCommand)
+                else if ((rowItem.Tag is Core.AutomationCommands.EndLoopCommand) || (rowItem.Tag is Core.AutomationCommands.EndIfCommand))
                 {
                     indent -= 2;
                     if (indent < 0) indent = 0;
                     rowItem.IndentCount = indent;
                     indent -= 2;
                     if (indent < 0) indent = 0;
-
-
+                }
+                else if (rowItem.Tag is Core.AutomationCommands.ElseCommand)
+                {
+                    indent -= 2;
+                    if (indent < 0) indent = 0;
+                    rowItem.IndentCount = indent;
+                    indent += 2;
+                    if (indent < 0) indent = 0;
                 }
                 else
                 {
@@ -937,34 +947,58 @@ namespace sharpRPA.UI.Forms
                 return;
             }
 
-            int loopValidationCount = 0;
+            int beginLoopValidationCount = 0;
+            int beginIfValidationCount = 0;
             foreach (ListViewItem item in lstScriptActions.Items)
             {
                 if (item.Tag is Core.AutomationCommands.BeginLoopCommand)
                 {
-                    loopValidationCount++;
+                    beginLoopValidationCount++;
                 }
                 else if (item.Tag is Core.AutomationCommands.EndLoopCommand)
                 {
-                    loopValidationCount--;
+                    beginLoopValidationCount--;
+                }
+                else if (item.Tag is Core.AutomationCommands.BeginIfCommand)
+                {
+                    beginIfValidationCount++;
+                }
+                else if (item.Tag is Core.AutomationCommands.EndIfCommand)
+                {
+                    beginIfValidationCount--;
                 }
 
+
                 //end loop was found first
-                if (loopValidationCount < 0)
+                if (beginLoopValidationCount < 0)
                 {
                     Notify("Please verify the ordering of your loops.");
                     return;
                 }
 
+                //end if was found first
+                if (beginIfValidationCount < 0)
+                {
+                    Notify("Please verify the ordering of your ifs.");
+                    return;
+                }
+
+
+
             }
 
             //extras were found
-            if (loopValidationCount != 0)
+            if (beginLoopValidationCount != 0)
             {
                 Notify("Please verify the ordering of your loops.");
                 return;
             }
-
+            //extras were found
+            if (beginIfValidationCount != 0)
+            {
+                Notify("Please verify the ordering of your ifs.");
+                return;
+            }
 
 
             //define default output path

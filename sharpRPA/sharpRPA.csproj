@@ -321,6 +321,8 @@
     <None Include="Resources\worldwide.png" />
     <None Include="Resources\error.png" />
     <None Include="Resources\string.png" />
+    <None Include="Resources\flag-2.png" />
+    <None Include="Resources\flag-3.png" />
     <Content Include="rpalogo_RHA_icon.ico" />
     <None Include="Resources\infinity.png" />
     <None Include="FodyWeavers.xml" />

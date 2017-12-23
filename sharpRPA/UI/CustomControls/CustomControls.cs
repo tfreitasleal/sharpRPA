@@ -331,8 +331,11 @@ namespace sharpRPA.UI
         uiImages.Add("ErrorHandlingCommand", sharpRPA.Properties.Resources.error);
         uiImages.Add("StringSubstringCommand", sharpRPA.Properties.Resources._string);
         uiImages.Add("StringSplitCommand", sharpRPA.Properties.Resources._string);
+        uiImages.Add("BeginIfCommand", sharpRPA.Properties.Resources.flag2);
+        uiImages.Add("EndIfCommand", sharpRPA.Properties.Resources.flag2);
+        uiImages.Add("ElseCommand", sharpRPA.Properties.Resources.flag3);
 
-        return uiImages;
+            return uiImages;
     }
     public static ImageList UIImageList()
     {

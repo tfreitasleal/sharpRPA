@@ -53,7 +53,7 @@ namespace sharpRPA.Core.Script
                 command.LineNumber = lineNumber;
 
 
-                if (command is Core.AutomationCommands.BeginLoopCommand)
+                if ((command is Core.AutomationCommands.BeginLoopCommand) || (command is Core.AutomationCommands.BeginIfCommand))
                 {
                     if (subCommands.Count == 0)  //if this is the first loop
                     {
@@ -72,7 +72,7 @@ namespace sharpRPA.Core.Script
                         subCommands.Add(nextNodeParent);
                     }
                 }
-                else if (command is Core.AutomationCommands.EndLoopCommand)  //if current loop scenario is ending
+                else if ((command is Core.AutomationCommands.EndLoopCommand) || (command is Core.AutomationCommands.EndIfCommand))  //if current loop scenario is ending
                 {
                     //get reference to previous node
                     var parentCommand = subCommands[subCommands.Count - 1];

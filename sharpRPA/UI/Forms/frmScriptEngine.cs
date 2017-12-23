@@ -125,7 +125,7 @@ namespace sharpRPA.UI.Forms
             {
 
             //determine type of command
-            if (parentCommand is Core.AutomationCommands.BeginLoopCommand)
+            if ((parentCommand is Core.AutomationCommands.BeginLoopCommand) || (parentCommand is Core.AutomationCommands.BeginIfCommand))
             {
                 //run the command and pass bgw/command as this command will recursively call this method for sub commands
               parentCommand.RunCommand(this, command, bgw);

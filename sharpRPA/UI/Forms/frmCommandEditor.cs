@@ -145,25 +145,7 @@ namespace sharpRPA.UI.Forms
             //find all input variables -- all input variables start with "v_" in the associated class
             var inputVariableFields = currentCommand.GetType().GetProperties().Where(f => f.Name.StartsWith("v_")).ToList();
 
-            //show cursor capture button on form if the command matches
-            //if (currentCommand.CommandName == "SendMouseMoveCommand")
-            //{
-            //    //show button
-            //    uiBtnAssistLauncher.DisplayText = "capture cursor position";
-            //    uiBtnAssistLauncher.Show();
-            //}
-            //else if (currentCommand.CommandName == "WebBrowserElementCommand")
-            //{
-            //    //hide button
-            //    uiBtnAssistLauncher.DisplayText = "capture web element";
-            //    uiBtnAssistLauncher.Show();
-            //}
-            //else
-            //{
-            //    //hide button
-            //    uiBtnAssistLauncher.Hide();
-            //}
-
+            //set form height
             int formHeight = 0;
 
             //loop through available variables
@@ -246,6 +228,27 @@ namespace sharpRPA.UI.Forms
                 //add to flow layout
                 flw_InputVariables.Controls.Add(inputControl);
 
+                //handle edit mode to add combobox data
+                if ((creationMode == CreationMode.Edit) && (currentCommand is Core.AutomationCommands.BeginIfCommand) && (inputControl is DataGridView))
+                {
+                    Core.AutomationCommands.BeginIfCommand ifCmd = (Core.AutomationCommands.BeginIfCommand)currentCommand;
+                    if (ifCmd.v_IfActionType == "Value")
+                    {
+                        DataGridViewComboBoxCell comparisonComboBox = new DataGridViewComboBoxCell();
+                        comparisonComboBox.Items.Add("is equal to");
+                        comparisonComboBox.Items.Add("is greater than");
+                        comparisonComboBox.Items.Add("is greater than or equal to");
+                        comparisonComboBox.Items.Add("is less than");
+                        comparisonComboBox.Items.Add("is less than or equal to");
+                        comparisonComboBox.Items.Add("is not equal to");
+
+                        //assign cell as a combobox
+                        DataGridView inputCtrl = (DataGridView)inputControl;
+                        inputCtrl.Rows[1].Cells[1] = comparisonComboBox;
+                    }
+
+                }
+              
 
 
             }
@@ -292,12 +295,18 @@ namespace sharpRPA.UI.Forms
                     InputControl.Items.Add(option.uiOption);
                 }
 
+                ComboBox control = InputControl;
                 //additional helper for specific fields
                 if (inputField.Name == "v_SeleniumElementAction")
                 {
-                    ComboBox control = InputControl;
                     control.SelectedIndexChanged += seleniumAction_SelectionChangeCommitted;
                 }
+                else if(inputField.Name == "v_IfActionType")
+                {
+                    control.SelectedIndexChanged += ifAction_SelectionChangeCommitted;                  
+                }
+
+
             }
 
             else { 
@@ -433,15 +442,15 @@ namespace sharpRPA.UI.Forms
 
 
             }
-            else if (inputField.Name == "v_WebActionParameterTable")
+            else if ((inputField.Name == "v_WebActionParameterTable") || (inputField.Name == "v_IfActionParameterTable"))
             {
      
 
                 InputControl = new DataGridView();
 
                 InputControl.Name = inputField.Name;
-                InputControl.Width = 400;
-                InputControl.Height = 70;
+                InputControl.Width = 500;
+                InputControl.Height = 140;
 
 
                 DataGridViewTextBoxColumn propertyName = new DataGridViewTextBoxColumn();
@@ -471,6 +480,13 @@ namespace sharpRPA.UI.Forms
                     var cmd = (Core.AutomationCommands.SeleniumBrowserElementActionCommand)currentCommand;
                     InputControl.DataSource = cmd.v_WebActionParameterTable;
                     InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+                }
+                else if (currentCommand is Core.AutomationCommands.BeginIfCommand)
+                {
+                    var cmd = (Core.AutomationCommands.BeginIfCommand)currentCommand;
+                    InputControl.DataSource = cmd.v_IfActionParameterTable;
+                    InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+
                 }
 
             
@@ -541,7 +557,7 @@ namespace sharpRPA.UI.Forms
                 InputControl.DataSource = cmd.v_WebSearchTable;
                 InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
             }
-           
+          
             else
             {
                 //variable is simply a standard variable
@@ -558,7 +574,7 @@ namespace sharpRPA.UI.Forms
             }
 
 
-            if (InputControl is DataGridView == false) //dgv already has binding set
+            if (!(InputControl is DataGridView)) //dgv already has binding set
             {
                 InputControl.Font = new Font("Segoe UI", 12, FontStyle.Regular);
                 InputControl.DataBindings.Add("Text", currentCommand, inputField.Name, false, DataSourceUpdateMode.OnPropertyChanged);
@@ -603,26 +619,6 @@ namespace sharpRPA.UI.Forms
                     actionParameters.Rows.Add("Attribute Name");
                     actionParameters.Rows.Add("Value To Set");
 
-                    //DataGridViewComboBoxCell setAttributeComboBox = new DataGridViewComboBoxCell();
-                    //setAttributeComboBox.Items.Add("innerText");
-                    //webActionParameterBox.Rows[0].Cells[1] = setAttributeComboBox;
-
-                    //var elementProperties = typeof(mshtml.IHTMLElement2).GetProperties();
-
-                    //foreach (System.Reflection.PropertyInfo prp in elementProperties)
-                    //{
-                    //    if ((prp.PropertyType == typeof(string)) && (!prp.Name.Contains("IHTML")) || (prp.PropertyType == typeof(int)) && (!prp.Name.Contains("IHTML")))
-                    //    {
-                    //        string propName = prp.Name;
-                    //        setAttributeComboBox.Items.Add(propName);
-                    //    }
-
-                    //}
-
-
-                    //populate more
-
-
                     break;
                 case "Get Attribute":
                     additionalParameterLabel.Visible = true;
@@ -647,6 +643,51 @@ namespace sharpRPA.UI.Forms
             //AutomationCommands.WebBrowserElementCommand cmd = (AutomationCommands.WebBrowserElementCommand)selectedCommand;
             //webActionParameterBox.DataSource = actionParameters;
             //cmd.v_WebSearchTable = actionParameters;
+        }
+        private void ifAction_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+
+            ComboBox ifAction = (ComboBox)sender;
+            DataGridView ifActionParameterBox = (DataGridView)flw_InputVariables.Controls["v_IfActionParameterTable"];
+            Label additionalParameterLabel = (Label)flw_InputVariables.Controls["lbl_v_IfActionParameterTable"];
+
+            if ((ifActionParameterBox == null) || (ifAction == null) || (ifActionParameterBox.DataSource == null))
+                return;
+
+            Core.AutomationCommands.BeginIfCommand cmd = (Core.AutomationCommands.BeginIfCommand)selectedCommand;
+            DataTable actionParameters = cmd.v_IfActionParameterTable;
+            actionParameters.Rows.Clear();
+
+            switch (ifAction.Text)
+            {
+                case "Value":
+                    additionalParameterLabel.Visible = true;
+                    ifActionParameterBox.Visible = true;
+                    actionParameters.Rows.Add("Value1", "");
+                    actionParameters.Rows.Add("Operand", "");
+                    actionParameters.Rows.Add("Value2", "");
+
+                    //combobox cell for Variable Name
+                    DataGridViewComboBoxCell comparisonComboBox = new DataGridViewComboBoxCell();
+                    comparisonComboBox.Items.Add("is equal to");
+                    comparisonComboBox.Items.Add("is greater than");
+                    comparisonComboBox.Items.Add("is greater than or equal to");
+                    comparisonComboBox.Items.Add("is less than");
+                    comparisonComboBox.Items.Add("is less than or equal to");
+                    comparisonComboBox.Items.Add("is not equal to");
+
+                    //assign cell as a combobox
+                    ifActionParameterBox.Rows[1].Cells[1] = comparisonComboBox;
+
+
+
+                    break;
+           
+                default:
+                    break;
+            }
+
+
         }
         private void seleniumAction_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -703,7 +744,6 @@ namespace sharpRPA.UI.Forms
 
 
         }
-
         private void cboSelectedCommand_SelectionChangeCommitted(object sender, EventArgs e)
         {
             //find underlying command class and generate the required items on the UI flow layout for configuration
@@ -711,14 +751,11 @@ namespace sharpRPA.UI.Forms
             selectedCommand = commandList.Where(itm => itm.DisplayValue == selectedCommandItem).FirstOrDefault().CommandInstance;
             GenerateUIInputElements(selectedCommand);
         }
-
         private void cboSelectedCommand_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-
-        private void AutomationWindowName_SelectedIndexChanged(object sender,
-        System.EventArgs e)
+        private void AutomationWindowName_SelectedIndexChanged(object sender,System.EventArgs e)
         {
 
             var senderBox = (ComboBox)sender;
@@ -745,9 +782,7 @@ namespace sharpRPA.UI.Forms
             }
 
         }
-
-        private void DisplayHandleSelected_SelectedIndexChanged(object sender,
-System.EventArgs e)
+        private void DisplayHandleSelected_SelectedIndexChanged(object sender, System.EventArgs e)
         {
 
             var senderBox = (ComboBox)sender;
@@ -771,6 +806,10 @@ System.EventArgs e)
 
         }
 
+        private void SetComboBox()
+        {
+
+        }
         #endregion
 
         #region Save/Close Buttons 
