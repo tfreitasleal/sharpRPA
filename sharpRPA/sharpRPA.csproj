@@ -312,7 +312,7 @@
     <None Include="Resources\documentIcon48.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Samples\If Conditional Sample.xml" />
+    <Content Include="Script Sample Files\If Conditional Sample.xml" />
     <None Include="Resources\excel16.png" />
     <None Include="Resources\excelicon.png" />
     <None Include="Resources\if_page_excel_16355.png" />
