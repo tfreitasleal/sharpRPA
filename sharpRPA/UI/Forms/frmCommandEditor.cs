@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using sharpRPA.Core.AutomationCommands.Attributes;
 
 namespace sharpRPA.UI.Forms
 {
@@ -182,23 +183,53 @@ namespace sharpRPA.UI.Forms
                 //add label and input control to flow layout
                 flw_InputVariables.Controls.Add(inputLabel);
 
-                //determine if variables are allowed and add selectable element
-                var propertyAllowsVars = inputField.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.PropertyAttributes.PropertyAllowsVariables), true);
+                //find if UI helpers are applied
+                var propertyAllowsVars = inputField.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper), true);
 
                 if (propertyAllowsVars.Length > 0)
                 {
-                    var attribute = (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyAllowsVariables)propertyAllowsVars[0];
-                    if (attribute.propertyAllowsVariables)
+                    foreach (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper attrib in propertyAllowsVars)
                     {
-                        //show variable selector
                         sharpRPA.UI.CustomControls.CommandItemControl variableInsertion = new sharpRPA.UI.CustomControls.CommandItemControl();
-                        variableInsertion.CommandImage = UI.Images.GetUIImage("VariableCommand");
-                        variableInsertion.CommandDisplay = "Insert Variable";
+                        variableInsertion.Padding = new System.Windows.Forms.Padding(10,0,0,0);
                         variableInsertion.ForeColor = Color.Black;
                         variableInsertion.Tag = inputControl;
-                        variableInsertion.Click += ShowVariableSelector;
-                        flw_InputVariables.Controls.Add(variableInsertion);
+
+                        switch (attrib.additionalHelper)
+                        {
+                            case Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper:
+                                //show variable selector                             
+                                variableInsertion.CommandImage = UI.Images.GetUIImage("VariableCommand");
+                                variableInsertion.CommandDisplay = "Insert Variable";
+                                variableInsertion.Click += ShowVariableSelector;
+                                flw_InputVariables.Controls.Add(variableInsertion);
+                                break;
+                            case Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper:
+                                //show file selector    
+                                variableInsertion.CommandImage = UI.Images.GetUIImage("ClipboardGetTextCommand");
+                                variableInsertion.CommandDisplay = "Select a File";
+                                variableInsertion.ForeColor = Color.Black;
+                                variableInsertion.Tag = inputControl;
+                                variableInsertion.Click += ShowFileSelector;
+                                flw_InputVariables.Controls.Add(variableInsertion);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+
+                    //var attribute = (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper)propertyAllowsVars[0];
+                    //if (attribute.propertyAllowsVariables)
+                    //{
+                    //    //show variable selector
+                    //    sharpRPA.UI.CustomControls.CommandItemControl variableInsertion = new sharpRPA.UI.CustomControls.CommandItemControl();
+                    //    variableInsertion.CommandImage = UI.Images.GetUIImage("VariableCommand");
+                    //    variableInsertion.CommandDisplay = "Insert Variable";
+                    //    variableInsertion.ForeColor = Color.Black;
+                    //    variableInsertion.Tag = inputControl;
+                    //    variableInsertion.Click += ShowVariableSelector;
+                    //    flw_InputVariables.Controls.Add(variableInsertion);
+                    //}
                 }
 
 
@@ -900,12 +931,9 @@ namespace sharpRPA.UI.Forms
             //create variable selector form
             UI.Forms.Supplemental.frmVariableSelector newVariableSelector = new Supplemental.frmVariableSelector();
 
-            //create class instance for variable command which generates system variables
-            Core.AutomationCommands.VariableCommand newVariableCommand = new Core.AutomationCommands.VariableCommand();
-
             //get copy of user variables and append system variables, then load to combobox
             var variableList = scriptVariables.Select(f => f.variableName).ToList();
-            variableList.AddRange(newVariableCommand.GenerateSystemVariables().Select(f => f.variableName));
+            variableList.AddRange(Core.Common.GenerateSystemVariables().Select(f => f.variableName));
             newVariableSelector.lstVariables.Items.AddRange(variableList.ToArray());
 
             //if user pressed "OK"
@@ -931,13 +959,28 @@ namespace sharpRPA.UI.Forms
          
 
         }
-    
+        private void ShowFileSelector(object sender, EventArgs e)
+        {
 
-#endregion
+            OpenFileDialog ofd = new OpenFileDialog();
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
+                //currently variable insertion is only available for simply textboxes
+                TextBox targetTextbox = (TextBox)inputBox.Tag;
+                //concat variable name with brackets [vVariable] as engine searches for the same
+                targetTextbox.Text = ofd.FileName;
+            }
+
+          
+        }
+
+        #endregion
 
 
 
-     
+
     }
     /// <summary>
     /// Helper class for tracking command names and instances of the associated class

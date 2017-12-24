@@ -48,13 +48,18 @@ namespace sharpRPA.Core.AutomationCommands.Attributes.PropertyAttributes
             this.propertyDescription = description;
         }
     }
-    [System.AttributeUsage(System.AttributeTargets.Property)]
-    public sealed class PropertyAllowsVariables : System.Attribute
+    [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    public sealed class PropertyUIHelper : System.Attribute
     {
-        public bool propertyAllowsVariables;
-        public PropertyAllowsVariables(bool allowed)
+        public UIAdditionalHelperType additionalHelper;
+        public PropertyUIHelper(UIAdditionalHelperType helperType)
         {
-            this.propertyAllowsVariables = allowed;
+            this.additionalHelper = helperType;
+        }
+        public enum UIAdditionalHelperType
+        {
+          ShowVariableHelper,
+          ShowFileSelectionHelper
         }
     }
     [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]

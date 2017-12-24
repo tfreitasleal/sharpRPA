@@ -86,7 +86,7 @@ namespace sharpRPA.UI.Forms
             else
             {
                 Core.AutomationCommands.VariableCommand newVariableCommand = new Core.AutomationCommands.VariableCommand();
-                dgvVariables.DataSource = newVariableCommand.GenerateSystemVariables();
+                dgvVariables.DataSource = Core.Common.GenerateSystemVariables();
                 dgvVariables.ReadOnly = true;
             }
 

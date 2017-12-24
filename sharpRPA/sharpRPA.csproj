@@ -79,6 +79,9 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="OneNoteOCRDll, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OneNoteOCR.1.0.0.0\lib\OneNoteOCRDll.dll</HintPath>
+    </Reference>
     <Reference Include="SuperSocket.ClientEngine, Version=0.8.0.13, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.8.0.13\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
     </Reference>
@@ -312,6 +315,7 @@
     <None Include="Resources\documentIcon48.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\photo-camera.png" />
     <Content Include="Script Sample Files\Calculator Automation Sample.xml" />
     <Content Include="Script Sample Files\Command Prompt Automation Sample.xml" />
     <Content Include="Script Sample Files\If Conditional Sample.xml" />

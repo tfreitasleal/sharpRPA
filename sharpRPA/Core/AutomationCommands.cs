@@ -10,6 +10,7 @@ using System.Data;
 using MSHTML;
 using System.Windows.Automation;
 using System.Net.Mail;
+using sharpRPA.Core;
 
 namespace sharpRPA.Core.AutomationCommands
 {
@@ -61,6 +62,7 @@ namespace sharpRPA.Core.AutomationCommands
     [XmlInclude(typeof(BeginIfCommand))]
     [XmlInclude(typeof(EndIfCommand))]
     [XmlInclude(typeof(ElseCommand))]
+    [XmlInclude(typeof(OCRCommand))]
     [Serializable]
     public abstract class ScriptCommand
     {
@@ -233,7 +235,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the URL to navigate to")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_URL { get; set; }
 
         public IEBrowserNavigateCommand()
@@ -253,11 +255,7 @@ namespace sharpRPA.Core.AutomationCommands
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
             {
                 var browserInstance = (SHDocVw.InternetExplorer)browserObject;
-
-                VariableCommand variableCommand = new VariableCommand();
-                var variablizedURL = variableCommand.VariablizeString(sender, v_URL);
-
-                browserInstance.Navigate(variablizedURL);
+                browserInstance.Navigate(v_URL.ConvertToUserVariable(sender));
                 WaitForReadyState(browserInstance);
 
             }
@@ -448,8 +446,9 @@ namespace sharpRPA.Core.AutomationCommands
                                              where rw.Field<string>("Parameter Name") == "Value To Set"
                                              select rw.Field<string>("Parameter Value")).FirstOrDefault();
 
-                        Core.AutomationCommands.VariableCommand newVariableCommand = new VariableCommand();
-                        valueToSet = newVariableCommand.VariablizeString(sender, valueToSet);
+       
+                        valueToSet = valueToSet.ConvertToUserVariable(sender);
+
 
                         element.setAttribute(attributeName, valueToSet);
                         break;
@@ -666,7 +665,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the URL to navigate to")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_URL { get; set; }
 
         public SeleniumBrowserNavigateURLCommand()
@@ -686,13 +685,7 @@ namespace sharpRPA.Core.AutomationCommands
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
             {
                 var seleniumInstance = (OpenQA.Selenium.Chrome.ChromeDriver)browserObject;
-
-                VariableCommand variableCommand = new VariableCommand();
-                var variablizedURL = variableCommand.VariablizeString(sender, v_URL);
-
-                seleniumInstance.Navigate().GoToUrl(variablizedURL);
-    
-
+                seleniumInstance.Navigate().GoToUrl(v_URL.ConvertToUserVariable(sender));
             }
             else
             {
@@ -1490,7 +1483,7 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the message to be displayed.")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_Message { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Close After X (Seconds) - 0 to bypass")]
@@ -1507,15 +1500,17 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
             UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
-            VariableCommand variableCommand = new VariableCommand();
-            var variablizedText = variableCommand.VariablizeString(sender, v_Message);
+       
+   
+
+            var ConvertToUserVariabledText = v_Message.ConvertToUserVariable(sender);
             var result = engineForm.Invoke(new Action(() => 
             {
-                engineForm.ShowMessage(variablizedText, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
+                engineForm.ShowMessage(ConvertToUserVariabledText, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
             }
             
             ));
-            //System.Windows.Forms.MessageBox.Show(variablizedText, "Message Box Command", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+            //System.Windows.Forms.MessageBox.Show(ConvertToUserVariabledText, "Message Box Command", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
 
         public override string GetDisplayValue()
@@ -1532,11 +1527,12 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please enter the name or path to the program (ex. notepad, calc)")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper)]
         public string v_ProgramName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please enter any arguments (if applicable)")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_ProgramArgs { get; set; }
 
         public StartProcessCommand()
@@ -1550,8 +1546,9 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
             VariableCommand newVariableCommand = new VariableCommand();
-            v_ProgramName = newVariableCommand.VariablizeString(sender, v_ProgramName);
-            v_ProgramArgs = newVariableCommand.VariablizeString(sender, v_ProgramArgs);
+            v_ProgramName = v_ProgramName.ConvertToUserVariable(sender);
+            v_ProgramArgs = v_ProgramArgs.ConvertToUserVariable(sender);
+
 
             if (v_ProgramArgs == "")
             {
@@ -1664,7 +1661,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_userVariableName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please define the input to be set to above variable")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_Input { get; set; }
         public VariableCommand()
         {
@@ -1682,7 +1679,7 @@ namespace sharpRPA.Core.AutomationCommands
 
             if (requiredVariable != null)
             {
-                requiredVariable.variableValue = VariablizeString(sender, v_Input);
+                requiredVariable.variableValue = v_Input.ConvertToUserVariable(sender);
             }
             else
             {
@@ -1698,105 +1695,10 @@ namespace sharpRPA.Core.AutomationCommands
             return base.GetDisplayValue() + " [Apply '" + v_Input + "' to Variable '" + v_userVariableName + "']";
         }
 
-        public string VariablizeString(object sender, string replacementString)
-        {
-            if (replacementString == null)
-                return string.Empty;
+       
 
-            var engineForm = (UI.Forms.frmScriptEngine)sender;
-
-            var variableList = engineForm.variableList;
-            var systemVariables = GenerateSystemVariables();
-
-            var searchList = new List<Core.Script.ScriptVariable>();
-            searchList.AddRange(variableList);
-            searchList.AddRange(systemVariables);
-
-
-            string[] potentialVariables = replacementString.Split('[', ']');
-
-            foreach (var potentialVariable in potentialVariables)
-            {
-
-                var varCheck = (from vars in searchList
-                                where vars.variableName == potentialVariable
-                                select vars).FirstOrDefault();
-
-                if (varCheck != null)
-                {
-                    var searchVariable = "[" + potentialVariable + "]";
-
-                    if (replacementString.Contains(searchVariable))
-                    {
-                        replacementString = replacementString.Replace(searchVariable, (string)varCheck.GetDisplayValue());
-                    }
-                    else if (replacementString.Contains(potentialVariable))
-                    {
-                        replacementString = replacementString.Replace(potentialVariable, (string)varCheck.GetDisplayValue());
-                    }
-
-                    //get value based on conditions
-                    //if (replacementString.Contains(searchVariable) && varCheck.displayValue == null)
-                    //{
-                    //    replacementString = replacementString.Replace(searchVariable, (string)varCheck.variableValue);
-                    //}
-                    //else if (replacementString.Contains(searchVariable) && varCheck.displayValue != null)
-                    //{
-                    //    replacementString = replacementString.Replace(searchVariable, varCheck.displayValue);
-                    //}
-                    //else if (varCheck.displayValue == null)
-                    //{
-                    //    replacementString = replacementString.Replace(potentialVariable, (string)varCheck.variableValue);
-                    //}
-                    //else if (varCheck.displayValue != null)
-                    //{
-                    //    replacementString = replacementString.Replace(potentialVariable, varCheck.displayValue);
-                    //}
-
-                }
-
-            }
-
-            //test
-            try
-            {
-                DataTable dt = new DataTable();
-                var v = dt.Compute(replacementString, "");
-                return v.ToString();
-            }
-            catch (Exception)
-            {
-                return replacementString;
-            }
-           
-
-
-           
-
-
-        }
-
-        public List<Core.Script.ScriptVariable> GenerateSystemVariables()
-        {
-            List<Core.Script.ScriptVariable> systemVariableList = new List<Core.Script.ScriptVariable>();
-
-
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Desktop", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)});
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Documents", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)});
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.AppData", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) });
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.ScriptPath", variableValue = Core.Common.GetScriptFolderPath()});
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "DateTime.Now", variableValue = DateTime.Now.ToString() });
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "DateTime.Now.FileSafe", variableValue = DateTime.Now.ToString("MM-dd-yy hh.mm.ss")});
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.MachineName", variableValue = Environment.MachineName });
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.UserName", variableValue = Environment.UserName });
-            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.DomainName", variableValue = Environment.UserDomainName });
-
-            return systemVariableList;
-
-        }
 
     }
-   
     [Serializable]
     [Attributes.ClassAttributes.Group("Clipboard Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to get text from the clipboard.")]
@@ -1833,77 +1735,41 @@ namespace sharpRPA.Core.AutomationCommands
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
-    [Attributes.ClassAttributes.Description("This command takes a screenshot and saves it to a location")]
-    [Attributes.ClassAttributes.ImplementationDescription("This command implements User32 CaptureWindow to achieve automation")]
-    public class ScreenshotCommand : ScriptCommand
-    {
-        [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Window name")]
-        public string v_ScreenshotWindowName { get; set; }
-        [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Please indicate the path to save the image")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
-        public string v_FilePath { get; set; }
-        public ScreenshotCommand()
-        {
-            this.CommandName = "ScreenshotCommand";
-            this.SelectionName = "Screenshot - Take Screenshot";
-            this.CommandEnabled = true;
-        }
-
-        public override void RunCommand(object sender)
-        {
-    
-            var image = User32Functions.CaptureWindow(v_ScreenshotWindowName);
-            VariableCommand newVariableCommand = new VariableCommand();
-            string variablizedString = newVariableCommand.VariablizeString(sender, v_FilePath);
-            image.Save(variablizedString);
-
-        }
-
-        public override string GetDisplayValue()
-        {
-            return base.GetDisplayValue() + " [Target Window: '" + v_ScreenshotWindowName + "', File Path: '" + v_FilePath + "]";
-        }
-
-    }
-    [Serializable]
-    [Attributes.ClassAttributes.Group("Misc Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to send email using SMTP.")]
     [Attributes.ClassAttributes.ImplementationDescription("This command implements the System.Net Namespace to achieve automation")]
     public class SMTPSendEmailCommand : ScriptCommand
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Host Name")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPHost { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Port")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public int v_SMTPPort { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Username")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPUserName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Password")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPPassword { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("From Email")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPFromEmail { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("To Email")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPToEmail { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Subject")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPSubject { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Body")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_SMTPBody { get; set; }
         public SMTPSendEmailCommand()
         {
@@ -1915,17 +1781,19 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
 
-            //use variable command on strings
-            VariableCommand variableCommand = new VariableCommand();
-            string varSMTPHost = variableCommand.VariablizeString(sender, v_SMTPHost);
-            string varSMTPPort = variableCommand.VariablizeString(sender, v_SMTPPort.ToString());
-            string varSMTPUserName = variableCommand.VariablizeString(sender, v_SMTPUserName);
-            string varSMTPPassword = variableCommand.VariablizeString(sender, v_SMTPPassword);
 
-            string varSMTPFromEmail = variableCommand.VariablizeString(sender, v_SMTPFromEmail);
-            string varSMTPToEmail = variableCommand.VariablizeString(sender, v_SMTPToEmail);
-            string varSMTPSubject = variableCommand.VariablizeString(sender, v_SMTPSubject);
-            string varSMTPBody = variableCommand.VariablizeString(sender, v_SMTPBody);
+
+            string varSMTPHost = v_SMTPHost.ConvertToUserVariable(sender);
+            string varSMTPPort = v_SMTPPort.ToString().ConvertToUserVariable(sender);
+            string varSMTPUserName = v_SMTPUserName.ConvertToUserVariable(sender);
+            string varSMTPPassword = v_SMTPPassword.ConvertToUserVariable(sender);
+
+            string varSMTPFromEmail = v_SMTPFromEmail.ConvertToUserVariable(sender);
+            string varSMTPToEmail = v_SMTPToEmail.ConvertToUserVariable(sender);
+            string varSMTPSubject = v_SMTPSubject.ConvertToUserVariable(sender);
+            string varSMTPBody = v_SMTPBody.ConvertToUserVariable(sender);
+
+
 
             var client = new SmtpClient(varSMTPHost, int.Parse(varSMTPPort));
             client.Credentials = new System.Net.NetworkCredential(varSMTPUserName, varSMTPPassword);
@@ -1955,7 +1823,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_WindowName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter text to send")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_TextToSend { get; set; }
 
         public SendKeysCommand()
@@ -1976,9 +1844,8 @@ namespace sharpRPA.Core.AutomationCommands
                 activateWindow.RunCommand(sender);            
             }
 
-            VariableCommand newVariableCommand = new VariableCommand();
-            string variableReplacedText = newVariableCommand.VariablizeString(sender, v_TextToSend);
-            System.Windows.Forms.SendKeys.SendWait(variableReplacedText);
+            v_TextToSend = v_TextToSend.ConvertToUserVariable(sender);
+            System.Windows.Forms.SendKeys.SendWait(v_TextToSend);
 
             System.Threading.Thread.Sleep(500);
 
@@ -2340,6 +2207,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please indicate the workbook file path")]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper)]
         public string v_FilePath { get; set; }
         public ExcelOpenWorkbookCommand()
         {
@@ -2443,11 +2311,11 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter text to set")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_TextToSet { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Cell Location (ex. A1 or B2)")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_ExcelCellAddress { get; set; }
         public ExcelSetCellCommand()
         {
@@ -2461,13 +2329,12 @@ namespace sharpRPA.Core.AutomationCommands
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out excelObject))
             {
-                VariableCommand newVariableCommand = new VariableCommand();
-                string excelRange = newVariableCommand.VariablizeString(sender, v_ExcelCellAddress);
-                string textToSet = newVariableCommand.VariablizeString(sender, v_TextToSet);
+                v_ExcelCellAddress = v_ExcelCellAddress.ConvertToUserVariable(sender);
+                v_TextToSet = v_TextToSet.ConvertToUserVariable(sender);
 
                 Microsoft.Office.Interop.Excel.Application excelInstance = (Microsoft.Office.Interop.Excel.Application)excelObject;
                 Microsoft.Office.Interop.Excel.Worksheet excelSheet = excelInstance.ActiveSheet;
-                excelSheet.Range[excelRange].Value = textToSet;
+                excelSheet.Range[v_ExcelCellAddress].Value = v_TextToSet;
             }
 
 
@@ -2488,7 +2355,7 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_InstanceName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Cell Location (ex. A1 or B2)")]
-        [Attributes.PropertyAttributes.PropertyAllowsVariables(true)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
         public string v_ExcelCellAddress { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Assign to Variable")]
@@ -2507,17 +2374,13 @@ namespace sharpRPA.Core.AutomationCommands
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out excelObject))
             {
-                VariableCommand newVariableCommand = new VariableCommand();
-                string excelRange = newVariableCommand.VariablizeString(sender, v_ExcelCellAddress);
+                v_ExcelCellAddress = v_ExcelCellAddress.ConvertToUserVariable(sender);
 
                 Microsoft.Office.Interop.Excel.Application excelInstance = (Microsoft.Office.Interop.Excel.Application)excelObject;
                 Microsoft.Office.Interop.Excel.Worksheet excelSheet = excelInstance.ActiveSheet;
-                var cellValue = excelSheet.Range[excelRange].Value;
-
-
-                newVariableCommand.v_userVariableName = v_userVariableName;
-                newVariableCommand.v_Input = cellValue.ToString();
-                newVariableCommand.RunCommand(sender);
+                var cellValue = (string)excelSheet.Range[v_ExcelCellAddress].Value;
+                cellValue.StoreInUserVariable(sender, v_userVariableName);
+       
 
             }
 
@@ -2625,7 +2488,7 @@ namespace sharpRPA.Core.AutomationCommands
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the variable to receive the changes")]
 
-        public string v_applyToVariableName { get; set; }
+        public string v_applyConvertToUserVariableName { get; set; }
         public StringSubstringCommand()
         {
             this.CommandName = "StringSubstringCommand";
@@ -2638,7 +2501,8 @@ namespace sharpRPA.Core.AutomationCommands
 
             VariableCommand newVariableCommand = new VariableCommand();
 
-            var stringVariable = newVariableCommand.VariablizeString(sender, v_userVariableName);
+            var stringVariable = v_userVariableName.ConvertToUserVariable(sender);
+
 
             //apply substring
             if (v_stringLength >= 0)
@@ -2650,7 +2514,7 @@ namespace sharpRPA.Core.AutomationCommands
                 stringVariable = stringVariable.Substring(v_startIndex);
             }
 
-            newVariableCommand.v_userVariableName = v_applyToVariableName;
+            newVariableCommand.v_userVariableName = v_applyConvertToUserVariableName;
             newVariableCommand.v_Input = stringVariable;
             newVariableCommand.RunCommand(sender);
 
@@ -2679,20 +2543,20 @@ namespace sharpRPA.Core.AutomationCommands
         public string v_splitCharacter { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the list variable which will contain the results")]
-        public string v_applyToVariableName { get; set; }
+        public string v_applyConvertToUserVariableName { get; set; }
         public StringSplitCommand()
         {
             this.CommandName = "StringSplitCommand";
             this.SelectionName = "String - Split";
-            this.v_applyToVariableName = "default";
+            this.v_applyConvertToUserVariableName = "default";
             this.CommandEnabled = true;
  
         }
         public override void RunCommand(object sender)
         {
 
-            VariableCommand newVariableCommand = new VariableCommand();
-            var stringVariable = newVariableCommand.VariablizeString(sender, v_userVariableName);
+        
+            var stringVariable = v_userVariableName.ConvertToUserVariable(sender);
 
             List<string> splitString;
             if (v_splitCharacter == "[crLF]")
@@ -2709,7 +2573,7 @@ namespace sharpRPA.Core.AutomationCommands
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
 
             //get complex variable from engine and assign
-            var requiredComplexVariable = sendingInstance.variableList.Where(x => x.variableName == v_applyToVariableName).FirstOrDefault();
+            var requiredComplexVariable = sendingInstance.variableList.Where(x => x.variableName == v_applyConvertToUserVariableName).FirstOrDefault();
             requiredComplexVariable.variableValue = splitString;
 
 
@@ -2718,7 +2582,7 @@ namespace sharpRPA.Core.AutomationCommands
         }
         public override string GetDisplayValue()
         {
-            return base.GetDisplayValue() + " [Split '" + v_userVariableName + "' by '" + v_splitCharacter + "' and apply to '" + v_applyToVariableName + "']";
+            return base.GetDisplayValue() + " [Split '" + v_userVariableName + "' by '" + v_splitCharacter + "' and apply to '" + v_applyConvertToUserVariableName + "']";
         }
     }
     #endregion
@@ -2770,10 +2634,8 @@ namespace sharpRPA.Core.AutomationCommands
                                   where rw.Field<string>("Parameter Name") == "Value2"
                                   select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
-                //variablize if needed
-                VariableCommand variableCommand = new VariableCommand();
-                value1 = variableCommand.VariablizeString(sender, value1);
-                value2 = variableCommand.VariablizeString(sender, value2);
+                value1 = value1.ConvertToUserVariable(sender);
+                value2 = value2.ConvertToUserVariable(sender);
 
                 bool ifResult = false;
 
@@ -2929,6 +2791,98 @@ namespace sharpRPA.Core.AutomationCommands
     }
     #endregion
 
+    #region OCR and Image Commands
+
+    [Serializable]
+    [Attributes.ClassAttributes.Group("OCR and Image Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to covert an image file into text for parsing.")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command has a dependency on and implements OneNote OCR to achieve automation.")]
+    public class OCRCommand : ScriptCommand
+    {
+
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Select Image to OCR")]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper)]
+        public string v_FilePath { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Apply OCR Result To Variable")]
+        public string v_userVariableName { get; set; }
+        public OCRCommand()
+        {
+            this.DefaultPause = 0;
+            this.CommandName = "OCRCommand";
+            this.SelectionName = "Image - OCR";
+            this.CommandEnabled = true;
+        }
+
+        public override void RunCommand(object sender)
+        {
+           
+            var engineForm = (UI.Forms.frmScriptEngine)sender;
+
+            var ocrEngine = new OneNoteOCRDll.OneNoteOCR();
+            var arr = ocrEngine.OcrTexts(v_FilePath.ConvertToUserVariable(engineForm)).ToArray();
+
+            string endResult = "";
+            foreach (var text in arr)
+            {
+                endResult += text.Text;
+            }
+
+            //apply to user variable
+            endResult.StoreInUserVariable(sender, v_userVariableName);
+
+
+          
+
+        }
+
+
+        public override string GetDisplayValue()
+        {
+            return "OCR '" + v_FilePath + "' and apply result to '" + v_userVariableName + "'";
+        }
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("OCR and Image Commands")]
+    [Attributes.ClassAttributes.Description("This command takes a screenshot and saves it to a location")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements User32 CaptureWindow to achieve automation")]
+    public class ScreenshotCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please Enter the Window name")]
+        public string v_ScreenshotWindowName { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please indicate the path to save the image")]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper)]
+        public string v_FilePath { get; set; }
+        public ScreenshotCommand()
+        {
+            this.CommandName = "ScreenshotCommand";
+            this.SelectionName = "Screenshot - Take Screenshot";
+            this.CommandEnabled = true;
+        }
+
+        public override void RunCommand(object sender)
+        {
+
+            var image = User32Functions.CaptureWindow(v_ScreenshotWindowName);
+            string ConvertToUserVariabledString = v_FilePath.ConvertToUserVariable(sender);
+            image.Save(ConvertToUserVariabledString);
+
+  
+        }
+
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Target Window: '" + v_ScreenshotWindowName + "', File Path: '" + v_FilePath + "]";
+        }
+
+    }
+
+    #endregion
 }
 
 

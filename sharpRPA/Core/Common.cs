@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -62,11 +63,95 @@ namespace sharpRPA.Core
         {
             var scriptCommand = (Core.AutomationCommands.ScriptCommand)Activator.CreateInstance(cmd);
             return scriptCommand.CommandEnabled;
+        } 
+        public static List<Core.Script.ScriptVariable> GenerateSystemVariables()
+        {
+            List<Core.Script.ScriptVariable> systemVariableList = new List<Core.Script.ScriptVariable>();
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Desktop", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Documents", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.AppData", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.ScriptPath", variableValue = Core.Common.GetScriptFolderPath() });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "DateTime.Now", variableValue = DateTime.Now.ToString() });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "DateTime.Now.FileSafe", variableValue = DateTime.Now.ToString("MM-dd-yy hh.mm.ss") });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.MachineName", variableValue = Environment.MachineName });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.UserName", variableValue = Environment.UserName });
+            systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.DomainName", variableValue = Environment.UserDomainName });
+            return systemVariableList;
         }
 
+    }
 
+    public static class ExtensionMethods
+    {
+        public static string ConvertToUserVariable(this String str, object sender)
+            {
+
+            if (str == null)
+                return string.Empty;
+
+            var engineForm = (UI.Forms.frmScriptEngine)sender; ;
+
+            var variableList = engineForm.variableList;
+            var systemVariables = Core.Common.GenerateSystemVariables();
+
+            var searchList = new List<Core.Script.ScriptVariable>();
+            searchList.AddRange(variableList);
+            searchList.AddRange(systemVariables);
+
+
+            string[] potentialVariables = str.Split('[', ']');
+
+            foreach (var potentialVariable in potentialVariables)
+            {
+
+                var varCheck = (from vars in searchList
+                                where vars.variableName == potentialVariable
+                                select vars).FirstOrDefault();
+
+                if (varCheck != null)
+                {
+                    var searchVariable = "[" + potentialVariable + "]";
+
+                    if (str.Contains(searchVariable))
+                    {
+                        str = str.Replace(searchVariable, (string)varCheck.GetDisplayValue());
+                    }
+                    else if (str.Contains(potentialVariable))
+                    {
+                        str = str.Replace(potentialVariable, (string)varCheck.GetDisplayValue());
+                    }
+
+                 
+
+                }
+
+            }
+
+            //test if math is required
+            try
+            {
+                DataTable dt = new DataTable();
+                var v = dt.Compute(str, "");
+                return v.ToString();
+            }
+            catch (Exception)
+            {
+                return str;
+            }
+
+        }
+
+        public static void StoreInUserVariable(this String str, object sender, string targetVariable)
+        {
+            AutomationCommands.VariableCommand newVariableCommand = new AutomationCommands.VariableCommand();
+            newVariableCommand.v_userVariableName = targetVariable;
+            newVariableCommand.v_Input = str;
+            newVariableCommand.RunCommand(sender);
+
+        }
 
     }
+
 
     [Serializable]
     public class ApplicationSettings
