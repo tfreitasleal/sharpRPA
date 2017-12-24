@@ -469,12 +469,13 @@ namespace sharpRPA.Core.AutomationCommands
                                                select rw.Field<string>("Parameter Value")).FirstOrDefault();
 
 
-                        var convertedAttribute = Convert.ToString(element.getAttribute(attributeName));
+                        string convertedAttribute = Convert.ToString(element.getAttribute(attributeName));
 
-                        VariableCommand newVariableCommand = new VariableCommand();
-                        newVariableCommand.v_userVariableName = variableName;
-                        newVariableCommand.v_Input = convertedAttribute;
-                        newVariableCommand.RunCommand(sender);
+
+                        convertedAttribute.StoreInUserVariable(sender, variableName);
+                     
+
+
                         break;
 
 
@@ -1096,11 +1097,8 @@ namespace sharpRPA.Core.AutomationCommands
                             elementValue = element.GetAttribute(attributeName);
                         }
 
-                        VariableCommand newVariableCommand = new VariableCommand();
-                        newVariableCommand.v_userVariableName = variableName;
-                        newVariableCommand.v_Input = elementValue;
-                        newVariableCommand.RunCommand(sender);
-                           
+                        elementValue.StoreInUserVariable(sender, variableName);
+
                         break;
                     default:
                         throw new Exception("Element Action was not found");
@@ -1500,13 +1498,13 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
             UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
-       
-   
 
-            var ConvertToUserVariabledText = v_Message.ConvertToUserVariable(sender);
+
+
+            v_Message = v_Message.ConvertToUserVariable(sender);
             var result = engineForm.Invoke(new Action(() => 
             {
-                engineForm.ShowMessage(ConvertToUserVariabledText, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
+                engineForm.ShowMessage(v_Message, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
             }
             
             ));
@@ -1545,7 +1543,7 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-            VariableCommand newVariableCommand = new VariableCommand();
+       
             v_ProgramName = v_ProgramName.ConvertToUserVariable(sender);
             v_ProgramArgs = v_ProgramArgs.ConvertToUserVariable(sender);
 
@@ -1719,11 +1717,7 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-        
-                VariableCommand newVariableCommand = new VariableCommand();
-                newVariableCommand.v_userVariableName = v_userVariableName;
-                newVariableCommand.v_Input = User32Functions.GetClipboardText();
-                newVariableCommand.RunCommand(sender);
+            User32Functions.GetClipboardText().StoreInUserVariable(sender, v_userVariableName);
         }
 
         public override string GetDisplayValue()
@@ -2488,7 +2482,7 @@ namespace sharpRPA.Core.AutomationCommands
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the variable to receive the changes")]
 
-        public string v_applyConvertToUserVariableName { get; set; }
+        public string v_applyToVariableName { get; set; }
         public StringSubstringCommand()
         {
             this.CommandName = "StringSubstringCommand";
@@ -2499,28 +2493,22 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
 
-            VariableCommand newVariableCommand = new VariableCommand();
+           
 
-            var stringVariable = v_userVariableName.ConvertToUserVariable(sender);
+            v_userVariableName = v_userVariableName.ConvertToUserVariable(sender);
 
 
             //apply substring
             if (v_stringLength >= 0)
             {
-                stringVariable = stringVariable.Substring(v_startIndex, v_stringLength);
+                v_userVariableName = v_userVariableName.Substring(v_startIndex, v_stringLength);
             }
             else
             {
-                stringVariable = stringVariable.Substring(v_startIndex);
+                v_userVariableName = v_userVariableName.Substring(v_startIndex);
             }
 
-            newVariableCommand.v_userVariableName = v_applyConvertToUserVariableName;
-            newVariableCommand.v_Input = stringVariable;
-            newVariableCommand.RunCommand(sender);
-
-
-
-
+            v_userVariableName.StoreInUserVariable(sender, v_applyToVariableName);
 
 
         }
@@ -2792,7 +2780,6 @@ namespace sharpRPA.Core.AutomationCommands
     #endregion
 
     #region OCR and Image Commands
-
     [Serializable]
     [Attributes.ClassAttributes.Group("OCR and Image Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to covert an image file into text for parsing.")]
@@ -2881,7 +2868,6 @@ namespace sharpRPA.Core.AutomationCommands
         }
 
     }
-
     #endregion
 }
 

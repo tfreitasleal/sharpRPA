@@ -13,8 +13,12 @@ using System.Xml.Serialization;
 
 namespace sharpRPA.Core
 {
+    
     public static class Common
     {
+        /// <summary>
+        /// Creates a unique 'clone' of an item. Used to create unique clones of commands when changing/updating new parameters.
+        /// </summary>
         public static T Clone<T>(T source)
         {
             if (!typeof(T).IsSerializable)
@@ -36,14 +40,23 @@ namespace sharpRPA.Core
                 return (T)formatter.Deserialize(stream);
             }
         }
+        /// <summary>
+        /// Returns a path to the underlying Script folder where script file objects are loaded and saved. Used when saved or loading files.
+        /// </summary>
         public static string GetScriptFolderPath()
         {
             return GetAppFolderPath() + "My Scripts\\";
         }
+        /// <summary>
+        /// Returns a path to the storage path for sharpRPA objects. Used when accessing the base storage path.
+        /// </summary>
         public static string GetAppFolderPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\sharpRPA\\";
         }
+        /// <summary>
+        /// Returns commands from the AutomationCommands.cs file grouped by Custom 'Group' attribute.
+        /// </summary>
         public static List<IGrouping<Attribute,Type>> GetGroupedCommands()
         {
 
@@ -59,13 +72,22 @@ namespace sharpRPA.Core
                 return groupedCommands;
 
         }
+        /// <summary>
+        /// Returns boolean indicating if the current command is enabled for use in automation.
+        /// </summary>
         private static bool CommandEnabled(Type cmd)
         {
             var scriptCommand = (Core.AutomationCommands.ScriptCommand)Activator.CreateInstance(cmd);
             return scriptCommand.CommandEnabled;
-        } 
+        }
+        /// <summary>
+        /// Returns a list of system-generated variables for use with automation.
+        /// </summary>
         public static List<Core.Script.ScriptVariable> GenerateSystemVariables()
         {
+   
+      
+
             List<Core.Script.ScriptVariable> systemVariableList = new List<Core.Script.ScriptVariable>();
             systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Desktop", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) });
             systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Documents", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) });
@@ -83,6 +105,10 @@ namespace sharpRPA.Core
 
     public static class ExtensionMethods
     {
+        /// <summary>
+        /// Replaces variable placeholders ([variable]) with variable text.  
+        /// </summary>
+        /// <param name="sender">The script engine instance (frmScriptEngine) which contains session variables.</param>
         public static string ConvertToUserVariable(this String str, object sender)
             {
 
@@ -140,7 +166,11 @@ namespace sharpRPA.Core
             }
 
         }
-
+        /// <summary>
+        /// Stores value of the string to a user-defined variable.
+        /// </summary>
+        /// <param name="sender">The script engine instance (frmScriptEngine) which contains session variables.</param>
+        /// <param name="targetVariable">the name of the user-defined variable to override with new value</param>
         public static void StoreInUserVariable(this String str, object sender, string targetVariable)
         {
             AutomationCommands.VariableCommand newVariableCommand = new AutomationCommands.VariableCommand();
