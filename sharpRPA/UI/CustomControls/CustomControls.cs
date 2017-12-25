@@ -240,7 +240,7 @@ namespace sharpRPA.UI.CustomControls
 
     }
 
-public class UIGroupBox : GroupBox
+    public class UIGroupBox : GroupBox
     {
         public UIGroupBox()
         {
@@ -274,6 +274,14 @@ public class UIGroupBox : GroupBox
         public Color TitleForeColor { get; set; }
 
        
+    }
+
+    public class UIFlowLayoutPanel : FlowLayoutPanel
+    {
+        public UIFlowLayoutPanel()
+        {
+            this.DoubleBuffered = true;
+        }
     }
 
 

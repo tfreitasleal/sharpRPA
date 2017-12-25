@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,6 +78,20 @@ namespace sharpRPA.UI.Forms
 
         private void frmScriptBuilder_Load(object sender, EventArgs e)
         {
+            //detect latest release
+            //HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/saucepleez/sharpRPA/releases");
+            //myHttpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2;)";
+            //HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+
+            //StreamReader reader = new StreamReader(myHttpWebResponse.GetResponseStream(), Encoding.UTF8);
+            //String responseString = reader.ReadToEnd();
+
+            //Newtonsoft.Json.Linq.JArray jsonArray = Newtonsoft.Json.Linq.JArray.Parse(responseString);
+            //dynamic data = Newtonsoft.Json.Linq.JObject.Parse(jsonArray[0].ToString());
+
+
+        
+
 
             //create undo list
             undoList = new List<List<ListViewItem>>();
@@ -95,6 +111,8 @@ namespace sharpRPA.UI.Forms
             }
 
 
+
+
             //create folder to store scripts
             var rpaScriptsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\sharpRPA\\My Scripts\\";
             if (!System.IO.Directory.Exists(rpaScriptsFolder))
@@ -107,6 +125,11 @@ namespace sharpRPA.UI.Forms
                 }
             }
 
+            //get latest files for recent files list on load
+            GenerateRecentFiles();
+
+            //get current version
+            lblCurrentVersion.Text = "v" + new Version(System.Windows.Forms.Application.ProductVersion);
 
             //no height for status bar
             tlpControls.RowStyles[3].Height = 0;
@@ -147,148 +170,64 @@ namespace sharpRPA.UI.Forms
 
       
         }
-     
+        private void GenerateRecentFiles()
+        {
+            flwRecentFiles.Controls.Clear();
+            var directory = new System.IO.DirectoryInfo(Core.Common.GetScriptFolderPath());
+            var recentFiles = directory.GetFiles()
+                .OrderByDescending(file => file.LastWriteTime).Select(f => f.Name);
+
+
+            if (recentFiles.Count() == 0)
+            {
+                Label noFilesLabel = new Label();
+                noFilesLabel.Text = "No Recent Files Found";
+                noFilesLabel.AutoSize = true;
+                noFilesLabel.ForeColor = Color.SteelBlue;
+                noFilesLabel.Font = lnkGitIssue.Font;
+                noFilesLabel.Margin = new Padding(0, 0, 0, 0);
+                flwRecentFiles.Controls.Add(noFilesLabel);
+            }
+            else
+            {
+                foreach (var fil in recentFiles)
+                {
+                    if (flwRecentFiles.Controls.Count == 9)
+                        return;
+
+                    LinkLabel newFileLink = new LinkLabel();
+                    newFileLink.Text = fil;
+                    newFileLink.AutoSize = true;
+                    newFileLink.LinkColor = Color.SteelBlue;
+                    newFileLink.Font = lnkGitIssue.Font;
+                    newFileLink.Margin = new Padding(0, 0, 0, 0);
+                    newFileLink.LinkClicked += NewFileLink_LinkClicked;
+                    flwRecentFiles.Controls.Add(newFileLink);
+
+                }
+            }
+
+
+        }
         private void frmScriptBuilder_Shown(object sender, EventArgs e)
         {
             Notify("Welcome! Press 'Add Command' to get started!");
             Notify("Note this is currently 'Alpha' Software!");
         }
-        #endregion
-
-        #region Button Events
-        private void btnOpen_Click(object sender, EventArgs e)
+        private void pnlControlContainer_Paint(object sender, PaintEventArgs e)
         {
 
-            //create script selector
-            UI.Forms.Supplemental.frmScriptSelector frmSelector = new UI.Forms.Supplemental.frmScriptSelector();
-
-            //if script was selected, then run the script
-            if (frmSelector.ShowDialog() == DialogResult.OK)
+            Rectangle rect = new Rectangle(0, 0, pnlControlContainer.Width, pnlControlContainer.Height);
+            using (LinearGradientBrush brush = new LinearGradientBrush(rect, Color.White, Color.WhiteSmoke, LinearGradientMode.Vertical))
             {
-
-
-                try
-                {
-
-                    lstScriptActions.Items.Clear();
-
-                    XmlSerializer serializer = new XmlSerializer(typeof(Core.Script.Script));
-
-                    var xmlData = frmSelector.selectedScript;
-                    System.IO.FileStream fs = new System.IO.FileStream(xmlData, System.IO.FileMode.Open);
-
-                    XmlReader reader = XmlReader.Create(fs);
-                    var deserializedData = (Core.Script.Script)serializer.Deserialize(reader);
-                    fs.Close();
-
-                    scriptVariables = deserializedData.Variables;
-
-                    foreach (var cmdDetails in deserializedData.Commands)
-                    {
-                        AddCommandToListView(cmdDetails.ScriptCommand);
-                    }
-
-                    //txtFileName.Text = frmSelector.cboSelectFile.Text;
-                    ScriptFilePath = xmlData;
-                    Notify("Script Loaded Successfully!");
-                }
-                catch (Exception ex)
-                {
-                    Notify("Oops, an error occured: " + ex.Message);
-                }
-
+                e.Graphics.FillRectangle(brush, rect);
             }
 
-
-
-
-
-
-        }
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            for (int i = 30; i > 0; i--)
-            {
-                tlpControls.RowStyles[3].Height = i;
-            }
-        }
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-
-            //if (lstScriptActions.Items.Count == 0)
-            //{
-            //    return;
-            //}
-
-            ////define default output path
-            //if (this.ScriptFilePath == null)
-            //{
-            //    var fileName = Microsoft.VisualBasic.Interaction.InputBox("Please enter a file name (without extension)", "Enter File Name", "Default", -1, -1);
-
-            //    if (fileName == string.Empty)
-            //        return;
-
-            //    var rpaScriptsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\sharpRPA\\My Scripts\\";
-            //    this.ScriptFilePath = rpaScriptsFolder + fileName + ".xml";
-            //}
-
-            ////create fileStream
-            //var fileStream = System.IO.File.Create(this.ScriptFilePath);
-
-            //var script = new RPAScript();
-
-            ////save variables to file
-
-            //script.variables = scriptVariables;
-
-            ////save listview tags to command list
-            //foreach (ListViewItem commandItem in lstScriptActions.Items)
-            //{
-            //    script.scriptCommands.Add((AutomationCommands.ScriptCommand)commandItem.Tag);
-            //}
-
-            ////output to xml file
-            //XmlSerializer serializer = new XmlSerializer(typeof(RPAScript));
-            //serializer.Serialize(fileStream, script);
-            //fileStream.Close();
-
-            ////show success dialog
-            //Notify("File has been saved successfully!");
-
-        }
-        private void btnNewCommand_Click(object sender, EventArgs e)
-        {
-
-            //bring up new command configuration form
-            var newCommandForm = new UI.Forms.frmCommandEditor();
-            newCommandForm.creationMode = UI.Forms.frmCommandEditor.CreationMode.Add;
-            newCommandForm.scriptVariables = this.scriptVariables;
-            //if a command was selected
-            if (newCommandForm.ShowDialog() == DialogResult.OK)
-            {
-                //add to listview               
-                AddCommandToListView(newCommandForm.selectedCommand);
-            }
-
-        }
-        private void btnRun_Click(object sender, EventArgs e)
-        {
-
-            if (ScriptFilePath == null)
-            {
-                return;
-            }
-
-            ////create script selector
-            //UI.Forms.frmScriptSelector frmSelector = new UI.Forms.frmScriptSelector();
-
-            ////if script was selected, then run the script
-            //if (frmSelector.ShowDialog() == DialogResult.OK)
-            //{
-            Notify("Running Script..");
-            UI.Forms.frmScriptEngine newEngine = new UI.Forms.frmScriptEngine(ScriptFilePath, this);
-            newEngine.Show();
-            //  }  
+            Pen steelBluePen = new Pen(Color.SteelBlue, 2);
+            Pen lightSteelBluePen = new Pen(Color.LightSteelBlue, 1);
+            //e.Graphics.DrawLine(steelBluePen, 0, 0, pnlControlContainer.Width, 0);
+            e.Graphics.DrawLine(lightSteelBluePen, 0, 0, pnlControlContainer.Width, 0);
+            e.Graphics.DrawLine(lightSteelBluePen, 0, pnlControlContainer.Height - 1, pnlControlContainer.Width, pnlControlContainer.Height - 1);
 
         }
         #endregion
@@ -623,7 +562,7 @@ namespace sharpRPA.UI.Forms
 
         #endregion
 
-        #region ListView Comment and Coloring
+        #region ListView Comment, Coloring, ToolStrip
         private void FormatCommandListView()
         {
 
@@ -792,6 +731,14 @@ namespace sharpRPA.UI.Forms
         {
             SetPauseBeforeExecution();
         }
+        private void copySelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyRow();
+        }
+        private void pasteSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PasteRow();
+        }
         #endregion
 
         #endregion
@@ -896,34 +843,45 @@ namespace sharpRPA.UI.Forms
             {
 
 
-                try
+
+            }
+        }
+        private void OpenFile(string filePath)
+        {
+
+            try
+            {
+
+                lstScriptActions.Items.Clear();
+                scriptVariables = new List<Core.Script.ScriptVariable>();
+
+                this.ScriptFilePath = filePath;
+
+                Core.Script.Script deserializedScript = Core.Script.Script.DeserializeFile(ScriptFilePath);
+
+                if (deserializedScript.Commands.Count == 0)
                 {
-
-                    lstScriptActions.Items.Clear();
-                    scriptVariables = new List<Core.Script.ScriptVariable>();
-
-                    this.ScriptFilePath = frmSelector.selectedScript;
-
-                    Core.Script.Script deserializedScript = Core.Script.Script.DeserializeFile(ScriptFilePath);
-
-                    if (deserializedScript.Commands.Count == 0)
-                    {
-                        Notify("Error Parsing File: Commands not found!");
-                    }
-
-                    scriptVariables = deserializedScript.Variables;
-
-                    PopulateExecutionCommands(deserializedScript.Commands);
-
-                    FormatCommandListView();
-
-                    Notify("Script Loaded Successfully!");
-                }
-                catch (Exception ex)
-                {
-                    Notify("Oops, an error occured: " + ex.Message);
+                    Notify("Error Parsing File: Commands not found!");
                 }
 
+                scriptVariables = deserializedScript.Variables;
+
+                PopulateExecutionCommands(deserializedScript.Commands);
+
+                FormatCommandListView();
+
+                Notify("Script Loaded Successfully!");
+            }
+            catch (Exception ex)
+            {
+                Notify("Oops, an error occured: " + ex.Message);
+            }
+        }
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            for (int i = 30; i > 0; i--)
+            {
+                tlpControls.RowStyles[3].Height = i;
             }
         }
 
@@ -1086,6 +1044,7 @@ namespace sharpRPA.UI.Forms
             this.ScriptFilePath = null;
             lstScriptActions.Items.Clear();
             scriptVariables = new List<Core.Script.ScriptVariable>();
+            GenerateRecentFiles();
             pnlCommandHelper.Show();
         }
 
@@ -1160,7 +1119,7 @@ namespace sharpRPA.UI.Forms
             try
             {
                 webSocket = new WebSocket4Net.WebSocket(serverURL);
-                webSocket.Error += new EventHandler<ErrorEventArgs>(ConnectionError);
+                webSocket.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>(ConnectionError);
                 webSocket.Opened += new EventHandler(ConnectionOpened);
                 webSocket.Closed += new EventHandler(ConnectionClosed);
                 webSocket.MessageReceived += new EventHandler<WebSocket4Net.MessageReceivedEventArgs>(websocket_MessageReceived);
@@ -1187,7 +1146,7 @@ namespace sharpRPA.UI.Forms
             //start retrying to connect
         }
 
-        private void ConnectionError(object sender, ErrorEventArgs e)
+        private void ConnectionError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
             //connection has failed, start retrying
         }
@@ -1259,32 +1218,29 @@ namespace sharpRPA.UI.Forms
         }
         #endregion
 
-        private void pnlControlContainer_Paint(object sender, PaintEventArgs e)
+        #region Link Labels
+        private void lnkGitProject_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
-            Rectangle rect = new Rectangle(0, 0, pnlControlContainer.Width, pnlControlContainer.Height);
-            using (LinearGradientBrush brush = new LinearGradientBrush(rect, Color.White, Color.WhiteSmoke, LinearGradientMode.Vertical))
-            {
-                e.Graphics.FillRectangle(brush, rect);
-            }
-
-            Pen steelBluePen = new Pen(Color.SteelBlue, 2);
-            Pen lightSteelBluePen = new Pen(Color.LightSteelBlue, 1);
-            //e.Graphics.DrawLine(steelBluePen, 0, 0, pnlControlContainer.Width, 0);
-            e.Graphics.DrawLine(lightSteelBluePen, 0, 0, pnlControlContainer.Width, 0);
-            e.Graphics.DrawLine(lightSteelBluePen, 0, pnlControlContainer.Height - 1, pnlControlContainer.Width, pnlControlContainer.Height - 1);
-
+            System.Diagnostics.Process.Start("https://github.com/saucepleez/sharpRPA");
         }
-
-        private void copySelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void lnkGitLatestReleases_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            CopyRow();
+            System.Diagnostics.Process.Start("https://github.com/saucepleez/sharpRPA/releases");
         }
-
-        private void pasteSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void lnkGitIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            PasteRow();
+            System.Diagnostics.Process.Start("https://github.com/saucepleez/sharpRPA/issues/new");
         }
+        private void lnkGitWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/saucepleez/sharpRPA/wiki");
+        }
+        private void NewFileLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LinkLabel senderLink = (LinkLabel)sender;
+            OpenFile(Core.Common.GetScriptFolderPath() + senderLink.Text);
+        }
+        #endregion
     }
     }
 
