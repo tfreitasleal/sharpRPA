@@ -24,6 +24,7 @@ namespace sharpRPA.Core.AutomationCommands
     [XmlInclude(typeof(ThickAppClickItemCommand))]
     [XmlInclude(typeof(ThickAppGetTextCommand))]
     [XmlInclude(typeof(ResizeWindowCommand))]
+    [XmlInclude(typeof(WaitForWindowCommand))]
     [XmlInclude(typeof(MessageBoxCommand))]
     [XmlInclude(typeof(StopProcessCommand))]
     [XmlInclude(typeof(StartProcessCommand))]
@@ -1448,6 +1449,60 @@ namespace sharpRPA.Core.AutomationCommands
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + ", Window State: " + v_WindowState + "]";
+        }
+
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("Window Commands")]
+    [Attributes.ClassAttributes.Description("This command waits for a window to exist")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements 'FindWindowNative', 'ShowWindow' from user32.dll to achieve automation.")]
+    public class WaitForWindowCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please Select or Type a window Name")]
+        public string v_WindowName { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Wait For (Seconds)")]
+        public string v_LengthToWait { get; set; }
+
+        public WaitForWindowCommand()
+        {
+            this.CommandName = "SetWindowStateCommand";
+            this.SelectionName = "Window - Wait For Window";
+            this.CommandEnabled = true;
+        }
+
+        public override void RunCommand(object sender)
+        {
+
+            var waitUntil = int.Parse(v_LengthToWait.ConvertToUserVariable(sender));
+            var endDateTime = DateTime.Now.AddSeconds(waitUntil);
+
+            IntPtr hWnd = IntPtr.Zero;
+
+            while (DateTime.Now < endDateTime)
+            {
+                hWnd = User32Functions.FindWindow(v_WindowName);
+
+                if (hWnd != IntPtr.Zero) //If found
+                    break;  
+
+                System.Threading.Thread.Sleep(1000);
+
+            }
+
+            if (hWnd == IntPtr.Zero)
+            {
+                throw new Exception("Window was not found in the allowed time!");
+            }
+
+
+
+
+        }
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Target Window: '" + v_WindowName + "' for up to " + v_LengthToWait + " seconds]";
         }
 
     }

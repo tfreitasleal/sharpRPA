@@ -841,9 +841,7 @@ namespace sharpRPA.UI.Forms
             //if script was selected, then run the script
             if (frmSelector.ShowDialog() == DialogResult.OK)
             {
-
-
-
+                OpenFile(frmSelector.selectedScript);
             }
         }
         private void OpenFile(string filePath)
