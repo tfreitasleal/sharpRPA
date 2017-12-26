@@ -34,6 +34,7 @@
             this.splitContainer1 = new sharpRPA.UI.CustomControls.UISplitContainer();
             this.tvCommands = new sharpRPA.UI.CustomControls.UITreeView();
             this.pnlCommandHelper = new System.Windows.Forms.Panel();
+            this.flwRecentFiles = new sharpRPA.UI.CustomControls.UIFlowLayoutPanel();
             this.lblCurrentVersion = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -71,7 +72,6 @@
             this.pauseBeforeExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copySelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flwRecentFiles = new sharpRPA.UI.CustomControls.UIFlowLayoutPanel();
             this.tlpControls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -139,7 +139,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.pnlCommandHelper);
             this.splitContainer1.Panel2.Controls.Add(this.lstScriptActions);
             this.splitContainer1.Size = new System.Drawing.Size(1023, 462);
-            this.splitContainer1.SplitterDistance = 226;
+            this.splitContainer1.SplitterDistance = 238;
             this.splitContainer1.TabIndex = 4;
             // 
             // tvCommands
@@ -151,7 +151,7 @@
             this.tvCommands.Location = new System.Drawing.Point(0, 0);
             this.tvCommands.Name = "tvCommands";
             this.tvCommands.ShowLines = false;
-            this.tvCommands.Size = new System.Drawing.Size(226, 462);
+            this.tvCommands.Size = new System.Drawing.Size(238, 462);
             this.tvCommands.TabIndex = 8;
             this.tvCommands.DoubleClick += new System.EventHandler(this.tvCommands_DoubleClick);
             // 
@@ -171,8 +171,17 @@
             this.pnlCommandHelper.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlCommandHelper.Location = new System.Drawing.Point(0, 0);
             this.pnlCommandHelper.Name = "pnlCommandHelper";
-            this.pnlCommandHelper.Size = new System.Drawing.Size(793, 462);
+            this.pnlCommandHelper.Size = new System.Drawing.Size(781, 462);
             this.pnlCommandHelper.TabIndex = 7;
+            // 
+            // flwRecentFiles
+            // 
+            this.flwRecentFiles.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flwRecentFiles.Location = new System.Drawing.Point(7, 234);
+            this.flwRecentFiles.Name = "flwRecentFiles";
+            this.flwRecentFiles.Size = new System.Drawing.Size(397, 156);
+            this.flwRecentFiles.TabIndex = 12;
+            this.flwRecentFiles.WrapContents = false;
             // 
             // lblCurrentVersion
             // 
@@ -312,7 +321,7 @@
             this.lstScriptActions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lstScriptActions.Location = new System.Drawing.Point(0, 0);
             this.lstScriptActions.Name = "lstScriptActions";
-            this.lstScriptActions.Size = new System.Drawing.Size(793, 462);
+            this.lstScriptActions.Size = new System.Drawing.Size(781, 462);
             this.lstScriptActions.TabIndex = 6;
             this.lstScriptActions.UseCompatibleStateImageBehavior = false;
             this.lstScriptActions.View = System.Windows.Forms.View.Details;
@@ -652,15 +661,6 @@
             this.pasteSelectedToolStripMenuItem.Size = new System.Drawing.Size(232, 24);
             this.pasteSelectedToolStripMenuItem.Text = "Paste Selected Action";
             this.pasteSelectedToolStripMenuItem.Click += new System.EventHandler(this.pasteSelectedToolStripMenuItem_Click);
-            // 
-            // flwRecentFiles
-            // 
-            this.flwRecentFiles.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flwRecentFiles.Location = new System.Drawing.Point(7, 234);
-            this.flwRecentFiles.Name = "flwRecentFiles";
-            this.flwRecentFiles.Size = new System.Drawing.Size(397, 156);
-            this.flwRecentFiles.TabIndex = 12;
-            this.flwRecentFiles.WrapContents = false;
             // 
             // frmScriptBuilder
             // 

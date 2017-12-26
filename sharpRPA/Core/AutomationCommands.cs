@@ -1462,13 +1462,13 @@ namespace sharpRPA.Core.AutomationCommands
         [Attributes.PropertyAttributes.PropertyDescription("Please Select or Type a window Name")]
         public string v_WindowName { get; set; }
         [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Wait For (Seconds)")]
+        [Attributes.PropertyAttributes.PropertyDescription("Seconds To Wait")]
         public string v_LengthToWait { get; set; }
 
         public WaitForWindowCommand()
         {
             this.CommandName = "SetWindowStateCommand";
-            this.SelectionName = "Window - Wait For Window";
+            this.SelectionName = "Window - Wait For Window To Exist";
             this.CommandEnabled = true;
         }
 
@@ -1502,7 +1502,7 @@ namespace sharpRPA.Core.AutomationCommands
         }
         public override string GetDisplayValue()
         {
-            return base.GetDisplayValue() + " [Target Window: '" + v_WindowName + "' for up to " + v_LengthToWait + " seconds]";
+            return base.GetDisplayValue() + " [Target Window: '" + v_WindowName + "', Wait Up To " + v_LengthToWait + " seconds]";
         }
 
     }
