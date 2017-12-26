@@ -299,6 +299,7 @@ namespace sharpRPA.UI
         uiImages.Add("PauseCommand", sharpRPA.Properties.Resources.pause);
         uiImages.Add("CommentCommand", sharpRPA.Properties.Resources.comment);
         uiImages.Add("ActivateWindowCommand", sharpRPA.Properties.Resources.windows);
+        uiImages.Add("WaitForWindowCommand", sharpRPA.Properties.Resources.windows);
         uiImages.Add("MoveWindowCommand", sharpRPA.Properties.Resources.windows);
         uiImages.Add("ThickAppClickItemCommand", sharpRPA.Properties.Resources.mouse);
         uiImages.Add("ThickAppGetTextCommand", sharpRPA.Properties.Resources.search);
