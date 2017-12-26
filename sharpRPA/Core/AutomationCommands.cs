@@ -1467,7 +1467,7 @@ namespace sharpRPA.Core.AutomationCommands
 
         public WaitForWindowCommand()
         {
-            this.CommandName = "SetWindowStateCommand";
+            this.CommandName = "WaitForWindowCommand";
             this.SelectionName = "Window - Wait For Window To Exist";
             this.CommandEnabled = true;
         }
