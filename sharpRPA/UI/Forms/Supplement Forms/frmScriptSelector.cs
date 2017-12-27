@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace sharpRPA.UI.Forms.Supplemental
 {
-
     public partial class frmScriptSelector : UIForm
     {
         public string selectedScript;
@@ -22,24 +21,18 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void frmScriptSelector_Load(object sender, EventArgs e)
         {
-
             rpaScriptsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\sharpRPA\\My Scripts\\";
             var files = System.IO.Directory.GetFiles(rpaScriptsFolder);
 
             foreach (var fil in files)
             {
-               System.IO.FileInfo newFileInfo = new System.IO.FileInfo(fil);
-               cboSelectFile.Items.Add(newFileInfo.Name);
+                System.IO.FileInfo newFileInfo = new System.IO.FileInfo(fil);
+                cboSelectFile.Items.Add(newFileInfo.Name);
             }
-
-
-         
-
         }
 
         private void btnRun_Click(object sender, EventArgs e)
         {
-
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -49,10 +42,8 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void uiBtnOpen_Click(object sender, EventArgs e)
         {
-
             if (cboSelectFile.Text == "")
             {
-
                 return;
             }
 

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace sharpRPA.Core.AutomationCommands.Attributes.ClassAttributes
 {
-
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class Group : System.Attribute
     {
@@ -33,8 +32,7 @@ namespace sharpRPA.Core.AutomationCommands.Attributes.ClassAttributes
         {
             this.commandImplementationDescription = desc;
         }
-}
-
+    }
 }
 
 namespace sharpRPA.Core.AutomationCommands.Attributes.PropertyAttributes
@@ -58,8 +56,8 @@ namespace sharpRPA.Core.AutomationCommands.Attributes.PropertyAttributes
         }
         public enum UIAdditionalHelperType
         {
-          ShowVariableHelper,
-          ShowFileSelectionHelper
+            ShowVariableHelper,
+            ShowFileSelectionHelper
         }
     }
     [System.AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
@@ -81,4 +79,3 @@ namespace sharpRPA.Core.AutomationCommands.Attributes.PropertyAttributes
         }
     }
 }
-

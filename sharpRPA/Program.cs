@@ -21,8 +21,6 @@ namespace sharpRPA
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-
-
             //if the exe was passed a filename argument then run the script
             if (args.Length > 0)
             {
@@ -37,15 +35,12 @@ namespace sharpRPA
 
                 Application.Run(new UI.Forms.frmScriptEngine(filePath, null));
             }
-              
             else
-            {     
+            {
                 Application.Run(new UI.Forms.frmScriptBuilder());
             }
-
-            
         }
-     
+
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             MessageBox.Show("An unhandled exception occured: " + (e.ExceptionObject as Exception).Message, "Oops");

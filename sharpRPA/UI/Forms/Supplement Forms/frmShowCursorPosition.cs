@@ -13,7 +13,6 @@ namespace sharpRPA.UI.Forms.Supplemental
 {
     public partial class frmShowCursorPosition : UIForm
     {
-
         public POINT lpPoint;
         public int xPos { get; set; }
         public int yPos { get; set; }
@@ -25,15 +24,11 @@ namespace sharpRPA.UI.Forms.Supplemental
         public static extern bool GetCursorPos(out POINT lpPoint);
         private void tmrGetPosition_Tick(object sender, EventArgs e)
         {
-    
             GetCursorPos(out lpPoint);
             lblXPosition.Text = "X Position: " + lpPoint.X;
             lblYPosition.Text = "Y Position: " + lpPoint.Y;
             xPos = lpPoint.X;
             yPos = lpPoint.Y;
-
-
-
         }
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT
@@ -51,22 +46,18 @@ namespace sharpRPA.UI.Forms.Supplemental
         {
             if (e.KeyCode == Keys.Space)
             {
-               this.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.OK;
             }
         }
 
         private void ShowCursorPosition_Load(object sender, EventArgs e)
         {
-           
         }
 
         private void frmShowCursorPosition_MouseEnter(object sender, EventArgs e)
         {
             //move to bottom right if form is in the way
             MoveFormToBottomRight(this);
-          
         }
     }
-
-
 }

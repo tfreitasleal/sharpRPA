@@ -17,13 +17,12 @@ namespace sharpRPA.UI.Forms
         {
             InitializeComponent();
         }
-        Dictionary<string,Image> uiImages;
+        Dictionary<string, Image> uiImages;
         List<IGrouping<Attribute, Type>> groupedCommands;
         private void frmCommandSelector_Load(object sender, EventArgs e)
         {
-
             uiImages = UI.Images.UIImageDictionary();
-           
+
             groupedCommands = Assembly.GetExecutingAssembly().GetTypes()
                        .Where(t => t.Namespace == "sharpRPA.Core.AutomationCommands")
                        .Where(t => t.Name != "ScriptCommand")
@@ -33,23 +32,17 @@ namespace sharpRPA.UI.Forms
                        .GroupBy(t => t.GetCustomAttribute(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group)))
                        .ToList();
 
-              
-
             foreach (var cmds in groupedCommands)
             {
-          
-
                 string assignedGroup = FindAssignedGroup(cmds);
                 sharpRPA.UI.CustomControls.CommandGroupControl newFolderGroupControl = new sharpRPA.UI.CustomControls.CommandGroupControl();
                 newFolderGroupControl.Click += CommandSelection_Click;
                 newFolderGroupControl.GroupName = assignedGroup;
                 flwCommandCategories.Controls.Add(newFolderGroupControl);
-
             }
-
         }
 
-        private string FindAssignedGroup(IGrouping<Attribute,Type> cmd)
+        private string FindAssignedGroup(IGrouping<Attribute, Type> cmd)
         {
             if (cmd.Key == null)
             {
@@ -79,12 +72,11 @@ namespace sharpRPA.UI.Forms
             while (flwCommandSelections.Controls.Count > 0) flwCommandSelections.Controls.RemoveAt(0);
 
             sharpRPA.UI.CustomControls.CommandGroupControl selectedControl = (sharpRPA.UI.CustomControls.CommandGroupControl)sender;
-          
+
             var availableCommands = groupedCommands.Where(cmd => FindAssignedGroup(cmd) == selectedControl.GroupName).FirstOrDefault();
 
             foreach (var cmd in availableCommands)
             {
-
                 //Instantiate Class
                 Core.AutomationCommands.ScriptCommand newCommand = (Core.AutomationCommands.ScriptCommand)Activator.CreateInstance(cmd);
 
@@ -100,9 +92,7 @@ namespace sharpRPA.UI.Forms
                 newitm.ForeColor = Color.White;
                 newitm.Click += CommandItem_Click;
                 flwCommandSelections.Controls.Add(newitm);
-
             }
-
         }
         private void CommandItem_Click(object sender, EventArgs e)
         {
@@ -131,7 +121,6 @@ namespace sharpRPA.UI.Forms
 
         private void flwCommandDescription_Paint(object sender, PaintEventArgs e)
         {
-
         }
     }
 }

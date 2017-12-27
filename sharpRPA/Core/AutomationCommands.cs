@@ -15,6 +15,7 @@ using sharpRPA.Core;
 namespace sharpRPA.Core.AutomationCommands
 {
     #region Base Command
+
     [XmlInclude(typeof(SendKeysCommand))]
     [XmlInclude(typeof(SendMouseMoveCommand))]
     [XmlInclude(typeof(PauseCommand))]
@@ -85,7 +86,7 @@ namespace sharpRPA.Core.AutomationCommands
         [Attributes.PropertyAttributes.PropertyDescription("Comment Field (Optional)")]
         public string v_Comment { get; set; }
         [XmlAttribute]
-        public bool CommandEnabled {  get; set; }
+        public bool CommandEnabled { get; set; }
 
         public ScriptCommand()
         {
@@ -94,8 +95,6 @@ namespace sharpRPA.Core.AutomationCommands
             this.DefaultPause = 250;
             this.IsCommented = false;
         }
-
-       
 
         public virtual void RunCommand(object sender)
         {
@@ -110,12 +109,12 @@ namespace sharpRPA.Core.AutomationCommands
         {
             return SelectionName;
         }
-
-       
     }
-    #endregion
+
+    #endregion Base Command
 
     #region Legacy IE Web Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("IE Browser Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to create a new IE web browser session.")]
@@ -134,23 +133,18 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             var newBrowserSession = new SHDocVw.InternetExplorer();
             newBrowserSession.Visible = true;
             sendingInstance.appInstances.Add(v_InstanceName, newBrowserSession);
-
-          
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("IE Browser Commands")]
@@ -165,7 +159,6 @@ namespace sharpRPA.Core.AutomationCommands
         [Attributes.PropertyAttributes.PropertyDescription("Please Select or Enter the Browser Name")]
         public string v_IEBrowserName { get; set; }
 
-
         public IEBrowserFindBrowserCommand()
         {
             this.CommandName = "IEBrowserFindBrowserCommand";
@@ -174,56 +167,45 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             bool browserFound = false;
             var shellWindows = new ShellWindows();
             foreach (IWebBrowser2 shellWindow in shellWindows)
             {
-
                 if ((shellWindow.Document is MSHTML.HTMLDocument) && (shellWindow.Document.Title == v_IEBrowserName))
                 {
                     sendingInstance.appInstances.Add(v_InstanceName, shellWindow.Application);
                     browserFound = true;
                     break;
                 }
-
             }
 
             //try partial match
             if (!browserFound)
             {
-          
                 foreach (IWebBrowser2 shellWindow in shellWindows)
                 {
-
                     if ((shellWindow.Document is MSHTML.HTMLDocument) && (shellWindow.Document.Title.Contains(v_IEBrowserName)))
                     {
                         sendingInstance.appInstances.Add(v_InstanceName, shellWindow.Application);
                         browserFound = true;
                         break;
                     }
-
                 }
-
-              
             }
 
             if (!browserFound)
             {
                 throw new Exception("Browser was not found!");
             }
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Browser Name: '" + v_IEBrowserName + "', Instance Name: '" + v_InstanceName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("IE Browser Commands")]
@@ -247,10 +229,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -258,14 +238,11 @@ namespace sharpRPA.Core.AutomationCommands
                 var browserInstance = (SHDocVw.InternetExplorer)browserObject;
                 browserInstance.Navigate(v_URL.ConvertToUserVariable(sender));
                 WaitForReadyState(browserInstance);
-
             }
             else
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
@@ -274,7 +251,6 @@ namespace sharpRPA.Core.AutomationCommands
         }
         private void WaitForReadyState(SHDocVw.InternetExplorer ieInstance)
         {
-
             DateTime waitExpires = DateTime.Now.AddSeconds(15);
 
             do
@@ -285,7 +261,6 @@ namespace sharpRPA.Core.AutomationCommands
 
             while ((ieInstance.ReadyState != SHDocVw.tagREADYSTATE.READYSTATE_COMPLETE) && (waitExpires > DateTime.Now));
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("IE Browser Commands")]
@@ -303,13 +278,10 @@ namespace sharpRPA.Core.AutomationCommands
             this.SelectionName = "IE Browser - Close Browser";
             this.CommandEnabled = true;
             this.v_InstanceName = "default";
-
         }
-
 
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -322,15 +294,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("IE Browser Commands")]
@@ -370,10 +339,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.v_WebActionParameterTable.Columns.Add("Parameter Value");
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
 
@@ -388,7 +355,6 @@ namespace sharpRPA.Core.AutomationCommands
                 matchFoundColumn.DefaultValue = false;
                 searchTable.Columns.Add(matchFoundColumn);
 
-
                 var elementSearchProperties = from rws in searchTable.AsEnumerable()
                                               where rws.Field<string>("Enabled") == "True"
                                               select rws;
@@ -397,7 +363,6 @@ namespace sharpRPA.Core.AutomationCommands
 
                 foreach (IHTMLElement element in browserInstance.Document.All)
                 {
-
                     qualifyingElementFound = FindQualifyingElement(elementSearchProperties, element);
 
                     if ((qualifyingElementFound) && (v_WebAction == "Invoke Click"))
@@ -414,14 +379,12 @@ namespace sharpRPA.Core.AutomationCommands
                         //inputs need to be validated
 
                         int userXAdjust = Convert.ToInt32((from rw in v_WebActionParameterTable.AsEnumerable()
-                                                where rw.Field<string>("Parameter Name") == "X Adjustment"
-                                                select rw.Field<string>("Parameter Value")).FirstOrDefault());
-
+                                                           where rw.Field<string>("Parameter Name") == "X Adjustment"
+                                                           select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
                         int userYAdjust = Convert.ToInt32((from rw in v_WebActionParameterTable.AsEnumerable()
-                                          where rw.Field<string>("Parameter Name") == "Y Adjustment"
-                                          select rw.Field<string>("Parameter Value")).FirstOrDefault());
-
+                                                           where rw.Field<string>("Parameter Name") == "Y Adjustment"
+                                                           select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
                         var ieClientLocation = User32Functions.GetWindowPosition(new IntPtr(browserInstance.HWND));
 
@@ -433,85 +396,58 @@ namespace sharpRPA.Core.AutomationCommands
 
                         break;
                     }
-
                     else if ((qualifyingElementFound) && (v_WebAction == "Set Attribute"))
                     {
-
-
                         string attributeName = (from rw in v_WebActionParameterTable.AsEnumerable()
                                                 where rw.Field<string>("Parameter Name") == "Attribute Name"
                                                 select rw.Field<string>("Parameter Value")).FirstOrDefault();
-
 
                         string valueToSet = (from rw in v_WebActionParameterTable.AsEnumerable()
                                              where rw.Field<string>("Parameter Name") == "Value To Set"
                                              select rw.Field<string>("Parameter Value")).FirstOrDefault();
 
-       
                         valueToSet = valueToSet.ConvertToUserVariable(sender);
-
 
                         element.setAttribute(attributeName, valueToSet);
                         break;
-
-
                     }
                     else if ((qualifyingElementFound) && (v_WebAction == "Get Attribute"))
                     {
-
-
                         string attributeName = (from rw in v_WebActionParameterTable.AsEnumerable()
                                                 where rw.Field<string>("Parameter Name") == "Attribute Name"
                                                 select rw.Field<string>("Parameter Value")).FirstOrDefault();
-
 
                         string variableName = (from rw in v_WebActionParameterTable.AsEnumerable()
                                                where rw.Field<string>("Parameter Name") == "Variable Name"
                                                select rw.Field<string>("Parameter Value")).FirstOrDefault();
 
-
                         string convertedAttribute = Convert.ToString(element.getAttribute(attributeName));
 
-
                         convertedAttribute.StoreInUserVariable(sender, variableName);
-                     
-
 
                         break;
-
-
                     }
-                  
                 }
 
                 if (!qualifyingElementFound)
                 {
                     throw new Exception("Could not find the element!");
                 }
-
-
             }
-
             else
             {
                 throw new Exception("Session Instance was not found");
             }
         }
 
-
         private bool FindQualifyingElement(EnumerableRowCollection<DataRow> elementSearchProperties, IHTMLElement element)
+        {
+            foreach (DataRow seachCriteria in elementSearchProperties)
             {
-
-
-           foreach (DataRow seachCriteria in elementSearchProperties)
-            {
-
-
                 string searchPropertyName = seachCriteria.Field<string>("Property Name");
                 string searchPropertyValue = seachCriteria.Field<string>("Property Value");
                 string searchPropertyFound = seachCriteria.Field<string>("Match Found");
 
-                            
                 searchPropertyFound = "False";
 
                 if (element.GetType().GetProperty(searchPropertyName) == null)
@@ -544,17 +480,14 @@ namespace sharpRPA.Core.AutomationCommands
                         seachCriteria.SetField<string>("Match Found", "False");
                     }
                 }
-
             }
 
             foreach (var seachCriteria in elementSearchProperties)
             {
-                Console.WriteLine (seachCriteria.Field<string>("Property Value"));
+                Console.WriteLine(seachCriteria.Field<string>("Property Value"));
             }
 
-              
-
-                return elementSearchProperties.Where(seachCriteria => seachCriteria.Field<string>("Match Found") == "True").Count() == elementSearchProperties.Count();
+            return elementSearchProperties.Where(seachCriteria => seachCriteria.Field<string>("Match Found") == "True").Count() == elementSearchProperties.Count();
         }
 
         private int FindElementXPosition(MSHTML.IHTMLElement obj)
@@ -594,7 +527,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         private void WaitForReadyState(SHDocVw.InternetExplorer ieInstance)
         {
-
             DateTime waitExpires = DateTime.Now.AddSeconds(15);
 
             do
@@ -605,11 +537,12 @@ namespace sharpRPA.Core.AutomationCommands
 
             while ((ieInstance.ReadyState != SHDocVw.tagREADYSTATE.READYSTATE_COMPLETE) && (waitExpires > DateTime.Now));
         }
-
     }
-    #endregion
+
+    #endregion Legacy IE Web Commands
 
     #region Web Selenium
+
     [Serializable]
     [Attributes.ClassAttributes.Group("Web Browser Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to create a new Selenium web browser session.")]
@@ -628,12 +561,10 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
-            var driverPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), "Resources");       
+            var driverPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath), "Resources");
             OpenQA.Selenium.Chrome.ChromeDriverService driverService = OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(driverPath);
             //driverService.HideCommandPromptWindow = true;
 
@@ -646,14 +577,12 @@ namespace sharpRPA.Core.AutomationCommands
             }
 
             sendingInstance.appInstances.Add(v_InstanceName, newSeleniumSession);
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
     }
 
     [Serializable]
@@ -678,10 +607,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -693,8 +620,6 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
@@ -703,7 +628,6 @@ namespace sharpRPA.Core.AutomationCommands
         }
         private void WaitForReadyState(SHDocVw.InternetExplorer ieInstance)
         {
-
             DateTime waitExpires = DateTime.Now.AddSeconds(15);
 
             do
@@ -714,7 +638,6 @@ namespace sharpRPA.Core.AutomationCommands
 
             while ((ieInstance.ReadyState != SHDocVw.tagREADYSTATE.READYSTATE_COMPLETE) && (waitExpires > DateTime.Now));
         }
-
     }
 
     [Serializable]
@@ -735,10 +658,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -750,16 +671,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-       
-
     }
 
     [Serializable]
@@ -780,10 +697,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -795,16 +710,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Web Browser Commands")]
@@ -824,10 +735,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -839,16 +748,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Web Browser Commands")]
@@ -868,10 +773,8 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
@@ -884,14 +787,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Session Instance was not found");
             }
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Instance Name: '" + v_InstanceName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Web Browser Commands")]
@@ -923,7 +824,6 @@ namespace sharpRPA.Core.AutomationCommands
         [Attributes.PropertyAttributes.PropertyUISelectionOption("Get Text")]
         [Attributes.PropertyAttributes.PropertyUISelectionOption("Get Attribute")]
         [Attributes.PropertyAttributes.PropertyUISelectionOption("Wait For Element To Exist")]
-       
         public string v_SeleniumElementAction { get; set; }
         [XmlElement]
         [Attributes.PropertyAttributes.PropertyDescription("Additional Parameters")]
@@ -939,24 +839,17 @@ namespace sharpRPA.Core.AutomationCommands
             this.v_WebActionParameterTable.TableName = DateTime.Now.ToString("WebActionParamTable" + DateTime.Now.ToString("MMddyy.hhmmss"));
             this.v_WebActionParameterTable.Columns.Add("Parameter Name");
             this.v_WebActionParameterTable.Columns.Add("Parameter Value");
-
         }
-
 
         public override void RunCommand(object sender)
         {
-          
             object browserObject = null;
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out browserObject))
             {
                 var seleniumInstance = (OpenQA.Selenium.Chrome.ChromeDriver)browserObject;
 
-
-             
-
                 OpenQA.Selenium.IWebElement element = null;
-
 
                 if (v_SeleniumElementAction == "Wait For Element To Exist")
                 {
@@ -970,7 +863,7 @@ namespace sharpRPA.Core.AutomationCommands
                     {
                         try
                         {
-                            element = FindElement(seleniumInstance); 
+                            element = FindElement(seleniumInstance);
                             break;
                         }
                         catch (Exception)
@@ -986,42 +879,44 @@ namespace sharpRPA.Core.AutomationCommands
                     }
 
                     return;
-
                 }
                 else
                 {
                     element = FindElement(seleniumInstance);
                 }
 
-         
-               
                 switch (v_SeleniumSearchType)
                 {
                     case "Find Element By XPath":
                         element = seleniumInstance.FindElementByXPath(v_SeleniumSearchParameter);
                         break;
+
                     case "Find Element By ID":
                         element = seleniumInstance.FindElementById(v_SeleniumSearchParameter);
                         break;
+
                     case "Find Element By Name":
                         element = seleniumInstance.FindElementByName(v_SeleniumSearchParameter);
                         break;
+
                     case "Find Element By Tag Name":
                         element = seleniumInstance.FindElementByTagName(v_SeleniumSearchParameter);
                         break;
+
                     case "Find Element By Class Name":
                         element = seleniumInstance.FindElementByClassName(v_SeleniumSearchParameter);
                         break;
+
                     default:
                         throw new Exception("Search Type was not found");
                 }
-
 
                 switch (v_SeleniumElementAction)
                 {
                     case "Invoke Click":
                         element.Click();
                         break;
+
                     case "Left Click":
                     case "Right Click":
                     case "Middle Click":
@@ -1030,30 +925,27 @@ namespace sharpRPA.Core.AutomationCommands
                                                            where rw.Field<string>("Parameter Name") == "X Adjustment"
                                                            select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
-
                         int userYAdjust = Convert.ToInt32((from rw in v_WebActionParameterTable.AsEnumerable()
                                                            where rw.Field<string>("Parameter Name") == "Y Adjustment"
                                                            select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
-                        var elementLocation = element.Location;                 
+                        var elementLocation = element.Location;
                         SendMouseMoveCommand newMouseMove = new SendMouseMoveCommand();
                         var seleniumWindowPosition = seleniumInstance.Manage().Window.Position;
-                        newMouseMove.v_XMousePosition = (seleniumWindowPosition.X + elementLocation.X  + 30 + userXAdjust); // added 30 for offset
-                        newMouseMove.v_YMousePosition = (seleniumWindowPosition.Y + elementLocation.Y +  130 + userYAdjust); //added 130 for offset
+                        newMouseMove.v_XMousePosition = (seleniumWindowPosition.X + elementLocation.X + 30 + userXAdjust); // added 30 for offset
+                        newMouseMove.v_YMousePosition = (seleniumWindowPosition.Y + elementLocation.Y + 130 + userYAdjust); //added 130 for offset
                         newMouseMove.v_MouseClick = v_SeleniumElementAction;
                         newMouseMove.RunCommand(sender);
                         break;
+
                     case "Set Text":
 
                         string textToSet = (from rw in v_WebActionParameterTable.AsEnumerable()
-                                           where rw.Field<string>("Parameter Name") == "Text To Set"
-                                           select rw.Field<string>("Parameter Value")).FirstOrDefault();
+                                            where rw.Field<string>("Parameter Name") == "Text To Set"
+                                            select rw.Field<string>("Parameter Value")).FirstOrDefault();
 
                         string[] potentialKeyPresses = textToSet.Split('{', '}');
 
-                       
-
-  
                         Type seleniumKeys = typeof(OpenQA.Selenium.Keys);
                         System.Reflection.FieldInfo[] fields = seleniumKeys.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
@@ -1075,9 +967,9 @@ namespace sharpRPA.Core.AutomationCommands
                         }
 
                         break;
+
                     case "Get Text":
                     case "Get Attribute":
-
 
                         string variableName = (from rw in v_WebActionParameterTable.AsEnumerable()
                                                where rw.Field<string>("Parameter Name") == "Variable Name"
@@ -1086,7 +978,6 @@ namespace sharpRPA.Core.AutomationCommands
                         string attributeName = (from rw in v_WebActionParameterTable.AsEnumerable()
                                                 where rw.Field<string>("Parameter Name") == "Attribute Name"
                                                 select rw.Field<string>("Parameter Value")).FirstOrDefault();
-
 
                         string elementValue;
                         if (v_SeleniumElementAction == "Get Text")
@@ -1101,18 +992,15 @@ namespace sharpRPA.Core.AutomationCommands
                         elementValue.StoreInUserVariable(sender, variableName);
 
                         break;
+
                     default:
                         throw new Exception("Element Action was not found");
                 }
-
-
-
             }
             else
             {
                 throw new Exception("Session Instance was not found");
             }
-
         }
 
         private OpenQA.Selenium.IWebElement FindElement(OpenQA.Selenium.Chrome.ChromeDriver seleniumInstance)
@@ -1124,37 +1012,37 @@ namespace sharpRPA.Core.AutomationCommands
                 case "Find Element By XPath":
                     element = seleniumInstance.FindElementByXPath(v_SeleniumSearchParameter);
                     break;
+
                 case "Find Element By ID":
                     element = seleniumInstance.FindElementById(v_SeleniumSearchParameter);
                     break;
+
                 case "Find Element By Name":
                     element = seleniumInstance.FindElementByName(v_SeleniumSearchParameter);
                     break;
+
                 case "Find Element By Tag Name":
                     element = seleniumInstance.FindElementByTagName(v_SeleniumSearchParameter);
                     break;
+
                 case "Find Element By Class Name":
                     element = seleniumInstance.FindElementByClassName(v_SeleniumSearchParameter);
                     break;
+
                 default:
                     throw new Exception("Search Type was not found");
             }
-            
+
             return element;
-
         }
-
-
-
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [" + v_SeleniumSearchType + " and " + v_SeleniumElementAction + ", Instance Name: '" + v_InstanceName + "']";
         }
-
     }
 
-    #endregion
+    #endregion Web Selenium
 
     #region Misc Commands
 
@@ -1184,8 +1072,6 @@ namespace sharpRPA.Core.AutomationCommands
         {
             return base.GetDisplayValue() + " [Wait for " + v_PauseLength + "ms]";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
@@ -1198,7 +1084,6 @@ namespace sharpRPA.Core.AutomationCommands
         [Attributes.PropertyAttributes.PropertyUISelectionOption("Stop Processing")]
         [Attributes.PropertyAttributes.PropertyUISelectionOption("Continue Processing")]
         public string v_ErrorHandlingAction { get; set; }
-
 
         public ErrorHandlingCommand()
         {
@@ -1213,13 +1098,10 @@ namespace sharpRPA.Core.AutomationCommands
             engineForm.errorHandling = this;
         }
 
-
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Action: " + v_ErrorHandlingAction + "]";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1239,25 +1121,21 @@ namespace sharpRPA.Core.AutomationCommands
         }
         public override void RunCommand(object sender)
         {
-
             IntPtr hWnd = User32Functions.FindWindow(v_WindowName);
             if (hWnd != IntPtr.Zero)
             {
                 User32Functions.SetWindowState(hWnd, User32Functions.WindowState.SW_SHOWNORMAL);
-                User32Functions.SetForegroundWindow(hWnd); 
+                User32Functions.SetForegroundWindow(hWnd);
             }
             else
             {
                 throw new Exception("Window not found");
             }
-
-
         }
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1284,8 +1162,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
-   
             IntPtr hWnd = User32Functions.FindWindow(v_WindowName);
 
             if (hWnd != IntPtr.Zero)
@@ -1296,14 +1172,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Window not found");
             }
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + ", Target Coordinates (" + v_XWindowPosition + "," + v_YWindowPosition + ")]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1332,22 +1206,18 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
-
             IntPtr hWnd = User32Functions.FindWindow(v_WindowName);
 
             if (hWnd != IntPtr.Zero)
             {
-                User32Functions.SetWindowSize(hWnd,v_XWindowSize, v_YWindowSize);
+                User32Functions.SetWindowSize(hWnd, v_XWindowSize, v_YWindowSize);
             }
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + ", Target Size (" + v_XWindowSize + "," + v_YWindowSize + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1368,27 +1238,21 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
             IntPtr hWnd = User32Functions.FindWindow(v_WindowName);
 
             if (hWnd != IntPtr.Zero)
             {
-        
                 User32Functions.CloseWindow(hWnd);
-
             }
             else
             {
                 throw new Exception("Window not found");
             }
-
-
         }
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1415,7 +1279,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
             IntPtr hWnd = User32Functions.FindWindow(v_WindowName);
 
             if (hWnd != IntPtr.Zero) //If found
@@ -1426,31 +1289,30 @@ namespace sharpRPA.Core.AutomationCommands
                     case "Maximize":
                         WINDOW_STATE = User32Functions.WindowState.SW_MAXIMIZE;
                         break;
+
                     case "Minimize":
                         WINDOW_STATE = User32Functions.WindowState.SW_MINIMIZE;
                         break;
+
                     case "Restore":
                         WINDOW_STATE = User32Functions.WindowState.SW_RESTORE;
                         break;
+
                     default:
                         break;
                 }
 
                 User32Functions.SetWindowState(hWnd, WINDOW_STATE);
-         
             }
             else
             {
                 throw new Exception("Window not found");
             }
-
-
         }
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: " + v_WindowName + ", Window State: " + v_WindowState + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
@@ -1512,7 +1374,6 @@ namespace sharpRPA.Core.AutomationCommands
     [Attributes.ClassAttributes.ImplementationDescription("This command is for visual purposes only")]
     public class CommentCommand : ScriptCommand
     {
-
         public CommentCommand()
         {
             this.CommandName = "CommentCommand";
@@ -1525,8 +1386,6 @@ namespace sharpRPA.Core.AutomationCommands
         {
             return "// Comment: " + this.v_Comment;
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
@@ -1549,19 +1408,16 @@ namespace sharpRPA.Core.AutomationCommands
             this.v_AutoCloseAfter = 0;
         }
 
-
         public override void RunCommand(object sender)
         {
             UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
 
-
-
             v_Message = v_Message.ConvertToUserVariable(sender);
-            var result = engineForm.Invoke(new Action(() => 
+            var result = engineForm.Invoke(new Action(() =>
             {
                 engineForm.ShowMessage(v_Message, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
             }
-            
+
             ));
             //System.Windows.Forms.MessageBox.Show(ConvertToUserVariabledText, "Message Box Command", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
@@ -1570,7 +1426,6 @@ namespace sharpRPA.Core.AutomationCommands
         {
             return base.GetDisplayValue() + " [Message: " + v_Message + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Programs/Process Commands")]
@@ -1593,15 +1448,12 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "StartProcessCommand";
             this.SelectionName = "Process - Start Process";
             this.CommandEnabled = true;
-
         }
 
         public override void RunCommand(object sender)
         {
-       
             v_ProgramName = v_ProgramName.ConvertToUserVariable(sender);
             v_ProgramArgs = v_ProgramArgs.ConvertToUserVariable(sender);
-
 
             if (v_ProgramArgs == "")
             {
@@ -1613,15 +1465,12 @@ namespace sharpRPA.Core.AutomationCommands
             }
 
             System.Threading.Thread.Sleep(2000);
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Process: " + v_ProgramName + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Programs/Process Commands")]
@@ -1638,24 +1487,20 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "StopProgramCommand";
             this.SelectionName = "Process - Stop Process";
             this.CommandEnabled = true;
-
         }
 
         public override void RunCommand(object sender)
         {
-
             var processes = System.Diagnostics.Process.GetProcessesByName(v_ProgramShortName);
 
             foreach (var prc in processes)
                 prc.CloseMainWindow();
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Process: " + v_ProgramShortName + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Programs/Process Commands")]
@@ -1672,15 +1517,11 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "RunScriptCommand";
             this.SelectionName = "Script - Run Script";
             this.CommandEnabled = true;
-
         }
 
         public override void RunCommand(object sender)
         {
-
             {
-
-
                 System.Diagnostics.Process scriptProc = new System.Diagnostics.Process();
                 scriptProc.StartInfo.FileName = v_ScriptPath;
                 scriptProc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -1688,20 +1529,13 @@ namespace sharpRPA.Core.AutomationCommands
                 scriptProc.WaitForExit();
 
                 scriptProc.Close();
-
-
-
             }
-
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Script Path: " + v_ScriptPath + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Variable Commands")]
@@ -1721,12 +1555,10 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "VariableCommand";
             this.SelectionName = "Variable - Set Variable";
             this.CommandEnabled = true;
-
         }
 
         public override void RunCommand(object sender)
         {
-
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             var requiredVariable = sendingInstance.variableList.Where(var => var.variableName == v_userVariableName).FirstOrDefault();
 
@@ -1738,19 +1570,12 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 throw new Exception("Variable was not found. Enclose variables within brackets, ex. [vVariable]");
             }
-
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Apply '" + v_Input + "' to Variable '" + v_userVariableName + "']";
         }
-
-       
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Clipboard Commands")]
@@ -1767,7 +1592,6 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandName = "ClipboardCommand";
             this.SelectionName = "Clipboard - Get Text";
             this.CommandEnabled = true;
-
         }
 
         public override void RunCommand(object sender)
@@ -1779,8 +1603,6 @@ namespace sharpRPA.Core.AutomationCommands
         {
             return base.GetDisplayValue() + " [Get Text From Clipboard and Apply to Variable: " + v_userVariableName + "]";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Misc Commands")]
@@ -1829,9 +1651,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
-
-
             string varSMTPHost = v_SMTPHost.ConvertToUserVariable(sender);
             string varSMTPPort = v_SMTPPort.ToString().ConvertToUserVariable(sender);
             string varSMTPUserName = v_SMTPUserName.ConvertToUserVariable(sender);
@@ -1842,25 +1661,23 @@ namespace sharpRPA.Core.AutomationCommands
             string varSMTPSubject = v_SMTPSubject.ConvertToUserVariable(sender);
             string varSMTPBody = v_SMTPBody.ConvertToUserVariable(sender);
 
-
-
             var client = new SmtpClient(varSMTPHost, int.Parse(varSMTPPort));
             client.Credentials = new System.Net.NetworkCredential(varSMTPUserName, varSMTPPassword);
             client.EnableSsl = true;
 
             client.Send(varSMTPFromEmail, varSMTPToEmail, varSMTPSubject, varSMTPBody);
         }
-    
+
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [To Address: '" + v_SMTPToEmail + "']";
         }
-
-
     }
-    #endregion
+
+    #endregion Misc Commands
 
     #region Input Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("Input Commands")]
     [Attributes.ClassAttributes.Description("Use this command to send key strokes to the current or a targeted window.")]
@@ -1882,29 +1699,25 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender)
         {
-
             if (v_WindowName != "Current Window")
             {
                 ActivateWindowCommand activateWindow = new ActivateWindowCommand();
                 activateWindow.v_WindowName = v_WindowName;
-                activateWindow.RunCommand(sender);            
+                activateWindow.RunCommand(sender);
             }
 
             v_TextToSend = v_TextToSend.ConvertToUserVariable(sender);
             System.Windows.Forms.SendKeys.SendWait(v_TextToSend);
 
             System.Threading.Thread.Sleep(500);
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Send '" + v_TextToSend + "' to '" + v_WindowName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Input Commands")]
@@ -1939,21 +1752,16 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
-
         public override void RunCommand(object sender)
         {
-
             User32Functions.SetCursorPosition(v_XMousePosition, v_YMousePosition);
             User32Functions.SendMouseClick(v_MouseClick, v_XMousePosition, v_YMousePosition);
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Coordinates (" + v_XMousePosition + "," + v_YMousePosition + ") Click: " + v_MouseClick + "]";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Input Commands")]
@@ -1992,8 +1800,6 @@ namespace sharpRPA.Core.AutomationCommands
 
             var requiredItem = searchItem.FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.NameProperty, v_AutomationHandleName));
 
-
-
             var newActivateWindow = new ActivateWindowCommand();
             newActivateWindow.v_WindowName = v_AutomationWindowName;
             newActivateWindow.RunCommand(sender);
@@ -2007,12 +1813,10 @@ namespace sharpRPA.Core.AutomationCommands
             newMouseMove.v_YMousePosition = (int)newPoint.Y;
             newMouseMove.v_MouseClick = v_MouseClick;
             newMouseMove.RunCommand(sender);
-
         }
 
         public List<string> FindHandleObjects(string windowTitle)
         {
-
             var automationElement = AutomationElement.RootElement.FindFirst
     (TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty,
     windowTitle));
@@ -2024,22 +1828,16 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 if (item.Current.Name.Trim() != string.Empty)
                     handleList.Add(item.Current.Name);
-
             }
             // handleList = handleList.OrderBy(x => x).ToList();
 
             return handleList;
-
-
         }
 
         public override string GetDisplayValue()
         {
-
-
             return base.GetDisplayValue() + " [Perform " + v_MouseClick + " on '" + v_AutomationHandleName + "' in Window '" + v_AutomationWindowName + "']";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Input Commands")]
@@ -2080,12 +1878,10 @@ namespace sharpRPA.Core.AutomationCommands
             newVariableCommand.v_userVariableName = v_userVariableName;
             newVariableCommand.v_Input = requiredItem.Current.Name;
             newVariableCommand.RunCommand(sender);
-
         }
 
         public string FindHandleID(string windowTitle, string nameProperty)
         {
-
             var automationElement = AutomationElement.RootElement.FindFirst
     (TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty,
     windowTitle));
@@ -2093,19 +1889,15 @@ namespace sharpRPA.Core.AutomationCommands
             var requiredItem = automationElement.FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.NameProperty, nameProperty));
 
             return requiredItem.Current.AutomationId;
-
         }
 
         public override string GetDisplayValue()
         {
-
-
             return base.GetDisplayValue() + " [Set Variable [" + v_userVariableName + "] From ID " + v_AutomationID + " (" + v_AutomationHandleDisplayName + ") in Window '" + v_AutomationWindowName + "']";
         }
-
-
     }
-    #endregion
+
+    #endregion Input Commands
 
     #region Loop Commands
 
@@ -2132,12 +1924,10 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override void RunCommand(object sender, Core.Script.ScriptAction parentCommand, System.ComponentModel.BackgroundWorker bgw)
         {
             Core.AutomationCommands.BeginLoopCommand loopCommand = (Core.AutomationCommands.BeginLoopCommand)parentCommand.ScriptCommand;
             var engineForm = (UI.Forms.frmScriptEngine)sender;
-
 
             int loopTimes;
             Script.ScriptVariable complexVarible = null;
@@ -2152,13 +1942,10 @@ namespace sharpRPA.Core.AutomationCommands
                 loopTimes = listToLoop.Count();
             }
 
-
-
             for (int i = 0; i < loopTimes; i++)
             {
                 if (complexVarible != null)
                     complexVarible.currentPosition = i;
-
 
                 bgw.ReportProgress(0, new object[] { loopCommand.LineNumber, "Starting Loop Number " + (i + 1) + "/" + loopTimes + " From Line " + loopCommand.LineNumber });
 
@@ -2170,15 +1957,11 @@ namespace sharpRPA.Core.AutomationCommands
                 }
 
                 bgw.ReportProgress(0, new object[] { loopCommand.LineNumber, "Finished Loop From Line " + loopCommand.LineNumber });
-
             }
-
         }
 
-        
         public override string GetDisplayValue()
         {
-
             if (v_LoopType == "Loop Number Of Times")
             {
                 return "Loop " + v_LoopParameter + " Times";
@@ -2187,9 +1970,7 @@ namespace sharpRPA.Core.AutomationCommands
             {
                 return "Loop List Variable '" + v_LoopParameter + "'";
             }
-               
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Loop Commands")]
@@ -2197,7 +1978,6 @@ namespace sharpRPA.Core.AutomationCommands
     [Attributes.ClassAttributes.ImplementationDescription("This command is used by the serializer to signify the end point of a loop.")]
     public class EndLoopCommand : ScriptCommand
     {
-   
         public EndLoopCommand()
         {
             this.DefaultPause = 0;
@@ -2206,16 +1986,16 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override string GetDisplayValue()
         {
             return "End Loop";
         }
     }
 
-    #endregion
+    #endregion Loop Commands
 
     #region Excel Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("Excel Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to open the Excel Application.")]
@@ -2225,7 +2005,7 @@ namespace sharpRPA.Core.AutomationCommands
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please Enter the instance name")]
         public string v_InstanceName { get; set; }
-      
+
         public ExcelCreateApplicationCommand()
         {
             this.CommandName = "ExcelOpenApplicationCommand";
@@ -2238,7 +2018,6 @@ namespace sharpRPA.Core.AutomationCommands
             var newExcelSession = new Microsoft.Office.Interop.Excel.Application();
             newExcelSession.Visible = true;
             sendingInstance.appInstances.Add(v_InstanceName, newExcelSession);
-
         }
         public override string GetDisplayValue()
         {
@@ -2271,9 +2050,8 @@ namespace sharpRPA.Core.AutomationCommands
             if (sendingInstance.appInstances.TryGetValue(v_InstanceName, out excelObject))
             {
                 Microsoft.Office.Interop.Excel.Application excelInstance = (Microsoft.Office.Interop.Excel.Application)excelObject;
-                excelInstance.Workbooks.Open(v_FilePath);           
+                excelInstance.Workbooks.Open(v_FilePath);
             }
-
         }
         public override string GetDisplayValue()
         {
@@ -2305,8 +2083,6 @@ namespace sharpRPA.Core.AutomationCommands
                 Microsoft.Office.Interop.Excel.Application excelInstance = (Microsoft.Office.Interop.Excel.Application)excelObject;
                 excelInstance.Workbooks.Add();
             }
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2341,8 +2117,6 @@ namespace sharpRPA.Core.AutomationCommands
                 Microsoft.Office.Interop.Excel.Worksheet excelSheet = excelInstance.ActiveSheet;
                 excelSheet.Range[v_CellLocation].Select();
             }
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2385,8 +2159,6 @@ namespace sharpRPA.Core.AutomationCommands
                 Microsoft.Office.Interop.Excel.Worksheet excelSheet = excelInstance.ActiveSheet;
                 excelSheet.Range[v_ExcelCellAddress].Value = v_TextToSet;
             }
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2429,19 +2201,13 @@ namespace sharpRPA.Core.AutomationCommands
                 Microsoft.Office.Interop.Excel.Worksheet excelSheet = excelInstance.ActiveSheet;
                 var cellValue = (string)excelSheet.Range[v_ExcelCellAddress].Value;
                 cellValue.StoreInUserVariable(sender, v_userVariableName);
-       
-
             }
-
-
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Get Value From '" + v_ExcelCellAddress + "' and apply to variable '" + v_userVariableName + "', Instance Name: '" + v_InstanceName + "']";
         }
-
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("Excel Commands")]
@@ -2470,8 +2236,6 @@ namespace sharpRPA.Core.AutomationCommands
                 Microsoft.Office.Interop.Excel.Application excelInstance = (Microsoft.Office.Interop.Excel.Application)excelObject;
                 excelInstance.Run(v_MacroName);
             }
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2506,8 +2270,6 @@ namespace sharpRPA.Core.AutomationCommands
                 excelInstance.ActiveWorkbook.Close(v_ExcelSaveOnExit);
                 excelInstance.Quit();
             }
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2515,9 +2277,10 @@ namespace sharpRPA.Core.AutomationCommands
         }
     }
 
-    #endregion
+    #endregion Excel Commands
 
     #region String Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("String Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to trim a string")]
@@ -2526,7 +2289,6 @@ namespace sharpRPA.Core.AutomationCommands
     {
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select a variable to modify")]
-
         public string v_userVariableName { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Start from Position")]
@@ -2536,7 +2298,6 @@ namespace sharpRPA.Core.AutomationCommands
         public int v_stringLength { get; set; }
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Please select the variable to receive the changes")]
-
         public string v_applyToVariableName { get; set; }
         public StringSubstringCommand()
         {
@@ -2547,11 +2308,7 @@ namespace sharpRPA.Core.AutomationCommands
         }
         public override void RunCommand(object sender)
         {
-
-           
-
             v_userVariableName = v_userVariableName.ConvertToUserVariable(sender);
-
 
             //apply substring
             if (v_stringLength >= 0)
@@ -2564,8 +2321,6 @@ namespace sharpRPA.Core.AutomationCommands
             }
 
             v_userVariableName.StoreInUserVariable(sender, v_applyToVariableName);
-
-
         }
         public override string GetDisplayValue()
         {
@@ -2593,12 +2348,9 @@ namespace sharpRPA.Core.AutomationCommands
             this.SelectionName = "String - Split";
             this.v_applyConvertToUserVariableName = "default";
             this.CommandEnabled = true;
- 
         }
         public override void RunCommand(object sender)
         {
-
-        
             var stringVariable = v_userVariableName.ConvertToUserVariable(sender);
 
             List<string> splitString;
@@ -2611,26 +2363,22 @@ namespace sharpRPA.Core.AutomationCommands
                 splitString = stringVariable.Split(new string[] { v_splitCharacter }, StringSplitOptions.None).ToList();
             }
 
-            
-
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
 
             //get complex variable from engine and assign
             var requiredComplexVariable = sendingInstance.variableList.Where(x => x.variableName == v_applyConvertToUserVariableName).FirstOrDefault();
             requiredComplexVariable.variableValue = splitString;
-
-
-
-
         }
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Split '" + v_userVariableName + "' by '" + v_splitCharacter + "' and apply to '" + v_applyConvertToUserVariableName + "']";
         }
     }
-    #endregion
+
+    #endregion String Commands
 
     #region If Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("If Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to evaluate a logical statement to determine if the statement is true.  Any 'BeginIf' command must have a following 'EndIf' command.")]
@@ -2657,9 +2405,7 @@ namespace sharpRPA.Core.AutomationCommands
             this.v_IfActionParameterTable.TableName = DateTime.Now.ToString("IfActionParamTable" + DateTime.Now.ToString("MMddyy.hhmmss"));
             this.v_IfActionParameterTable.Columns.Add("Parameter Name");
             this.v_IfActionParameterTable.Columns.Add("Parameter Value");
-
         }
-
 
         public override void RunCommand(object sender, Core.Script.ScriptAction parentCommand, System.ComponentModel.BackgroundWorker bgw)
         {
@@ -2682,8 +2428,6 @@ namespace sharpRPA.Core.AutomationCommands
 
                 bool ifResult = false;
 
-
-
                 decimal cdecValue1, cdecValue2;
 
                 switch (operand)
@@ -2691,34 +2435,35 @@ namespace sharpRPA.Core.AutomationCommands
                     case "is equal to":
                         ifResult = (value1 == value2);
                         break;
+
                     case "is not equal to":
                         ifResult = (value1 != value2);
                         break;
-                     case "is greater than":
+
+                    case "is greater than":
                         cdecValue1 = Convert.ToDecimal(value1);
                         cdecValue2 = Convert.ToDecimal(value2);
-                        ifResult = (cdecValue1 > cdecValue2);                                   
+                        ifResult = (cdecValue1 > cdecValue2);
                         break;
+
                     case "is greater than or equal to":
                         cdecValue1 = Convert.ToDecimal(value1);
                         cdecValue2 = Convert.ToDecimal(value2);
                         ifResult = (cdecValue1 >= cdecValue2);
                         break;
+
                     case "is less than":
                         cdecValue1 = Convert.ToDecimal(value1);
                         cdecValue2 = Convert.ToDecimal(value2);
                         ifResult = (cdecValue1 < cdecValue2);
                         break;
+
                     case "is less than or equal to":
                         cdecValue1 = Convert.ToDecimal(value1);
                         cdecValue2 = Convert.ToDecimal(value2);
                         ifResult = (cdecValue1 <= cdecValue2);
                         break;
-
                 }
-
-
-
 
                 int startIndex, endIndex, elseIndex;
                 if (parentCommand.AdditionalScriptCommands.Any(item => item.ScriptCommand is Core.AutomationCommands.ElseCommand))
@@ -2734,8 +2479,8 @@ namespace sharpRPA.Core.AutomationCommands
                     {
                         startIndex = elseIndex + 1;
                         endIndex = parentCommand.AdditionalScriptCommands.Count;
-                    }          
-                }              
+                    }
+                }
                 else if (ifResult)
                 {
                     startIndex = 0;
@@ -2746,23 +2491,14 @@ namespace sharpRPA.Core.AutomationCommands
                     return;
                 }
 
-
                 for (int i = startIndex; i < endIndex; i++)
                 {
                     if (bgw.CancellationPending)
                         return;
                     engineForm.ExecuteCommand(parentCommand.AdditionalScriptCommands[i], bgw);
                 }
-
             }
-
-
-
-
         }
-
-   
-
 
         public override string GetDisplayValue()
         {
@@ -2771,14 +2507,14 @@ namespace sharpRPA.Core.AutomationCommands
                 case "Value":
 
                     string value1 = ((from rw in v_IfActionParameterTable.AsEnumerable()
-                                     where rw.Field<string>("Parameter Name") == "Value1"
-                                     select rw.Field<string>("Parameter Value")).FirstOrDefault());
-                    string operand = ((from rw in v_IfActionParameterTable.AsEnumerable()
-                                      where rw.Field<string>("Parameter Name") == "Operand"
+                                      where rw.Field<string>("Parameter Name") == "Value1"
                                       select rw.Field<string>("Parameter Value")).FirstOrDefault());
-                    string value2 = ((from rw in v_IfActionParameterTable.AsEnumerable()
-                                       where rw.Field<string>("Parameter Name") == "Value2"
+                    string operand = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                       where rw.Field<string>("Parameter Name") == "Operand"
                                        select rw.Field<string>("Parameter Value")).FirstOrDefault());
+                    string value2 = ((from rw in v_IfActionParameterTable.AsEnumerable()
+                                      where rw.Field<string>("Parameter Name") == "Value2"
+                                      select rw.Field<string>("Parameter Value")).FirstOrDefault());
 
                     return "If (" + value1 + " " + operand + " " + value2 + ")";
 
@@ -2788,7 +2524,6 @@ namespace sharpRPA.Core.AutomationCommands
 
             return "";
         }
-
     }
     [Serializable]
     [Attributes.ClassAttributes.Group("If Commands")]
@@ -2796,7 +2531,6 @@ namespace sharpRPA.Core.AutomationCommands
     [Attributes.ClassAttributes.ImplementationDescription("This command is used by the serializer to signify the end point of an if.")]
     public class EndIfCommand : ScriptCommand
     {
-
         public EndIfCommand()
         {
             this.DefaultPause = 0;
@@ -2804,7 +2538,6 @@ namespace sharpRPA.Core.AutomationCommands
             this.SelectionName = "If - End If";
             this.CommandEnabled = true;
         }
-
 
         public override string GetDisplayValue()
         {
@@ -2817,7 +2550,6 @@ namespace sharpRPA.Core.AutomationCommands
     [Attributes.ClassAttributes.ImplementationDescription("TBD")]
     public class ElseCommand : ScriptCommand
     {
-
         public ElseCommand()
         {
             this.DefaultPause = 0;
@@ -2826,22 +2558,22 @@ namespace sharpRPA.Core.AutomationCommands
             this.CommandEnabled = true;
         }
 
-
         public override string GetDisplayValue()
         {
             return "Else";
         }
     }
-    #endregion
+
+    #endregion If Commands
 
     #region OCR and Image Commands
+
     [Serializable]
     [Attributes.ClassAttributes.Group("OCR and Image Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to covert an image file into text for parsing.")]
     [Attributes.ClassAttributes.ImplementationDescription("This command has a dependency on and implements OneNote OCR to achieve automation.")]
     public class OCRCommand : ScriptCommand
     {
-
         [XmlAttribute]
         [Attributes.PropertyAttributes.PropertyDescription("Select Image to OCR")]
         [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
@@ -2860,7 +2592,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-           
             var engineForm = (UI.Forms.frmScriptEngine)sender;
 
             var ocrEngine = new OneNoteOCRDll.OneNoteOCR();
@@ -2874,12 +2605,7 @@ namespace sharpRPA.Core.AutomationCommands
 
             //apply to user variable
             endResult.StoreInUserVariable(sender, v_userVariableName);
-
-
-          
-
         }
-
 
         public override string GetDisplayValue()
         {
@@ -2909,23 +2635,16 @@ namespace sharpRPA.Core.AutomationCommands
 
         public override void RunCommand(object sender)
         {
-
             var image = User32Functions.CaptureWindow(v_ScreenshotWindowName);
             string ConvertToUserVariabledString = v_FilePath.ConvertToUserVariable(sender);
             image.Save(ConvertToUserVariabledString);
-
-  
         }
 
         public override string GetDisplayValue()
         {
             return base.GetDisplayValue() + " [Target Window: '" + v_ScreenshotWindowName + "', File Path: '" + v_FilePath + "]";
         }
-
     }
-    #endregion
+
+    #endregion OCR and Image Commands
 }
-
-
-
-

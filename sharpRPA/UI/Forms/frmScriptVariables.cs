@@ -21,11 +21,10 @@ namespace sharpRPA.UI.Forms
 
         private void frmScriptVariables_Load(object sender, EventArgs e)
         {
-         
             dgvVariables.AutoGenerateColumns = false;
 
             ds = new BindingList<Core.Script.ScriptVariable>(scriptVariables);
-   
+
             DataGridViewColumn textColumn = new DataGridViewTextBoxColumn();
             textColumn.DataPropertyName = "variableName";
             textColumn.HeaderText = "Variable Name";
@@ -41,19 +40,15 @@ namespace sharpRPA.UI.Forms
             dgvVariables.Columns.Add(valueColumn);
 
             cboVariableView.SelectedIndex = 0;
-
         }
 
         private void btnAddVar_Click(object sender, EventArgs e)
         {
-
             this.DialogResult = DialogResult.OK;
-
         }
 
         private void dgvVariables_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -67,7 +62,7 @@ namespace sharpRPA.UI.Forms
 
             //remove potential null values
             ds.Where(f => f.variableName == null).ToList().ForEach(x => ds.Remove(x));
-            
+
             this.DialogResult = DialogResult.OK;
         }
 
@@ -89,7 +84,6 @@ namespace sharpRPA.UI.Forms
                 dgvVariables.DataSource = Core.Common.GenerateSystemVariables();
                 dgvVariables.ReadOnly = true;
             }
-
         }
     }
 }
