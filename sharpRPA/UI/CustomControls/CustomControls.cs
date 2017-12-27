@@ -244,6 +244,13 @@ namespace sharpRPA.UI.CustomControls
         public Font TitleFont { get; set; }
         public Color TitleForeColor { get; set; }
     }
+    public class UIFlowLayoutPanel : FlowLayoutPanel
+    {
+        public UIFlowLayoutPanel()
+        {
+            this.DoubleBuffered = true;
+        }
+    }
 
     #endregion Custom UI Components
 }
