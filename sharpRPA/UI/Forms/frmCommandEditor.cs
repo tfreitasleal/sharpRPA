@@ -61,10 +61,11 @@ namespace sharpRPA.UI.Forms
                 foreach (var commandClass in commandClasses)
                 {
                     var groupingAttribute = commandClass.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group), true);
-
+                    string groupAttribute = "";
                     if (groupingAttribute.Length > 0)
                     {
-                        var attribute = (Core.AutomationCommands.Attributes.ClassAttributes.Group)groupingAttribute[0];
+                        var attributeFound = (Core.AutomationCommands.Attributes.ClassAttributes.Group)groupingAttribute[0];
+                        groupAttribute = attributeFound.groupName;
                     }
 
                     //Instantiate Class
@@ -74,7 +75,7 @@ namespace sharpRPA.UI.Forms
                     if (newCommand.CommandEnabled)
                     {
                         CommandItem newCommandItem = new CommandItem();
-                        newCommandItem.DisplayValue = newCommand.SelectionName;
+                        newCommandItem.DisplayValue = string.Join(" - ", groupAttribute,newCommand.SelectionName);
                         newCommandItem.CommandInstance = newCommand;
                         commandList.Add(newCommandItem);
                     }

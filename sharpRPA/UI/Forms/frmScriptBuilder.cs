@@ -27,7 +27,7 @@ namespace sharpRPA.UI.Forms
 
         private ListViewItem rowSelectedForCopy { get; set; }
         private List<Core.Script.ScriptVariable> scriptVariables;
-  
+
         private ImageList uiImages;
         private WebSocket4Net.WebSocket webSocket;
         private string webSocketConnectionID;
@@ -90,7 +90,7 @@ namespace sharpRPA.UI.Forms
             //dynamic data = Newtonsoft.Json.Linq.JObject.Parse(jsonArray[0].ToString());
 
 
-        
+
 
 
             //create undo list
@@ -150,11 +150,11 @@ namespace sharpRPA.UI.Forms
 
                 var group = cmd.Key as Core.AutomationCommands.Attributes.ClassAttributes.Group;
                 TreeNode newGroup = new TreeNode(group.groupName);
-             
+
 
                 foreach (var subcmd in cmd)
                 {
-                   
+
                     Core.AutomationCommands.ScriptCommand newCommand = (Core.AutomationCommands.ScriptCommand)Activator.CreateInstance(subcmd);
                     TreeNode subNode = new TreeNode(newCommand.SelectionName);
                     //subNode.ImageIndex = uiImages.Images.IndexOfKey(newCommand.GetType().Name);
@@ -168,7 +168,7 @@ namespace sharpRPA.UI.Forms
 
             //tvCommands.ImageList = uiImages;
 
-      
+
         }
         private void GenerateRecentFiles()
         {
@@ -318,7 +318,7 @@ namespace sharpRPA.UI.Forms
                 //Insert the item at the mouse pointer.
                 ListViewItem insertItem = (ListViewItem)dragItem.Clone();
                 lstScriptActions.Items.Insert(itemIndex, insertItem);
-                //Removes the item from the initial location while 
+                //Removes the item from the initial location while
                 //the item is moved to the new location.
                 lstScriptActions.Items.Remove(dragItem);
                 FormatCommandListView();
@@ -367,15 +367,15 @@ namespace sharpRPA.UI.Forms
             }
             else if ((e.Control) && (e.KeyCode == Keys.Z))
             {
-      
+
                 UndoChange();
-                
+
             }
             else if ((e.Control) && (e.KeyCode == Keys.R))
             {
-              
+
                 RedoChange();
-              
+
             }
 
 
@@ -391,7 +391,7 @@ namespace sharpRPA.UI.Forms
 
         private void PasteRow()
         {
-       
+
 
             if (rowSelectedForCopy != null)
             {
@@ -409,13 +409,13 @@ namespace sharpRPA.UI.Forms
 
             if (undoList.Count > 0)
             {
-     
+
                 if ((undoIndex < 0) || (undoIndex >= undoList.Count))
                 {
                     undoIndex = undoList.Count - 1;
                 }
 
-                
+
                 lstScriptActions.Items.Clear();
 
                 foreach (ListViewItem rowItem in undoList[undoIndex])
@@ -435,7 +435,7 @@ namespace sharpRPA.UI.Forms
         {
             if (undoList.Count > 0)
             {
-                
+
                 undoIndex++;
 
                 if (undoIndex > undoList.Count - 1)
@@ -443,7 +443,7 @@ namespace sharpRPA.UI.Forms
                     undoIndex = undoList.Count - 1;
                 }
 
-            
+
 
                 lstScriptActions.Items.Clear();
 
@@ -452,10 +452,10 @@ namespace sharpRPA.UI.Forms
                     lstScriptActions.Items.Add(rowItem);
                 }
 
-              
+
                 FormatCommandListView();
 
-   
+
         }
 
     }
@@ -463,14 +463,14 @@ namespace sharpRPA.UI.Forms
             private void CreateUndoSnapshot()
         {
 
-            
-                   
+
+
 
 
 
             List<ListViewItem> itemList = new List<ListViewItem>();
             foreach (ListViewItem rowItem in lstScriptActions.Items)
-            { 
+            {
                 itemList.Add(rowItem);
             }
 
@@ -490,7 +490,7 @@ namespace sharpRPA.UI.Forms
 
         private void lstScriptActions_DoubleClick(object sender, EventArgs e)
         {
-     
+
             if (lstScriptActions.SelectedItems.Count != 1)
             {
                 return;
@@ -542,7 +542,7 @@ namespace sharpRPA.UI.Forms
 
         private void AddCommandToListView(Core.AutomationCommands.ScriptCommand selectedCommand)
         {
-          
+
 
             lstScriptActions.Items.Add(CreateScriptCommandListViewItem(selectedCommand));
 
@@ -566,7 +566,7 @@ namespace sharpRPA.UI.Forms
         private void FormatCommandListView()
         {
 
-       
+
 
             if (pnlCommandHelper.Visible)
                 pnlCommandHelper.Hide();
@@ -1066,9 +1066,9 @@ namespace sharpRPA.UI.Forms
                 //if a command was selected
                 if (newCommandForm.ShowDialog() == DialogResult.OK)
                 {
-                    //add to listview       
+                    //add to listview
                     AddCommandToListView(newCommandForm.selectedCommand);
-                
+
                 }
 
 
@@ -1099,11 +1099,11 @@ namespace sharpRPA.UI.Forms
             newCommandForm.scriptVariables = this.scriptVariables;
             if (specificCommand != "")
                 newCommandForm.defaultStartupCommand = specificCommand;
-       
+
             //if a command was selected
             if (newCommandForm.ShowDialog() == DialogResult.OK)
             {
-                //add to listview        
+                //add to listview
                 AddCommandToListView(newCommandForm.selectedCommand);
             }
 
@@ -1211,7 +1211,7 @@ namespace sharpRPA.UI.Forms
                 return;
             }
 
-            AddNewCommand(tvCommands.SelectedNode.Text);
+            AddNewCommand(tvCommands.SelectedNode.Parent.Text + " - " + tvCommands.SelectedNode.Text);
 
         }
         #endregion

@@ -128,7 +128,7 @@ namespace sharpRPA.Core.AutomationCommands
         public IEBrowserCreateCommand()
         {
             this.CommandName = "IEBrowserCreateCommand";
-            this.SelectionName = "IE Browser - Create Browser";
+            this.SelectionName = "Create Browser";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -162,7 +162,7 @@ namespace sharpRPA.Core.AutomationCommands
         public IEBrowserFindBrowserCommand()
         {
             this.CommandName = "IEBrowserFindBrowserCommand";
-            this.SelectionName = "IE Browser - Find Browser";
+            this.SelectionName = "Find Browser";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -224,7 +224,7 @@ namespace sharpRPA.Core.AutomationCommands
         public IEBrowserNavigateCommand()
         {
             this.CommandName = "WebBrowserNavigateCommand";
-            this.SelectionName = "IE Browser - Navigate";
+            this.SelectionName = "Navigate";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -275,7 +275,7 @@ namespace sharpRPA.Core.AutomationCommands
         public IEBrowserCloseCommand()
         {
             this.CommandName = "IEBrowserCloseCommand";
-            this.SelectionName = "IE Browser - Close Browser";
+            this.SelectionName = "Close Browser";
             this.CommandEnabled = true;
             this.v_InstanceName = "default";
         }
@@ -323,7 +323,7 @@ namespace sharpRPA.Core.AutomationCommands
         public IEBrowserElementCommand()
         {
             this.CommandName = "IEBrowserElementCommand";
-            this.SelectionName = "IE Browser - Element Action";
+            this.SelectionName = "Element Action";
             this.CommandEnabled = true;
             this.v_InstanceName = "default";
 
@@ -556,7 +556,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserCreateCommand()
         {
             this.CommandName = "SeleniumBrowserCreateCommand";
-            this.SelectionName = "Web Browser - Create Browser";
+            this.SelectionName = "Create Browser";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -602,7 +602,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserNavigateURLCommand()
         {
             this.CommandName = "SeleniumBrowserNavigateURLCommand";
-            this.SelectionName = "Web Browser - Navigate to URL";
+            this.SelectionName = "Navigate to URL";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -653,7 +653,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserNavigateForwardCommand()
         {
             this.CommandName = "WebBrowserNavigateCommand";
-            this.SelectionName = "Web Browser - Navigate Forward";
+            this.SelectionName = "Navigate Forward";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -692,7 +692,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserNavigateBackCommand()
         {
             this.CommandName = "SeleniumBrowserNavigateBackCommand";
-            this.SelectionName = "Web Browser - Navigate Back";
+            this.SelectionName = "Navigate Back";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -730,7 +730,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserRefreshCommand()
         {
             this.CommandName = "SeleniumBrowserRefreshCommand";
-            this.SelectionName = "Web Browser - Refresh";
+            this.SelectionName = "Refresh";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -768,7 +768,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserCloseCommand()
         {
             this.CommandName = "SeleniumBrowserCloseCommand";
-            this.SelectionName = "Web Browser - Close Browser";
+            this.SelectionName = "Close Browser";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
         }
@@ -831,7 +831,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SeleniumBrowserElementActionCommand()
         {
             this.CommandName = "SeleniumBrowserCreateCommand";
-            this.SelectionName = "Web Browser - Element Action";
+            this.SelectionName = "Element Action";
             this.v_InstanceName = "default";
             this.CommandEnabled = true;
 
@@ -1059,7 +1059,7 @@ namespace sharpRPA.Core.AutomationCommands
         public PauseCommand()
         {
             this.CommandName = "PauseCommand";
-            this.SelectionName = "Pause - Pause Script";
+            this.SelectionName = "Pause Script";
             this.CommandEnabled = true;
         }
 
@@ -1088,7 +1088,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ErrorHandlingCommand()
         {
             this.CommandName = "ErrorHandlingCommand";
-            this.SelectionName = "Error Handling - On Error";
+            this.SelectionName = "Error Handling";
             this.CommandEnabled = true;
         }
 
@@ -1104,6 +1104,65 @@ namespace sharpRPA.Core.AutomationCommands
         }
     }
     [Serializable]
+    [Attributes.ClassAttributes.Group("Misc Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to add an in-line comment to the configuration.")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command is for visual purposes only")]
+    public class CommentCommand : ScriptCommand
+    {
+        public CommentCommand()
+        {
+            this.CommandName = "CommentCommand";
+            this.SelectionName = "Add Code Comment";
+            this.DisplayForeColor = System.Drawing.Color.ForestGreen;
+            this.CommandEnabled = true;
+        }
+
+        public override string GetDisplayValue()
+        {
+            return "// Comment: " + this.v_Comment;
+        }
+    }
+    [Serializable]
+    [Attributes.ClassAttributes.Group("Misc Commands")]
+    [Attributes.ClassAttributes.Description("This command allows you to show a MessageBox and supports variables.")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements 'MessageBox' and invokes VariableCommand to find variable data.")]
+    public class MessageBoxCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please Enter the message to be displayed.")]
+        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
+        public string v_Message { get; set; }
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Close After X (Seconds) - 0 to bypass")]
+        public int v_AutoCloseAfter { get; set; }
+        public MessageBoxCommand()
+        {
+            this.CommandName = "MessageBoxCommand";
+            this.SelectionName = "Show Message";
+            this.CommandEnabled = true;
+            this.v_AutoCloseAfter = 0;
+        }
+
+        public override void RunCommand(object sender)
+        {
+            UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
+
+            v_Message = v_Message.ConvertToUserVariable(sender);
+            var result = engineForm.Invoke(new Action(() =>
+            {
+                engineForm.ShowMessage(v_Message, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
+            }
+
+            ));
+            //System.Windows.Forms.MessageBox.Show(ConvertToUserVariabledText, "Message Box Command", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+        }
+
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Message: " + v_Message + "]";
+        }
+    }
+    [Serializable]
     [Attributes.ClassAttributes.Group("Window Commands")]
     [Attributes.ClassAttributes.Description("This command activates a window and brings it to the front.")]
     [Attributes.ClassAttributes.ImplementationDescription("This command implements 'FindWindowNative', 'SetForegroundWindow', 'ShowWindow' from user32.dll to achieve automation.")]
@@ -1116,7 +1175,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ActivateWindowCommand()
         {
             this.CommandName = "ActivateWindowCommand";
-            this.SelectionName = "Window - Activate Window";
+            this.SelectionName = "Activate Window";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -1156,7 +1215,7 @@ namespace sharpRPA.Core.AutomationCommands
         public MoveWindowCommand()
         {
             this.CommandName = "MoveWindowCommand";
-            this.SelectionName = "Window - Move Window";
+            this.SelectionName = "Move Window";
             this.CommandEnabled = true;
         }
 
@@ -1198,7 +1257,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ResizeWindowCommand()
         {
             this.CommandName = "ResizeWindowCommand";
-            this.SelectionName = "Window - Resize Window";
+            this.SelectionName = "Resize Window";
 
             //not working
             //this.CommandEnabled = true;
@@ -1232,7 +1291,7 @@ namespace sharpRPA.Core.AutomationCommands
         public CloseWindowCommand()
         {
             this.CommandName = "CloseWindowCommand";
-            this.SelectionName = "Window - Close Window";
+            this.SelectionName = "Close Window";
             this.CommandEnabled = true;
         }
 
@@ -1273,7 +1332,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SetWindowStateCommand()
         {
             this.CommandName = "SetWindowStateCommand";
-            this.SelectionName = "Window - Set Window State";
+            this.SelectionName = "Set Window State";
             this.CommandEnabled = true;
         }
 
@@ -1330,7 +1389,7 @@ namespace sharpRPA.Core.AutomationCommands
         public WaitForWindowCommand()
         {
             this.CommandName = "WaitForWindowCommand";
-            this.SelectionName = "Window - Wait For Window To Exist";
+            this.SelectionName = "Wait For Window To Exist";
             this.CommandEnabled = true;
         }
 
@@ -1347,7 +1406,7 @@ namespace sharpRPA.Core.AutomationCommands
                 hWnd = User32Functions.FindWindow(v_WindowName);
 
                 if (hWnd != IntPtr.Zero) //If found
-                    break;  
+                    break;
 
                 System.Threading.Thread.Sleep(1000);
 
@@ -1368,65 +1427,7 @@ namespace sharpRPA.Core.AutomationCommands
         }
 
     }
-    [Serializable]
-    [Attributes.ClassAttributes.Group("Misc Commands")]
-    [Attributes.ClassAttributes.Description("This command allows you to add an in-line comment to the configuration.")]
-    [Attributes.ClassAttributes.ImplementationDescription("This command is for visual purposes only")]
-    public class CommentCommand : ScriptCommand
-    {
-        public CommentCommand()
-        {
-            this.CommandName = "CommentCommand";
-            this.SelectionName = "Comment - Add Code Comment";
-            this.DisplayForeColor = System.Drawing.Color.ForestGreen;
-            this.CommandEnabled = true;
-        }
 
-        public override string GetDisplayValue()
-        {
-            return "// Comment: " + this.v_Comment;
-        }
-    }
-    [Serializable]
-    [Attributes.ClassAttributes.Group("Misc Commands")]
-    [Attributes.ClassAttributes.Description("This command allows you to show a MessageBox and supports variables.")]
-    [Attributes.ClassAttributes.ImplementationDescription("This command implements 'MessageBox' and invokes VariableCommand to find variable data.")]
-    public class MessageBoxCommand : ScriptCommand
-    {
-        [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Please Enter the message to be displayed.")]
-        [Attributes.PropertyAttributes.PropertyUIHelper(Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper)]
-        public string v_Message { get; set; }
-        [XmlAttribute]
-        [Attributes.PropertyAttributes.PropertyDescription("Close After X (Seconds) - 0 to bypass")]
-        public int v_AutoCloseAfter { get; set; }
-        public MessageBoxCommand()
-        {
-            this.CommandName = "MessageBoxCommand";
-            this.SelectionName = "Message Box - Show Message";
-            this.CommandEnabled = true;
-            this.v_AutoCloseAfter = 0;
-        }
-
-        public override void RunCommand(object sender)
-        {
-            UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
-
-            v_Message = v_Message.ConvertToUserVariable(sender);
-            var result = engineForm.Invoke(new Action(() =>
-            {
-                engineForm.ShowMessage(v_Message, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
-            }
-
-            ));
-            //System.Windows.Forms.MessageBox.Show(ConvertToUserVariabledText, "Message Box Command", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
-        }
-
-        public override string GetDisplayValue()
-        {
-            return base.GetDisplayValue() + " [Message: " + v_Message + "]";
-        }
-    }
     [Serializable]
     [Attributes.ClassAttributes.Group("Programs/Process Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to start a program or a process. You can use short names 'chrome.exe' or fully qualified names 'c:/some.exe'")]
@@ -1446,7 +1447,7 @@ namespace sharpRPA.Core.AutomationCommands
         public StartProcessCommand()
         {
             this.CommandName = "StartProcessCommand";
-            this.SelectionName = "Process - Start Process";
+            this.SelectionName = "Start Process";
             this.CommandEnabled = true;
         }
 
@@ -1485,7 +1486,7 @@ namespace sharpRPA.Core.AutomationCommands
         public StopProcessCommand()
         {
             this.CommandName = "StopProgramCommand";
-            this.SelectionName = "Process - Stop Process";
+            this.SelectionName = "Stop Process";
             this.CommandEnabled = true;
         }
 
@@ -1515,7 +1516,7 @@ namespace sharpRPA.Core.AutomationCommands
         public RunScriptCommand()
         {
             this.CommandName = "RunScriptCommand";
-            this.SelectionName = "Script - Run Script";
+            this.SelectionName = "Run Script";
             this.CommandEnabled = true;
         }
 
@@ -1553,7 +1554,7 @@ namespace sharpRPA.Core.AutomationCommands
         public VariableCommand()
         {
             this.CommandName = "VariableCommand";
-            this.SelectionName = "Variable - Set Variable";
+            this.SelectionName = "Set Variable";
             this.CommandEnabled = true;
         }
 
@@ -1590,7 +1591,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ClipboardGetTextCommand()
         {
             this.CommandName = "ClipboardCommand";
-            this.SelectionName = "Clipboard - Get Text";
+            this.SelectionName = "Get Text";
             this.CommandEnabled = true;
         }
 
@@ -1645,7 +1646,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SMTPSendEmailCommand()
         {
             this.CommandName = "SMTPCommand";
-            this.SelectionName = "SMTP - Send Email";
+            this.SelectionName = "Send SMTP Email";
             this.CommandEnabled = true;
         }
 
@@ -1695,7 +1696,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SendKeysCommand()
         {
             this.CommandName = "SendKeysCommand";
-            this.SelectionName = "Input - Send Keystrokes";
+            this.SelectionName = "Send Keystrokes";
             this.CommandEnabled = true;
         }
 
@@ -1748,7 +1749,7 @@ namespace sharpRPA.Core.AutomationCommands
         public SendMouseMoveCommand()
         {
             this.CommandName = "SendMouseMoveCommand";
-            this.SelectionName = "Input - Send Mouse Move";
+            this.SelectionName = "Send Mouse Move";
             this.CommandEnabled = true;
         }
 
@@ -1782,7 +1783,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ThickAppClickItemCommand()
         {
             this.CommandName = "ThickAppClickItemCommand";
-            this.SelectionName = "Thick App - Click Item";
+            this.SelectionName = "Click UI Item";
             this.CommandEnabled = true;
             this.DefaultPause = 3000;
         }
@@ -1857,7 +1858,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ThickAppGetTextCommand()
         {
             this.CommandName = "ThickAppGetTextCommand";
-            this.SelectionName = "Thick App - Get Text";
+            this.SelectionName = "Get UI Item";
             this.CommandEnabled = true;
         }
 
@@ -1920,7 +1921,7 @@ namespace sharpRPA.Core.AutomationCommands
         public BeginLoopCommand()
         {
             this.CommandName = "BeginLoopCommand";
-            this.SelectionName = "Loop - Begin Loop";
+            this.SelectionName = "Begin Loop";
             this.CommandEnabled = true;
         }
 
@@ -1982,7 +1983,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.DefaultPause = 0;
             this.CommandName = "EndLoopCommand";
-            this.SelectionName = "Loop - End Loop";
+            this.SelectionName = "End Loop";
             this.CommandEnabled = true;
         }
 
@@ -2009,7 +2010,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelCreateApplicationCommand()
         {
             this.CommandName = "ExcelOpenApplicationCommand";
-            this.SelectionName = "Excel - Create Excel Application";
+            this.SelectionName = "Create Excel Application";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2040,7 +2041,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelOpenWorkbookCommand()
         {
             this.CommandName = "ExcelOpenWorkbookCommand";
-            this.SelectionName = "Excel - Open Workbook";
+            this.SelectionName = "Open Workbook";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2071,7 +2072,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelAddWorkbookCommand()
         {
             this.CommandName = "ExcelAddWorkbookCommand";
-            this.SelectionName = "Excel - Add Workbook";
+            this.SelectionName = "Add Workbook";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2104,7 +2105,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelGoToCellCommand()
         {
             this.CommandName = "ExcelGoToCellCommand";
-            this.SelectionName = "Excel - Go To Cell";
+            this.SelectionName = "Go To Cell";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2143,7 +2144,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelSetCellCommand()
         {
             this.CommandName = "ExcelSetCellCommand";
-            this.SelectionName = "Excel - Set Cell";
+            this.SelectionName = "Set Cell";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2185,7 +2186,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelGetCellCommand()
         {
             this.CommandName = "ExcelGetCellCommand";
-            this.SelectionName = "Excel - Get Cell";
+            this.SelectionName = "Get Cell";
             this.CommandEnabled = true;
         }
 
@@ -2224,7 +2225,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelRunMacroCommand()
         {
             this.CommandName = "ExcelAddWorkbookCommand";
-            this.SelectionName = "Excel - Run Macro";
+            this.SelectionName = "Run Macro";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2257,7 +2258,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ExcelCloseApplicationCommand()
         {
             this.CommandName = "ExcelCloseApplicationCommand";
-            this.SelectionName = "Excel - Close Application";
+            this.SelectionName = "Close Application";
             this.CommandEnabled = true;
         }
         public override void RunCommand(object sender)
@@ -2302,7 +2303,7 @@ namespace sharpRPA.Core.AutomationCommands
         public StringSubstringCommand()
         {
             this.CommandName = "StringSubstringCommand";
-            this.SelectionName = "String - Substring";
+            this.SelectionName = "Substring";
             this.CommandEnabled = true;
             v_stringLength = -1;
         }
@@ -2345,7 +2346,7 @@ namespace sharpRPA.Core.AutomationCommands
         public StringSplitCommand()
         {
             this.CommandName = "StringSplitCommand";
-            this.SelectionName = "String - Split";
+            this.SelectionName = "Split";
             this.v_applyConvertToUserVariableName = "default";
             this.CommandEnabled = true;
         }
@@ -2397,7 +2398,7 @@ namespace sharpRPA.Core.AutomationCommands
         public BeginIfCommand()
         {
             this.CommandName = "BeginIfCommand";
-            this.SelectionName = "If - Begin If";
+            this.SelectionName = "Begin If";
             this.CommandEnabled = true;
 
             //define parameter table
@@ -2535,7 +2536,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.DefaultPause = 0;
             this.CommandName = "EndIfCommand";
-            this.SelectionName = "If - End If";
+            this.SelectionName = "End If";
             this.CommandEnabled = true;
         }
 
@@ -2554,7 +2555,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.DefaultPause = 0;
             this.CommandName = "ElseCommand";
-            this.SelectionName = "If - Else";
+            this.SelectionName = "Else";
             this.CommandEnabled = true;
         }
 
@@ -2569,7 +2570,7 @@ namespace sharpRPA.Core.AutomationCommands
     #region OCR and Image Commands
 
     [Serializable]
-    [Attributes.ClassAttributes.Group("OCR and Image Commands")]
+    [Attributes.ClassAttributes.Group("Image Commands")]
     [Attributes.ClassAttributes.Description("This command allows you to covert an image file into text for parsing.")]
     [Attributes.ClassAttributes.ImplementationDescription("This command has a dependency on and implements OneNote OCR to achieve automation.")]
     public class OCRCommand : ScriptCommand
@@ -2586,7 +2587,7 @@ namespace sharpRPA.Core.AutomationCommands
         {
             this.DefaultPause = 0;
             this.CommandName = "OCRCommand";
-            this.SelectionName = "Image - OCR";
+            this.SelectionName = "Perform OCR";
             this.CommandEnabled = true;
         }
 
@@ -2613,7 +2614,7 @@ namespace sharpRPA.Core.AutomationCommands
         }
     }
     [Serializable]
-    [Attributes.ClassAttributes.Group("OCR and Image Commands")]
+    [Attributes.ClassAttributes.Group("Image Commands")]
     [Attributes.ClassAttributes.Description("This command takes a screenshot and saves it to a location")]
     [Attributes.ClassAttributes.ImplementationDescription("This command implements User32 CaptureWindow to achieve automation")]
     public class ScreenshotCommand : ScriptCommand
@@ -2629,7 +2630,7 @@ namespace sharpRPA.Core.AutomationCommands
         public ScreenshotCommand()
         {
             this.CommandName = "ScreenshotCommand";
-            this.SelectionName = "Screenshot - Take Screenshot";
+            this.SelectionName = "Take Screenshot";
             this.CommandEnabled = true;
         }
 
