@@ -13,7 +13,6 @@ using System.Xml.Serialization;
 
 namespace sharpRPA.Core
 {
-    
     public static class Common
     {
         /// <summary>
@@ -57,20 +56,18 @@ namespace sharpRPA.Core
         /// <summary>
         /// Returns commands from the AutomationCommands.cs file grouped by Custom 'Group' attribute.
         /// </summary>
-        public static List<IGrouping<Attribute,Type>> GetGroupedCommands()
+        public static List<IGrouping<Attribute, Type>> GetGroupedCommands()
         {
+            var groupedCommands = Assembly.GetExecutingAssembly().GetTypes()
+                          .Where(t => t.Namespace == "sharpRPA.Core.AutomationCommands")
+                          .Where(t => t.Name != "ScriptCommand")
+                          .Where(t => t.IsAbstract == false)
+                          .Where(t => t.BaseType.Name == "ScriptCommand")
+                          .Where(t => CommandEnabled(t))
+                          .GroupBy(t => t.GetCustomAttribute(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group)))
+                          .ToList();
 
-                var groupedCommands = Assembly.GetExecutingAssembly().GetTypes()
-                              .Where(t => t.Namespace == "sharpRPA.Core.AutomationCommands")
-                              .Where(t => t.Name != "ScriptCommand")
-                              .Where(t => t.IsAbstract == false)
-                              .Where(t => t.BaseType.Name == "ScriptCommand")
-                              .Where(t => CommandEnabled(t))
-                              .GroupBy(t => t.GetCustomAttribute(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group)))
-                              .ToList();
-
-                return groupedCommands;
-
+            return groupedCommands;
         }
         /// <summary>
         /// Returns boolean indicating if the current command is enabled for use in automation.
@@ -85,9 +82,6 @@ namespace sharpRPA.Core
         /// </summary>
         public static List<Core.Script.ScriptVariable> GenerateSystemVariables()
         {
-   
-      
-
             List<Core.Script.ScriptVariable> systemVariableList = new List<Core.Script.ScriptVariable>();
             systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Desktop", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) });
             systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "Folder.Documents", variableValue = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) });
@@ -100,18 +94,16 @@ namespace sharpRPA.Core
             systemVariableList.Add(new Core.Script.ScriptVariable { variableName = "PC.DomainName", variableValue = Environment.UserDomainName });
             return systemVariableList;
         }
-
     }
 
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Replaces variable placeholders ([variable]) with variable text.  
+        /// Replaces variable placeholders ([variable]) with variable text.
         /// </summary>
         /// <param name="sender">The script engine instance (frmScriptEngine) which contains session variables.</param>
         public static string ConvertToUserVariable(this String str, object sender)
-            {
-
+        {
             if (str == null)
                 return string.Empty;
 
@@ -124,12 +116,10 @@ namespace sharpRPA.Core
             searchList.AddRange(variableList);
             searchList.AddRange(systemVariables);
 
-
             string[] potentialVariables = str.Split('[', ']');
 
             foreach (var potentialVariable in potentialVariables)
             {
-
                 var varCheck = (from vars in searchList
                                 where vars.variableName == potentialVariable
                                 select vars).FirstOrDefault();
@@ -146,11 +136,7 @@ namespace sharpRPA.Core
                     {
                         str = str.Replace(potentialVariable, (string)varCheck.GetDisplayValue());
                     }
-
-                 
-
                 }
-
             }
 
             //test if math is required
@@ -164,7 +150,6 @@ namespace sharpRPA.Core
             {
                 return str;
             }
-
         }
         /// <summary>
         /// Stores value of the string to a user-defined variable.
@@ -177,11 +162,8 @@ namespace sharpRPA.Core
             newVariableCommand.v_userVariableName = targetVariable;
             newVariableCommand.v_Input = str;
             newVariableCommand.RunCommand(sender);
-
         }
-
     }
-
 
     [Serializable]
     public class ApplicationSettings
@@ -218,8 +200,6 @@ namespace sharpRPA.Core
                 }
 
                 fileStream.Close();
-
-
             }
             else
             {
@@ -227,7 +207,6 @@ namespace sharpRPA.Core
             }
 
             return appSettings;
-         
         }
     }
     [Serializable]

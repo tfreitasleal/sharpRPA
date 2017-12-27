@@ -10,6 +10,7 @@ using System.Xml;
 namespace sharpRPA.Core.Script
 {
     #region Script and Variables
+
     public class Script
     {
         public List<ScriptVariable> Variables { get; set; }
@@ -27,7 +28,6 @@ namespace sharpRPA.Core.Script
             ScriptAction newExecutionCommand = new ScriptAction() { ScriptCommand = scriptCommand };
             Commands.Add(newExecutionCommand);
             return newExecutionCommand;
-
         }
 
         public static Script SerializeScript(string scriptFilePath, ListView.ListViewItemCollection scriptCommands, List<ScriptVariable> scriptVariables)
@@ -51,7 +51,6 @@ namespace sharpRPA.Core.Script
             {
                 var command = (Core.AutomationCommands.ScriptCommand)commandItem.Tag;
                 command.LineNumber = lineNumber;
-
 
                 if ((command is Core.AutomationCommands.BeginLoopCommand) || (command is Core.AutomationCommands.BeginIfCommand))
                 {
@@ -113,7 +112,6 @@ namespace sharpRPA.Core.Script
         }
         public static Script DeserializeFile(string scriptFilePath)
         {
-
             XmlSerializer serializer = new XmlSerializer(typeof(Script));
             System.IO.FileStream fs = new System.IO.FileStream(scriptFilePath, System.IO.FileMode.Open);
             XmlReader reader = XmlReader.Create(fs);
@@ -129,7 +127,6 @@ namespace sharpRPA.Core.Script
             Script deserializedData = (Script)serializer.Deserialize(reader);
             return deserializedData;
         }
-
     }
 
     public class ScriptAction
@@ -145,7 +142,6 @@ namespace sharpRPA.Core.Script
             AdditionalScriptCommands.Add(newExecutionCommand);
             return newExecutionCommand;
         }
-
     }
 
     public class ScriptVariable
@@ -166,10 +162,7 @@ namespace sharpRPA.Core.Script
                 return requiredValue[currentPosition];
             }
         }
-     
     }
-    #endregion
+
+    #endregion Script and Variables
 }
-
-
-

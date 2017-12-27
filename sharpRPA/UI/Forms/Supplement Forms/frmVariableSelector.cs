@@ -19,7 +19,6 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void frmVariableSelector_Load(object sender, EventArgs e)
         {
-
         }
 
         private void uiBtnOk_Click(object sender, EventArgs e)

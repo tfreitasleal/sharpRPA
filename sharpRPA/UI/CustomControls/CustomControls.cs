@@ -12,7 +12,6 @@ namespace sharpRPA.UI.CustomControls
 {
     #region Custom UI Components
 
-
     public class UITabControl : TabControl
     {
         protected override void OnPaint(PaintEventArgs e)
@@ -44,27 +43,20 @@ namespace sharpRPA.UI.CustomControls
             //    DrawTab(g, TabPages[(int)_mouseTabIndex], (int)_mouseTabIndex, true);
 
             //_mouseTabIndexSave = _mouseTabIndex;
-
         }
 
         internal void DrawTab(Graphics g, TabPage tabPage, int nIndex, bool mouseOverTab)
         {
-
             //var recBounds = GetTabRect(nIndex);
-
 
             //SetBounds(ref recBounds);
             //var pt = SetPointsForTabFill(recBounds);
 
-
             //DrawTabBounds(g, recBounds);
-
 
             //FillTabl(g, recBounds, pt, false);
 
-
             //DrawTabSeparators(g, recBounds, nIndex, 0 /*y-bottom*/);
-
 
             //if (SelectedIndex == nIndex)
             //{
@@ -76,7 +68,6 @@ namespace sharpRPA.UI.CustomControls
             //    DrawTabGradient(g, recBounds, pt, nIndex, -2/*width*/, 0/*height*/);
 
             //DrawText(g, recBounds, tabPage.Text);
-
         }
 
         private void DrawText(Graphics g, Rectangle recBounds, string text)
@@ -98,8 +89,6 @@ namespace sharpRPA.UI.CustomControls
             strFormat.Dispose();
             fnt.Dispose();
         }
-
-
     }
 
     public partial class UIPictureButton : PictureBox
@@ -107,7 +96,6 @@ namespace sharpRPA.UI.CustomControls
         private bool isMouseOver;
         public bool IsMouseOver
         {
-
             get
             {
                 return isMouseOver;
@@ -121,7 +109,6 @@ namespace sharpRPA.UI.CustomControls
         private string displayText;
         public string DisplayText
         {
-
             get
             {
                 return displayText;
@@ -147,7 +134,6 @@ namespace sharpRPA.UI.CustomControls
                 this.BackColor = Color.Transparent;
             }
 
-
             if (this.Image != null)
                 e.Graphics.DrawImage(this.Image, (this.Width / 2) - 16, 3, 32, 32);
 
@@ -160,7 +146,6 @@ namespace sharpRPA.UI.CustomControls
         private Color displayTextBrush;
         public Color DisplayTextBrush
         {
-
             get
             {
                 return displayTextBrush;
@@ -170,7 +155,6 @@ namespace sharpRPA.UI.CustomControls
                 displayTextBrush = value;
                 this.Invalidate();
             }
-
         }
         public UIPictureButton()
         {
@@ -191,10 +175,6 @@ namespace sharpRPA.UI.CustomControls
         {
             this.IsMouseOver = false;
         }
-
-
-
-
     }
 
     public class UIElement
@@ -206,7 +186,6 @@ namespace sharpRPA.UI.CustomControls
 
     public class UIListView : ListView
     {
-
         public UIListView()
         {
             this.DoubleBuffered = true;
@@ -228,19 +207,16 @@ namespace sharpRPA.UI.CustomControls
 
     public class UITreeView : TreeView
     {
-
         [System.Runtime.InteropServices.DllImport("uxtheme.dll", ExactSpelling = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hwnd, string pszSubAppName, string pszSubIdList);
         public UITreeView()
         {
             this.DoubleBuffered = true;
             SetWindowTheme(this.Handle, "explorer", null);
-           
         }
-
     }
 
-public class UIGroupBox : GroupBox
+    public class UIGroupBox : GroupBox
     {
         public UIGroupBox()
         {
@@ -249,7 +225,6 @@ public class UIGroupBox : GroupBox
             this.TitleForeColor = Color.White;
             this.TitleFont = new Font(this.Font.FontFamily, Font.Size, FontStyle.Bold);
             this.BackColor = Color.Transparent;
-   
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -257,105 +232,93 @@ public class UIGroupBox : GroupBox
             GroupBoxRenderer.DrawParentBackground(e.Graphics, this.ClientRectangle, this);
             var rect = ClientRectangle;
 
-
             SolidBrush backColorBrush = new SolidBrush(TitleBackColor);
             e.Graphics.FillRectangle(backColorBrush, 0, 0, this.Width, 18);
             backColorBrush.Dispose();
 
-
-            TextRenderer.DrawText(e.Graphics, Text, TitleFont, new Point(2,2), TitleForeColor);
+            TextRenderer.DrawText(e.Graphics, Text, TitleFont, new Point(2, 2), TitleForeColor);
             ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.SteelBlue, ButtonBorderStyle.Solid);
-
-      
         }
         public Color TitleBackColor { get; set; }
         public HatchStyle TitleHatchStyle { get; set; }
         public Font TitleFont { get; set; }
         public Color TitleForeColor { get; set; }
-
-       
     }
 
-
-
-    #endregion
+    #endregion Custom UI Components
 }
 namespace sharpRPA.UI
 {
-
     public static class Images
     {
-    public static Dictionary<string, Image> UIImageDictionary()
-    {
-        var uiImages = new Dictionary<string, Image>();
-        uiImages.Add("PauseCommand", sharpRPA.Properties.Resources.pause);
-        uiImages.Add("CommentCommand", sharpRPA.Properties.Resources.comment);
-        uiImages.Add("ActivateWindowCommand", sharpRPA.Properties.Resources.windows);
-        uiImages.Add("MoveWindowCommand", sharpRPA.Properties.Resources.windows);
-        uiImages.Add("ThickAppClickItemCommand", sharpRPA.Properties.Resources.mouse);
-        uiImages.Add("ThickAppGetTextCommand", sharpRPA.Properties.Resources.search);
-        uiImages.Add("ResizeWindowCommand", sharpRPA.Properties.Resources.windows);
-        uiImages.Add("MessageBoxCommand", sharpRPA.Properties.Resources.message);
-        uiImages.Add("StopProcessCommand", sharpRPA.Properties.Resources.stop);
-        uiImages.Add("StartProcessCommand", sharpRPA.Properties.Resources.start);
-        uiImages.Add("VariableCommand", sharpRPA.Properties.Resources.function);
-        uiImages.Add("RunScriptCommand", sharpRPA.Properties.Resources.script);
-        uiImages.Add("CloseWindowCommand", sharpRPA.Properties.Resources.close);
-        uiImages.Add("WebBrowserCreateCommand", sharpRPA.Properties.Resources.createbrowser16);
-        uiImages.Add("WebBrowserNavigateCommand", sharpRPA.Properties.Resources.navigate);
-        uiImages.Add("WebBrowserCloseCommand", sharpRPA.Properties.Resources.closebrowser16);
-        uiImages.Add("WebBrowserElementCommand", sharpRPA.Properties.Resources.element);
-        uiImages.Add("SendKeysCommand", sharpRPA.Properties.Resources.computer);
-        uiImages.Add("SendMouseMoveCommand", sharpRPA.Properties.Resources.computer);
-        uiImages.Add("SetWindowStateCommand", sharpRPA.Properties.Resources.windows);
-        uiImages.Add("WebBrowserFindBrowserCommand", sharpRPA.Properties.Resources.createbrowser16);
-        uiImages.Add("BeginLoopCommand", sharpRPA.Properties.Resources.loop);
-        uiImages.Add("EndLoopCommand", sharpRPA.Properties.Resources.endloop);
-        uiImages.Add("ClipboardGetTextCommand", sharpRPA.Properties.Resources.clipboard);
-        uiImages.Add("ExcelCreateApplicationCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelOpenWorkbookCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelAddWorkbookCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelGoToCellCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelCloseApplicationCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelSetCellCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelGetCellCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("ExcelRunMacroCommand", sharpRPA.Properties.Resources.excelicon);
-        uiImages.Add("SeleniumBrowserCreateCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserNavigateURLCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserNavigateForwardCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserNavigateBackCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserRefreshCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserCloseCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SeleniumBrowserElementActionCommand", sharpRPA.Properties.Resources.web);
-        uiImages.Add("SMTPSendEmailCommand", sharpRPA.Properties.Resources.navigate);
-        uiImages.Add("ErrorHandlingCommand", sharpRPA.Properties.Resources.error);
-        uiImages.Add("StringSubstringCommand", sharpRPA.Properties.Resources._string);
-        uiImages.Add("StringSplitCommand", sharpRPA.Properties.Resources._string);
-        uiImages.Add("BeginIfCommand", sharpRPA.Properties.Resources.flag2);
-        uiImages.Add("EndIfCommand", sharpRPA.Properties.Resources.flag2);
-        uiImages.Add("ElseCommand", sharpRPA.Properties.Resources.flag3);
-        uiImages.Add("ScreenshotCommand", sharpRPA.Properties.Resources.photo_camera);
-        uiImages.Add("OCRCommand", sharpRPA.Properties.Resources.photo_camera);
-        return uiImages;
-    }
-    public static ImageList UIImageList()
-    {
-        Dictionary<string, Image> imageIcons = UIImageDictionary();
-        ImageList uiImages = new ImageList();
-        foreach (var icon in imageIcons)
+        public static Dictionary<string, Image> UIImageDictionary()
         {
-            uiImages.Images.Add(icon.Key, icon.Value);
+            var uiImages = new Dictionary<string, Image>();
+            uiImages.Add("PauseCommand", sharpRPA.Properties.Resources.pause);
+            uiImages.Add("CommentCommand", sharpRPA.Properties.Resources.comment);
+            uiImages.Add("ActivateWindowCommand", sharpRPA.Properties.Resources.windows);
+            uiImages.Add("MoveWindowCommand", sharpRPA.Properties.Resources.windows);
+            uiImages.Add("ThickAppClickItemCommand", sharpRPA.Properties.Resources.mouse);
+            uiImages.Add("ThickAppGetTextCommand", sharpRPA.Properties.Resources.search);
+            uiImages.Add("ResizeWindowCommand", sharpRPA.Properties.Resources.windows);
+            uiImages.Add("MessageBoxCommand", sharpRPA.Properties.Resources.message);
+            uiImages.Add("StopProcessCommand", sharpRPA.Properties.Resources.stop);
+            uiImages.Add("StartProcessCommand", sharpRPA.Properties.Resources.start);
+            uiImages.Add("VariableCommand", sharpRPA.Properties.Resources.function);
+            uiImages.Add("RunScriptCommand", sharpRPA.Properties.Resources.script);
+            uiImages.Add("CloseWindowCommand", sharpRPA.Properties.Resources.close);
+            uiImages.Add("WebBrowserCreateCommand", sharpRPA.Properties.Resources.createbrowser16);
+            uiImages.Add("WebBrowserNavigateCommand", sharpRPA.Properties.Resources.navigate);
+            uiImages.Add("WebBrowserCloseCommand", sharpRPA.Properties.Resources.closebrowser16);
+            uiImages.Add("WebBrowserElementCommand", sharpRPA.Properties.Resources.element);
+            uiImages.Add("SendKeysCommand", sharpRPA.Properties.Resources.computer);
+            uiImages.Add("SendMouseMoveCommand", sharpRPA.Properties.Resources.computer);
+            uiImages.Add("SetWindowStateCommand", sharpRPA.Properties.Resources.windows);
+            uiImages.Add("WebBrowserFindBrowserCommand", sharpRPA.Properties.Resources.createbrowser16);
+            uiImages.Add("BeginLoopCommand", sharpRPA.Properties.Resources.loop);
+            uiImages.Add("EndLoopCommand", sharpRPA.Properties.Resources.endloop);
+            uiImages.Add("ClipboardGetTextCommand", sharpRPA.Properties.Resources.clipboard);
+            uiImages.Add("ExcelCreateApplicationCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelOpenWorkbookCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelAddWorkbookCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelGoToCellCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelCloseApplicationCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelSetCellCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelGetCellCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("ExcelRunMacroCommand", sharpRPA.Properties.Resources.excelicon);
+            uiImages.Add("SeleniumBrowserCreateCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserNavigateURLCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserNavigateForwardCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserNavigateBackCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserRefreshCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserCloseCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SeleniumBrowserElementActionCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("SMTPSendEmailCommand", sharpRPA.Properties.Resources.navigate);
+            uiImages.Add("ErrorHandlingCommand", sharpRPA.Properties.Resources.error);
+            uiImages.Add("StringSubstringCommand", sharpRPA.Properties.Resources._string);
+            uiImages.Add("StringSplitCommand", sharpRPA.Properties.Resources._string);
+            uiImages.Add("BeginIfCommand", sharpRPA.Properties.Resources.flag2);
+            uiImages.Add("EndIfCommand", sharpRPA.Properties.Resources.flag2);
+            uiImages.Add("ElseCommand", sharpRPA.Properties.Resources.flag3);
+            uiImages.Add("ScreenshotCommand", sharpRPA.Properties.Resources.photo_camera);
+            uiImages.Add("OCRCommand", sharpRPA.Properties.Resources.photo_camera);
+            return uiImages;
         }
+        public static ImageList UIImageList()
+        {
+            Dictionary<string, Image> imageIcons = UIImageDictionary();
+            ImageList uiImages = new ImageList();
+            foreach (var icon in imageIcons)
+            {
+                uiImages.Images.Add(icon.Key, icon.Value);
+            }
 
-        return uiImages;
-    }
-    public static Image GetUIImage(string commandName)
+            return uiImages;
+        }
+        public static Image GetUIImage(string commandName)
         {
             var uiImageDictionary = UIImageDictionary();
             return uiImageDictionary[commandName];
         }
     }
 }
-
-
-

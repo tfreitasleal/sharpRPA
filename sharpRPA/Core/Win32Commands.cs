@@ -16,7 +16,6 @@ namespace sharpRPA.Core.AutomationCommands
         private static extern IntPtr FindWindowNative(string className, string windowName);
         public static IntPtr FindWindow(string windowName)
         {
-
             //try to find exact window name
             IntPtr hWnd = FindWindowNative(null, windowName);
 
@@ -30,7 +29,6 @@ namespace sharpRPA.Core.AutomationCommands
 
             //return hwnd
             return hWnd;
-
         }
 
         [DllImport("User32.dll", EntryPoint = "SetForegroundWindow")]
@@ -49,7 +47,6 @@ namespace sharpRPA.Core.AutomationCommands
 
         public enum WindowState
         {
-
             [Description("Minimizes a window, even if the thread that owns the window is not responding. This flag should only be used when minimizing windows from a different thread.")]
             SW_FORCEMINIMIZE = 11,
             [Description("Hides the window and activates another window.")]
@@ -76,31 +73,25 @@ namespace sharpRPA.Core.AutomationCommands
             SW_SHOWNOACTIVATE = 4,
             [Description("Activates and displays a window. If the window is minimized or maximized, the system restores it to its original size and position. An application should specify this flag when displaying the window for the first time.")]
             SW_SHOWNORMAL = 1,
-
-
         }
 
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
         public static void SetWindowPosition(IntPtr hWnd, int newXPosition, int newYPosition)
         {
-
             const short SWP_NOSIZE = 1;
             const short SWP_NOZORDER = 0X4;
             const int SWP_SHOWWINDOW = 0x0040;
 
             SetWindowPos(hWnd, 0, newXPosition, newYPosition, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
-
         }
         public static void SetWindowSize(IntPtr hWnd, int newXSize, int newYSize)
         {
-
             const short SWP_NOSIZE = 1;
             const short SWP_NOZORDER = 0X4;
             const int SWP_SHOWWINDOW = 0x0040;
 
             SetWindowPos(hWnd, 0, 0, 0, newXSize, newYSize, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
-
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -122,44 +113,50 @@ namespace sharpRPA.Core.AutomationCommands
         private static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
         public static void SendMouseClick(string clickType, int xMousePosition, int yMousePosition)
         {
-
-
             switch (clickType)
             {
                 case "Left Click":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_LEFTDOWN, xMousePosition, yMousePosition, 0, 0);
                     mouse_event((int)MouseEvents.MOUSEEVENTF_LEFTUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Right Click":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_RIGHTDOWN, xMousePosition, yMousePosition, 0, 0);
                     mouse_event((int)MouseEvents.MOUSEEVENTF_RIGHTUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Middle Click":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_MIDDLEDOWN, xMousePosition, yMousePosition, 0, 0);
                     mouse_event((int)MouseEvents.MOUSEEVENTF_MIDDLEUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Left Down":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_LEFTDOWN, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Right Down":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_RIGHTDOWN, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Middle Down":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_MIDDLEDOWN, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Left Up":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_LEFTUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Right Up":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_RIGHTUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 case "Middle Up":
                     mouse_event((int)MouseEvents.MOUSEEVENTF_MIDDLEUP, xMousePosition, yMousePosition, 0, 0);
                     break;
+
                 default:
                     break;
             }
-
         }
 
         enum MouseEvents
@@ -171,7 +168,6 @@ namespace sharpRPA.Core.AutomationCommands
             MOUSEEVENTF_MIDDLEDOWN = 0x20,
             MOUSEEVENTF_MIDDLEUP = 0x40
         }
-
 
         [DllImport("user32.dll", EntryPoint = "GetWindowRect")]
         static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
@@ -224,18 +220,14 @@ namespace sharpRPA.Core.AutomationCommands
             return data;
         }
 
-
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         private static extern IntPtr GetDesktopWindow();
 
-
-
         public static Bitmap CaptureWindow(string windowName)
         {
-
             IntPtr hWnd;
             if (windowName == "Desktop")
             {
@@ -264,6 +256,5 @@ namespace sharpRPA.Core.AutomationCommands
 
             return screenshot;
         }
-
     }
 }

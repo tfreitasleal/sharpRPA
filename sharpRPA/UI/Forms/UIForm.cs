@@ -10,7 +10,6 @@ namespace sharpRPA.UI.Forms
 {
     public class UIForm : System.Windows.Forms.Form
     {
-
         private int backgroundChangeIndex;
         public int BackgroundChangeIndex
         {
@@ -24,7 +23,6 @@ namespace sharpRPA.UI.Forms
                 {
                     return backgroundChangeIndex;
                 }
-
             }
             set
             {
@@ -32,8 +30,6 @@ namespace sharpRPA.UI.Forms
                 this.Invalidate();
             }
         }
-
-        
 
         protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e)
         {
@@ -44,7 +40,6 @@ namespace sharpRPA.UI.Forms
             //{
             //    e.Graphics.FillRectangle(brush, 0, 0, this.Width, BackgroundChangeIndex);
             //}
-
 
             //using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush
 
@@ -59,42 +54,34 @@ namespace sharpRPA.UI.Forms
                 e.Graphics.FillRectangle(brush, 0, 0, this.Width, BackgroundChangeIndex);
             }
 
-
             using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush
 
             (new Rectangle(0, BackgroundChangeIndex, this.Width, this.Height), Color.SteelBlue, Color.LightSteelBlue, System.Drawing.Drawing2D.LinearGradientMode.Vertical))
             {
                 e.Graphics.FillRectangle(brush, 0, BackgroundChangeIndex, this.Width, this.Height);
             }
-
-
         }
 
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UIForm));
             this.SuspendLayout();
-            // 
+            //
             // UIForm
-            // 
+            //
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "UIForm";
             this.Load += new System.EventHandler(this.UIForm_Load);
             this.ResumeLayout(false);
-
         }
 
         private void UIForm_Load(object sender, EventArgs e)
         {
-
         }
         public static void MoveFormToBottomRight(Form sender)
         {
             sender.Location = new Point(Screen.FromPoint(sender.Location).WorkingArea.Right - sender.Width, Screen.FromPoint(sender.Location).WorkingArea.Bottom - sender.Height);
         }
-
-      
-
     }
 }

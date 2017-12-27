@@ -19,9 +19,9 @@ namespace sharpRPA.UI.Forms
         }
 
         #region Form and Control Events
+
         private void frmScheduleManagement_Load(object sender, EventArgs e)
         {
-
             //get path to executing assembly
             txtAppPath.Text = System.Reflection.Assembly.GetEntryAssembly().Location;
 
@@ -41,11 +41,9 @@ namespace sharpRPA.UI.Forms
 
             //call bgw to pull schedule info
             RefreshTasks();
-
         }
         private void uiBtnOk_Click(object sender, EventArgs e)
         {
-           
             if (String.IsNullOrEmpty(txtRecurCount.Text))
             {
                 MessageBox.Show("Please indicate a recurrence value!");
@@ -68,16 +66,15 @@ namespace sharpRPA.UI.Forms
 
             using (TaskService ts = new TaskService())
             {
-
-            // Create a new task definition and assign properties
-            TaskDefinition td = ts.NewTask();
-            td.RegistrationInfo.Description = "Scheduled task from sharpRPA - " + selectedFile;
-            var trigger = new TimeTrigger();
+                // Create a new task definition and assign properties
+                TaskDefinition td = ts.NewTask();
+                td.RegistrationInfo.Description = "Scheduled task from sharpRPA - " + selectedFile;
+                var trigger = new TimeTrigger();
                 ////   // Add a trigger that will fire the task at this time every other day
                 //DailyTrigger dt = (DailyTrigger)td.Triggers.Add(new DailyTrigger(2));
                 //dt.Repetition.Duration = TimeSpan.FromHours(4);
                 //dt.Repetition.Interval = TimeSpan.FromHours()
-                // Create a trigger that will execute very 2 minutes. 
+                // Create a trigger that will execute very 2 minutes.
 
                 trigger.StartBoundary = dtStartTime.Value;
                 if (rdoEndByDate.Checked)
@@ -92,32 +89,30 @@ namespace sharpRPA.UI.Forms
                     MessageBox.Show("Recur value must be a number type (double)!");
                     return;
                 }
-               
-        
 
                 switch (cboRecurType.Text)
                 {
                     case "Minutes":
                         trigger.Repetition.Interval = TimeSpan.FromMinutes(recurParsed);
                         break;
+
                     case "Hours":
                         trigger.Repetition.Interval = TimeSpan.FromHours(recurParsed);
                         break;
+
                     case "Days":
                         trigger.Repetition.Interval = TimeSpan.FromDays(recurParsed);
                         break;
+
                     default:
                         break;
                 }
 
-
                 td.Triggers.Add(trigger);
-    
+
                 td.Actions.Add(new ExecAction(@"" + txtAppPath.Text + "", "\"" + selectedFile + "\"", null));
                 ts.RootFolder.RegisterTaskDefinition(@"sharpRPA-" + cboSelectedScript.Text, td);
- 
             }
-
         }
         private void uiBtnShowScheduleManager_Click(object sender, EventArgs e)
         {
@@ -128,39 +123,31 @@ namespace sharpRPA.UI.Forms
         {
             if (dgvScheduledTasks.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
             {
-
                 int row = this.dgvScheduledTasks.CurrentCell.RowIndex;
                 using (TaskService ts = new TaskService())
                 {
                     string taskName = (string)dgvScheduledTasks.Rows[row].Cells["colTaskName"].Value;
                     var updateTask = ts.FindTask(taskName);
                     updateTask.Enabled = !updateTask.Enabled;
-
-                   
                 }
 
-            
                 using (TaskService ts = new TaskService())
-                {           
+                {
                     //disable task
                     var taskToDisable = ts.FindTask("Some_Task_Name");
                     taskToDisable.Enabled = false;
-               }
-
-
-
-
+                }
             }
         }
-        #endregion
+
+        #endregion Form and Control Events
 
         #region BackgroundWorker, Timer
+
         //events for background worker and associated methods
         private void RefreshTasks()
         {
-
             bgwGetSchedulingInfo.RunWorkerAsync();
-
         }
         private void tmrGetSchedulingInfo_Tick(object sender, EventArgs e)
         {
@@ -173,7 +160,6 @@ namespace sharpRPA.UI.Forms
 
             using (TaskService ts = new TaskService())
             {
-
                 foreach (Microsoft.Win32.TaskScheduler.Task task in ts.RootFolder.Tasks)
                 {
                     if (task.Name.Contains("sharpRPA"))
@@ -182,37 +168,21 @@ namespace sharpRPA.UI.Forms
                         if (task.Enabled)
                             currentState = "disable";
 
-
                         var scheduleItem = new object[] { task.Name, task.LastRunTime, task.LastTaskResult, task.NextRunTime, task.IsActive, currentState };
                         scheduledTaskList.Add(scheduleItem);
-
-
-
-
                     }
-
                 }
-
             }
 
-
             e.Result = scheduledTaskList;
-
-
         }
         private void bgwGetSchedulingInfo_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             dgvScheduledTasks.Rows.Clear();
             List<object[]> datagridRows = (List<object[]>)e.Result;
             datagridRows.ForEach(itm => dgvScheduledTasks.Rows.Add(itm[0], itm[1], itm[2], itm[3], itm[4], itm[5]));
-
-
         }
-        #endregion
 
-    
-
-
-        
+        #endregion BackgroundWorker, Timer
     }
 }

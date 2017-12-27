@@ -47,7 +47,6 @@ namespace sharpRPA.UI.CustomControls
             }
         }
 
-
         private void CommandItemControl_MouseEnter(object sender, EventArgs e)
         {
             this.Cursor = Cursors.Hand;
@@ -65,7 +64,6 @@ namespace sharpRPA.UI.CustomControls
 
         private void CommandItemControl_Load(object sender, EventArgs e)
         {
-
         }
     }
 }

@@ -11,11 +11,10 @@ using WebSocket4Net;
 
 namespace sharpRPA.UI.Forms
 {
-
     public partial class frmSettings : UI.Forms.UIForm
     {
         Core.ApplicationSettings newAppSettings;
-        public  frmScriptBuilder scriptBuilderForm;
+        public frmScriptBuilder scriptBuilderForm;
         public frmSettings(frmScriptBuilder sender)
         {
             scriptBuilderForm = sender;
@@ -24,19 +23,14 @@ namespace sharpRPA.UI.Forms
 
         private void frmSettings_Load(object sender, EventArgs e)
         {
-
-    
-           newAppSettings = new Core.ApplicationSettings(); 
-           newAppSettings = newAppSettings.GetOrCreateApplicationSettings();
+            newAppSettings = new Core.ApplicationSettings();
+            newAppSettings = newAppSettings.GetOrCreateApplicationSettings();
 
             var serverSettings = newAppSettings.ServerSettings;
             chkServerEnabled.DataBindings.Add("Checked", serverSettings, "ServerConnectionEnabled");
             chkAutomaticallyConnect.DataBindings.Add("Checked", serverSettings, "ConnectToServerOnStartup");
             chkRetryOnDisconnect.DataBindings.Add("Checked", serverSettings, "RetryServerConnectionOnFail");
             txtServerURL.DataBindings.Add("Text", serverSettings, "ServerURL");
-
-
-
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -56,18 +50,7 @@ namespace sharpRPA.UI.Forms
 
             if (newOpenDialog.ShowDialog() == DialogResult.OK)
             {
-
-
-
-
             }
-
-
-
-
-
-
-
         }
     }
 }

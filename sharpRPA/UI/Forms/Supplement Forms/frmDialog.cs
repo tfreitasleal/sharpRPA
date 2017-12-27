@@ -12,8 +12,8 @@ namespace sharpRPA.UI.Forms.Supplemental
 {
     public partial class frmDialog : Form
     {
-       public int closeTicks;
-       public int ticksPassed;
+        public int closeTicks;
+        public int ticksPassed;
         public frmDialog(string message, string title, DialogType dialogType, int closeAfterSeconds)
         {
             InitializeComponent();
@@ -26,9 +26,11 @@ namespace sharpRPA.UI.Forms.Supplemental
                     uiBtnOk.DisplayText = "Yes";
                     uiBtnCancel.DisplayText = "No";
                     break;
+
                 case DialogType.OkOnly:
                     uiBtnCancel.Hide();
                     break;
+
                 default:
                     break;
             }
@@ -43,22 +45,17 @@ namespace sharpRPA.UI.Forms.Supplemental
             }
             pnlControlContainer.BackColor = Color.FromArgb(255, 214, 88);
             this.txtMessage.SelectionStart = txtMessage.Text.Length;
-
         }
         private void CalculateCloseTime()
         {
-
             lblAutoClose.Text = "closing in " + (closeTicks - ticksPassed) + " sec(s)";
         }
-       
-
-
 
         public enum DialogType
         {
-         YesNo,
-         OkCancel,
-         OkOnly
+            YesNo,
+            OkCancel,
+            OkOnly
         }
 
         private void uiBtnOk_Click(object sender, EventArgs e)
@@ -82,7 +79,6 @@ namespace sharpRPA.UI.Forms.Supplemental
                 ticksPassed++;
                 CalculateCloseTime();
             }
-       
         }
 
         private void frmDialog_Load(object sender, EventArgs e)
