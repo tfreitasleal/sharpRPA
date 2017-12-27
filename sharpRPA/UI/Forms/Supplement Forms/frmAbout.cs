@@ -31,7 +31,5 @@ namespace sharpRPA.UI.Forms.Supplemental
         {
             System.Diagnostics.Process.Start("https://github.com/dahall/TaskScheduler");
         }
-
-
     }
 }

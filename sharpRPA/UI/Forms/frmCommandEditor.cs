@@ -38,13 +38,11 @@ namespace sharpRPA.UI.Forms
             Edit
         }
 
-        #region Form Events   
+        #region Form Events
+
         //handle events for the form
         private void frmNewCommand_Load(object sender, EventArgs e)
         {
-
-       
-
             //Track the creation mode required - Add or Edit depending on calling Form
             if (creationMode == CreationMode.Add)
             {
@@ -59,16 +57,14 @@ namespace sharpRPA.UI.Forms
                           .Where(t => t.BaseType.Name == "ScriptCommand")
                           .ToList();
 
-
                 //Loop through each class
                 foreach (var commandClass in commandClasses)
                 {
-                  var groupingAttribute =  commandClass.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group), true);
+                    var groupingAttribute = commandClass.GetCustomAttributes(typeof(Core.AutomationCommands.Attributes.ClassAttributes.Group), true);
 
                     if (groupingAttribute.Length > 0)
                     {
                         var attribute = (Core.AutomationCommands.Attributes.ClassAttributes.Group)groupingAttribute[0];
-                     
                     }
 
                     //Instantiate Class
@@ -81,10 +77,7 @@ namespace sharpRPA.UI.Forms
                         newCommandItem.DisplayValue = newCommand.SelectionName;
                         newCommandItem.CommandInstance = newCommand;
                         commandList.Add(newCommandItem);
-
-
                     }
-
                 }
 
                 commandList = commandList.OrderBy(itm => itm.DisplayValue).ToList();
@@ -92,10 +85,8 @@ namespace sharpRPA.UI.Forms
                 //set combobox to coammand list
                 cboSelectedCommand.DataSource = commandList;
 
-                
-
                 if ((defaultStartupCommand != null) && (commandList.Where(x => x.DisplayValue == defaultStartupCommand).Count() > 0))
-                    
+
                 {
                     cboSelectedCommand.SelectedIndex = cboSelectedCommand.FindStringExact(defaultStartupCommand);
                 }
@@ -105,14 +96,8 @@ namespace sharpRPA.UI.Forms
                     cboSelectedCommand.SelectedIndex = 0;
                 }
 
-           
-    
                 //force commit event to populate the flow layout
                 cboSelectedCommand_SelectionChangeCommitted(null, null);
-
-
-
-
             }
             else
 
@@ -124,15 +109,16 @@ namespace sharpRPA.UI.Forms
                 cboSelectedCommand.Text = selectedCommand.SelectionName;
                 GenerateUIInputElements(selectedCommand);
             }
-
         }
         private void frmCommandEditor_Shown(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.Sizable;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Command UI Field Generation
+
         //handles generation of controls for the main flowlayout and tracking/assignment of input elements
 
         /// <summary>
@@ -152,8 +138,6 @@ namespace sharpRPA.UI.Forms
             //loop through available variables
             foreach (var inputField in inputVariableFields)
             {
-
-
                 //create a label for each variable name
                 Label inputLabel = new Label();
                 inputLabel.AutoSize = true;
@@ -174,8 +158,6 @@ namespace sharpRPA.UI.Forms
                     inputLabel.Text = inputField.Name;
                 }
 
-                              
-             
                 var inputControl = GenerateInputControl(inputField, currentCommand);
 
                 formHeight += inputControl.Height;
@@ -191,21 +173,22 @@ namespace sharpRPA.UI.Forms
                     foreach (Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper attrib in propertyAllowsVars)
                     {
                         sharpRPA.UI.CustomControls.CommandItemControl variableInsertion = new sharpRPA.UI.CustomControls.CommandItemControl();
-                        variableInsertion.Padding = new System.Windows.Forms.Padding(10,0,0,0);
+                        variableInsertion.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
                         variableInsertion.ForeColor = Color.Black;
                         variableInsertion.Tag = inputControl;
 
                         switch (attrib.additionalHelper)
                         {
                             case Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowVariableHelper:
-                                //show variable selector                             
+                                //show variable selector
                                 variableInsertion.CommandImage = UI.Images.GetUIImage("VariableCommand");
                                 variableInsertion.CommandDisplay = "Insert Variable";
                                 variableInsertion.Click += ShowVariableSelector;
                                 flw_InputVariables.Controls.Add(variableInsertion);
                                 break;
+
                             case Core.AutomationCommands.Attributes.PropertyAttributes.PropertyUIHelper.UIAdditionalHelperType.ShowFileSelectionHelper:
-                                //show file selector    
+                                //show file selector
                                 variableInsertion.CommandImage = UI.Images.GetUIImage("ClipboardGetTextCommand");
                                 variableInsertion.CommandDisplay = "Select a File";
                                 variableInsertion.ForeColor = Color.Black;
@@ -213,6 +196,7 @@ namespace sharpRPA.UI.Forms
                                 variableInsertion.Click += ShowFileSelector;
                                 flw_InputVariables.Controls.Add(variableInsertion);
                                 break;
+
                             default:
                                 break;
                         }
@@ -232,7 +216,6 @@ namespace sharpRPA.UI.Forms
                     //}
                 }
 
-
                 //these types get a helper button to launch another form
                 if (inputField.Name == "v_WebSearchTable")
                 {
@@ -245,7 +228,7 @@ namespace sharpRPA.UI.Forms
                     newitm.Click += ShowElementCaptureForm;
                     flw_InputVariables.Controls.Add(newitm);
                 }
-                else if(inputField.Name == "v_XMousePosition")
+                else if (inputField.Name == "v_XMousePosition")
                 {
                     Core.AutomationCommands.SendMouseMoveCommand mouseCommand = (Core.AutomationCommands.SendMouseMoveCommand)currentCommand;
                     sharpRPA.UI.CustomControls.CommandItemControl newitm = new sharpRPA.UI.CustomControls.CommandItemControl();
@@ -255,7 +238,7 @@ namespace sharpRPA.UI.Forms
                     newitm.Click += ShowMouseCaptureForm;
                     flw_InputVariables.Controls.Add(newitm);
                 }
-    
+
                 //add to flow layout
                 flw_InputVariables.Controls.Add(inputControl);
 
@@ -277,11 +260,7 @@ namespace sharpRPA.UI.Forms
                         DataGridView inputCtrl = (DataGridView)inputControl;
                         inputCtrl.Rows[1].Cells[1] = comparisonComboBox;
                     }
-
                 }
-              
-
-
             }
 
             if ((currentCommand is Core.AutomationCommands.IEBrowserElementCommand) && (creationMode == CreationMode.Edit))
@@ -295,18 +274,14 @@ namespace sharpRPA.UI.Forms
                     additionalParameterLabel.Visible = false;
                     webActionParameterBox.Visible = false;
                 }
-              
             }
-            
+
             //add additional offset
             this.Height = formHeight + 200;
-
         }
 
         private Control GenerateInputControl(PropertyInfo inputField, Core.AutomationCommands.ScriptCommand currentCommand)
         {
-
-
             //create control to capture input which will be assigned to the class variable
             dynamic InputControl;
 
@@ -332,278 +307,247 @@ namespace sharpRPA.UI.Forms
                 {
                     control.SelectedIndexChanged += seleniumAction_SelectionChangeCommitted;
                 }
-                else if(inputField.Name == "v_IfActionType")
+                else if (inputField.Name == "v_IfActionType")
                 {
-                    control.SelectedIndexChanged += ifAction_SelectionChangeCommitted;                  
+                    control.SelectedIndexChanged += ifAction_SelectionChangeCommitted;
                 }
-
-
             }
-
-            else { 
-
-            //legacy population method
-            if (inputField.Name == "v_WindowName")
+            else
             {
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 200;
-                //add an option for current window which is the window which is currently in the foreground
-                InputControl.Items.Add("Current Window");
-                //get all running processes
-                Process[] processlist = Process.GetProcesses();
-                //pull the main window title for each
-                foreach (Process process in processlist)
+                //legacy population method
+                if (inputField.Name == "v_WindowName")
                 {
-                    if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 200;
+                    //add an option for current window which is the window which is currently in the foreground
+                    InputControl.Items.Add("Current Window");
+                    //get all running processes
+                    Process[] processlist = Process.GetProcesses();
+                    //pull the main window title for each
+                    foreach (Process process in processlist)
                     {
-                        //add to the control list of available windows
-                        InputControl.Items.Add(process.MainWindowTitle);
+                        if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                        {
+                            //add to the control list of available windows
+                            InputControl.Items.Add(process.MainWindowTitle);
+                        }
                     }
                 }
-            }
-            else if (inputField.Name == "v_ScreenshotWindowName")
-            {
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 200;
-                //add an option for current window which is the window which is currently in the foreground
-                InputControl.Items.Add("Desktop");
-                //get all running processes
-                Process[] processlist = Process.GetProcesses();
-                //pull the main window title for each
-                foreach (Process process in processlist)
+                else if (inputField.Name == "v_ScreenshotWindowName")
                 {
-                    if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 200;
+                    //add an option for current window which is the window which is currently in the foreground
+                    InputControl.Items.Add("Desktop");
+                    //get all running processes
+                    Process[] processlist = Process.GetProcesses();
+                    //pull the main window title for each
+                    foreach (Process process in processlist)
                     {
-                        //add to the control list of available windows
-                        InputControl.Items.Add(process.MainWindowTitle);
+                        if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                        {
+                            //add to the control list of available windows
+                            InputControl.Items.Add(process.MainWindowTitle);
+                        }
                     }
                 }
-            }
-            else if (inputField.Name == "v_AutomationWindowName")
-            {
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 200;
-
-                //get all running processes
-                Process[] processlist = Process.GetProcesses();
-                //pull the main window title for each
-                foreach (Process process in processlist)
+                else if (inputField.Name == "v_AutomationWindowName")
                 {
-                    if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 200;
+
+                    //get all running processes
+                    Process[] processlist = Process.GetProcesses();
+                    //pull the main window title for each
+                    foreach (Process process in processlist)
                     {
-                        //add to the control list of available windows
-                        InputControl.Items.Add(process.MainWindowTitle);
+                        if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                        {
+                            //add to the control list of available windows
+                            InputControl.Items.Add(process.MainWindowTitle);
+                        }
+                    }
+
+                    InputControl.SelectedIndexChanged +=
+                             new System.EventHandler(AutomationWindowName_SelectedIndexChanged);
+                }
+                else if (inputField.Name == "v_AutomationHandleName")
+                {
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 200;
+                }
+                else if (inputField.Name == "v_AutomationHandleDisplayName")
+                {
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 200;
+
+                    InputControl.SelectedIndexChanged +=
+                           new System.EventHandler(DisplayHandleSelected_SelectedIndexChanged);
+                }
+                else if (inputField.Name == "v_MouseClick")
+                {
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 300;
+                    InputControl.Items.Add("None");
+                    InputControl.Items.Add("Left Click");
+                    InputControl.Items.Add("Middle Click");
+                    InputControl.Items.Add("Right Click");
+                    InputControl.Items.Add("Left Down");
+                    InputControl.Items.Add("Middle Down");
+                    InputControl.Items.Add("Right Down");
+                    InputControl.Items.Add("Left Up");
+                    InputControl.Items.Add("Middle Up");
+                    InputControl.Items.Add("Right Up");
+                }
+                else if (inputField.Name == "v_WebAction")
+                {
+                    InputControl = new ComboBox();
+                    InputControl.Height = 30;
+                    InputControl.Width = 300;
+
+                    InputControl.Items.Add("Invoke Click");
+                    InputControl.Items.Add("Left Click");
+                    InputControl.Items.Add("Middle Click");
+                    InputControl.Items.Add("Right Click");
+
+                    InputControl.Items.Add("Get Attribute");
+                    InputControl.Items.Add("Set Attribute");
+
+                    ComboBox webAction = (ComboBox)InputControl;
+                    webAction.SelectedIndexChanged += webAction_SelectionChangeCommitted;
+                }
+                else if ((inputField.Name == "v_userVariableName") || (inputField.Name == "v_applyToVariableName"))
+                {
+                    InputControl = new ComboBox();
+                    foreach (var scriptVariable in scriptVariables)
+                    {
+                        if (!string.IsNullOrEmpty(scriptVariable.variableName))
+                            InputControl.Items.Add(scriptVariable.variableName);
                     }
                 }
-
-                InputControl.SelectedIndexChanged +=
-                         new System.EventHandler(AutomationWindowName_SelectedIndexChanged);
-
-            }
-            else if (inputField.Name == "v_AutomationHandleName")
-            {
-
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 200;
-
-
-
-            }
-            else if (inputField.Name == "v_AutomationHandleDisplayName")
-            {
-
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 200;
-
-                InputControl.SelectedIndexChanged +=
-                       new System.EventHandler(DisplayHandleSelected_SelectedIndexChanged);
-
-            }
-            else if (inputField.Name == "v_MouseClick")
-            {
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 300;
-                InputControl.Items.Add("None");
-                InputControl.Items.Add("Left Click");
-                InputControl.Items.Add("Middle Click");
-                InputControl.Items.Add("Right Click");
-                InputControl.Items.Add("Left Down");
-                InputControl.Items.Add("Middle Down");
-                InputControl.Items.Add("Right Down");
-                InputControl.Items.Add("Left Up");
-                InputControl.Items.Add("Middle Up");
-                InputControl.Items.Add("Right Up");
-            }
-            else if (inputField.Name == "v_WebAction")
-            {
-                InputControl = new ComboBox();
-                InputControl.Height = 30;
-                InputControl.Width = 300;
-                           
-                InputControl.Items.Add("Invoke Click");
-                InputControl.Items.Add("Left Click");
-                InputControl.Items.Add("Middle Click");
-                InputControl.Items.Add("Right Click");
-
-
-                InputControl.Items.Add("Get Attribute");
-                InputControl.Items.Add("Set Attribute");
-               
-                ComboBox webAction = (ComboBox)InputControl;
-                webAction.SelectedIndexChanged += webAction_SelectionChangeCommitted;
-
-            
-            }
-            else if ((inputField.Name == "v_userVariableName") || (inputField.Name == "v_applyToVariableName"))
-            {
-                InputControl = new ComboBox();
-                foreach (var scriptVariable in scriptVariables)
+                else if ((inputField.Name == "v_WebActionParameterTable") || (inputField.Name == "v_IfActionParameterTable"))
                 {
+                    InputControl = new DataGridView();
 
-                    if (!string.IsNullOrEmpty(scriptVariable.variableName))
-                        InputControl.Items.Add(scriptVariable.variableName);
+                    InputControl.Name = inputField.Name;
+                    InputControl.Width = 500;
+                    InputControl.Height = 140;
 
+                    DataGridViewTextBoxColumn propertyName = new DataGridViewTextBoxColumn();
+                    propertyName.HeaderText = "Parameter Name";
+                    propertyName.DataPropertyName = "Parameter Name";
+                    InputControl.Columns.Add(propertyName);
+
+                    DataGridViewTextBoxColumn propertyValue = new DataGridViewTextBoxColumn();
+                    propertyValue.HeaderText = "Parameter Value";
+                    propertyValue.DataPropertyName = "Parameter Value";
+                    InputControl.Columns.Add(propertyValue);
+
+                    InputControl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+                    InputControl.AllowUserToAddRows = false;
+                    InputControl.AllowUserToDeleteRows = false;
+
+                    //set datasource
+
+                    if (currentCommand is Core.AutomationCommands.IEBrowserElementCommand)
+                    {
+                        var cmd = (Core.AutomationCommands.IEBrowserElementCommand)currentCommand;
+                        InputControl.DataSource = cmd.v_WebActionParameterTable;
+                        InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+                    }
+                    else if (currentCommand is Core.AutomationCommands.SeleniumBrowserElementActionCommand)
+                    {
+                        var cmd = (Core.AutomationCommands.SeleniumBrowserElementActionCommand)currentCommand;
+                        InputControl.DataSource = cmd.v_WebActionParameterTable;
+                        InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+                    }
+                    else if (currentCommand is Core.AutomationCommands.BeginIfCommand)
+                    {
+                        var cmd = (Core.AutomationCommands.BeginIfCommand)currentCommand;
+                        InputControl.DataSource = cmd.v_IfActionParameterTable;
+                        InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
+                    }
                 }
-
-
-            }
-            else if ((inputField.Name == "v_WebActionParameterTable") || (inputField.Name == "v_IfActionParameterTable"))
-            {
-     
-
-                InputControl = new DataGridView();
-
-                InputControl.Name = inputField.Name;
-                InputControl.Width = 500;
-                InputControl.Height = 140;
-
-
-                DataGridViewTextBoxColumn propertyName = new DataGridViewTextBoxColumn();
-                propertyName.HeaderText = "Parameter Name";
-                propertyName.DataPropertyName = "Parameter Name";
-                InputControl.Columns.Add(propertyName);
-
-                DataGridViewTextBoxColumn propertyValue = new DataGridViewTextBoxColumn();
-                propertyValue.HeaderText = "Parameter Value";
-                propertyValue.DataPropertyName = "Parameter Value";
-                InputControl.Columns.Add(propertyValue);
-
-                InputControl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-                InputControl.AllowUserToAddRows = false;
-                InputControl.AllowUserToDeleteRows = false;
-
-                //set datasource
-
-                if (currentCommand is Core.AutomationCommands.IEBrowserElementCommand)
+                else if (inputField.Name == "v_IEBrowserName")
                 {
+                    InputControl = new ComboBox();
+                    InputControl.Width = 300;
+                    InputControl.Height = 50;
+
+                    var shellWindows = new ShellWindows();
+                    foreach (IWebBrowser2 shellWindow in shellWindows)
+                    {
+                        if (shellWindow.Document is MSHTML.HTMLDocument)
+                            InputControl.Items.Add(shellWindow.Document.Title);
+                    }
+                }
+                else if (inputField.Name == "v_Comment")
+                {
+                    // assumed that all "v_Comment" will need to have a larger box for typing user comments about the action
+                    InputControl = new TextBox();
+
+                    if (currentCommand is Core.AutomationCommands.CommentCommand)
+                    {
+                        InputControl.Height = 300;
+                        InputControl.Width = 400;
+                    }
+                    else
+                    {
+                        InputControl.Height = 100;
+                        InputControl.Width = 300;
+                    }
+
+                    InputControl.Multiline = true;
+                }
+                else if (inputField.Name == "v_WebSearchTable")
+                {
+                    InputControl = new DataGridView();
+
+                    InputControl.Name = inputField.Name;
+                    InputControl.Width = 400;
+                    InputControl.Height = 180;
+
+                    InputControl.AutoGenerateColumns = false;
+                    DataGridViewCheckBoxColumn enabledColumn = new DataGridViewCheckBoxColumn();
+                    enabledColumn.HeaderText = "Enabled";
+                    enabledColumn.DataPropertyName = "Enabled";
+                    InputControl.Columns.Add(enabledColumn);
+
+                    DataGridViewTextBoxColumn propertyName = new DataGridViewTextBoxColumn();
+                    propertyName.HeaderText = "Property Name";
+                    propertyName.DataPropertyName = "Property Name";
+                    InputControl.Columns.Add(propertyName);
+
+                    DataGridViewTextBoxColumn propertyValue = new DataGridViewTextBoxColumn();
+                    propertyValue.HeaderText = "Property Value";
+                    propertyValue.DataPropertyName = "Property Value";
+                    InputControl.Columns.Add(propertyValue);
+
+                    InputControl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+
+                    //set datasource
                     var cmd = (Core.AutomationCommands.IEBrowserElementCommand)currentCommand;
-                    InputControl.DataSource = cmd.v_WebActionParameterTable;
+                    InputControl.DataSource = cmd.v_WebSearchTable;
                     InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
-                }
-                else if (currentCommand is Core.AutomationCommands.SeleniumBrowserElementActionCommand)
-                {
-                    var cmd = (Core.AutomationCommands.SeleniumBrowserElementActionCommand)currentCommand;
-                    InputControl.DataSource = cmd.v_WebActionParameterTable;
-                    InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
-                }
-                else if (currentCommand is Core.AutomationCommands.BeginIfCommand)
-                {
-                    var cmd = (Core.AutomationCommands.BeginIfCommand)currentCommand;
-                    InputControl.DataSource = cmd.v_IfActionParameterTable;
-                    InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
-
-                }
-
-            
-
-        }
-            else if (inputField.Name == "v_IEBrowserName")
-            {
-                InputControl = new ComboBox();
-                InputControl.Width = 300;
-                InputControl.Height = 50;
-
-                var shellWindows = new ShellWindows();
-                foreach (IWebBrowser2 shellWindow in shellWindows)
-                {
-                    if (shellWindow.Document is MSHTML.HTMLDocument)
-                        InputControl.Items.Add(shellWindow.Document.Title);
-
-                }
-            }
-            else if (inputField.Name == "v_Comment")
-            {
-                // assumed that all "v_Comment" will need to have a larger box for typing user comments about the action
-                InputControl = new TextBox();
-
-                if (currentCommand is Core.AutomationCommands.CommentCommand)
-                {
-                    InputControl.Height = 300;
-                    InputControl.Width = 400;                    
                 }
                 else
                 {
-                    InputControl.Height = 100;
+                    //variable is simply a standard variable
+                    InputControl = new TextBox();
+                    InputControl.Height = 30;
                     InputControl.Width = 300;
                 }
 
-                InputControl.Multiline = true;
-            }
-            else if(inputField.Name == "v_WebSearchTable")
-            {
-
-
-                InputControl = new DataGridView();
-                
+                //standard for all controls
+                InputControl.Visible = true;
                 InputControl.Name = inputField.Name;
-                InputControl.Width = 400;
-                InputControl.Height = 180;
-
-                InputControl.AutoGenerateColumns = false;
-                DataGridViewCheckBoxColumn enabledColumn = new DataGridViewCheckBoxColumn();
-                enabledColumn.HeaderText = "Enabled";
-                enabledColumn.DataPropertyName = "Enabled";
-                InputControl.Columns.Add(enabledColumn);
-
-                DataGridViewTextBoxColumn propertyName = new DataGridViewTextBoxColumn();
-                propertyName.HeaderText = "Property Name";
-                propertyName.DataPropertyName = "Property Name";
-                InputControl.Columns.Add(propertyName);
-
-                DataGridViewTextBoxColumn propertyValue = new DataGridViewTextBoxColumn();
-                propertyValue.HeaderText = "Property Value";
-                propertyValue.DataPropertyName = "Property Value";
-                InputControl.Columns.Add(propertyValue);
-
-                InputControl.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-
-                //set datasource
-                var cmd = (Core.AutomationCommands.IEBrowserElementCommand)currentCommand;
-                InputControl.DataSource = cmd.v_WebSearchTable;
-                InputControl.Font = new Font("Segoe UI", 8, FontStyle.Regular);
             }
-          
-            else
-            {
-                //variable is simply a standard variable
-                InputControl = new TextBox();
-                InputControl.Height = 30;
-                InputControl.Width = 300;              
-            }
-
-            //standard for all controls   
-            InputControl.Visible = true;
-            InputControl.Name = inputField.Name;
-
-          
-            }
-
 
             if (!(InputControl is DataGridView)) //dgv already has binding set
             {
@@ -612,15 +556,15 @@ namespace sharpRPA.UI.Forms
             }
 
             return InputControl;
-
         }
-        #endregion
 
-        #region ComboBox Events 
+        #endregion Command UI Field Generation
+
+        #region ComboBox Events
+
         //handles all combobox events
         private void webAction_SelectionChangeCommitted(object sender, EventArgs e)
         {
-
             ComboBox webAction = (ComboBox)sender;
             DataGridView webActionParameterBox = (DataGridView)flw_InputVariables.Controls["v_WebActionParameterTable"];
             Label additionalParameterLabel = (Label)flw_InputVariables.Controls["lbl_v_WebActionParameterTable"];
@@ -638,12 +582,16 @@ namespace sharpRPA.UI.Forms
                     additionalParameterLabel.Visible = false;
                     webActionParameterBox.Visible = false;
                     break;
-                case "Left Click": case "Middle Click": case "Right Click":
+
+                case "Left Click":
+                case "Middle Click":
+                case "Right Click":
                     additionalParameterLabel.Visible = true;
                     webActionParameterBox.Visible = true;
                     actionParameters.Rows.Add("X Adjustment", 0);
                     actionParameters.Rows.Add("Y Adjustment", 0);
                     break;
+
                 case "Set Attribute":
                     additionalParameterLabel.Visible = true;
                     webActionParameterBox.Visible = true;
@@ -651,6 +599,7 @@ namespace sharpRPA.UI.Forms
                     actionParameters.Rows.Add("Value To Set");
 
                     break;
+
                 case "Get Attribute":
                     additionalParameterLabel.Visible = true;
                     webActionParameterBox.Visible = true;
@@ -665,8 +614,8 @@ namespace sharpRPA.UI.Forms
                     //scriptVariables.Where(x => !string.IsNullOrEmpty(x.variableName)).ToList().ForEach(x => variableComboBox.Items.Add(x.variableName));
                     //webActionParameterBox.Rows[1].Cells[1] = variableComboBox;
 
-                   
                     break;
+
                 default:
                     break;
             }
@@ -677,7 +626,6 @@ namespace sharpRPA.UI.Forms
         }
         private void ifAction_SelectionChangeCommitted(object sender, EventArgs e)
         {
-
             ComboBox ifAction = (ComboBox)sender;
             DataGridView ifActionParameterBox = (DataGridView)flw_InputVariables.Controls["v_IfActionParameterTable"];
             Label additionalParameterLabel = (Label)flw_InputVariables.Controls["lbl_v_IfActionParameterTable"];
@@ -710,19 +658,14 @@ namespace sharpRPA.UI.Forms
                     //assign cell as a combobox
                     ifActionParameterBox.Rows[1].Cells[1] = comparisonComboBox;
 
-
-
                     break;
-           
+
                 default:
                     break;
             }
-
-
         }
         private void seleniumAction_SelectionChangeCommitted(object sender, EventArgs e)
         {
-
             ComboBox webAction = (ComboBox)sender;
             DataGridView webActionParameterBox = (DataGridView)flw_InputVariables.Controls["v_WebActionParameterTable"];
             Label additionalParameterLabel = (Label)flw_InputVariables.Controls["lbl_v_WebActionParameterTable"];
@@ -740,6 +683,7 @@ namespace sharpRPA.UI.Forms
                     webActionParameterBox.Hide();
                     additionalParameterLabel.Hide();
                     break;
+
                 case "Left Click":
                 case "Middle Click":
                 case "Right Click":
@@ -748,32 +692,35 @@ namespace sharpRPA.UI.Forms
                     actionParameters.Rows.Add("X Adjustment", 0);
                     actionParameters.Rows.Add("Y Adjustment", 0);
                     break;
+
                 case "Set Text":
                     webActionParameterBox.Show();
                     additionalParameterLabel.Show();
                     actionParameters.Rows.Add("Text To Set");
                     break;
+
                 case "Get Text":
                     webActionParameterBox.Show();
                     additionalParameterLabel.Show();
                     actionParameters.Rows.Add("Variable Name");
                     break;
+
                 case "Get Attribute":
                     webActionParameterBox.Show();
                     additionalParameterLabel.Show();
                     actionParameters.Rows.Add("Attribute Name");
                     actionParameters.Rows.Add("Variable Name");
                     break;
+
                 case "Wait For Element To Exist":
                     webActionParameterBox.Show();
                     additionalParameterLabel.Show();
                     actionParameters.Rows.Add("Timeout (Seconds)");
                     break;
+
                 default:
                     break;
             }
-
-
         }
         private void cboSelectedCommand_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -784,11 +731,9 @@ namespace sharpRPA.UI.Forms
         }
         private void cboSelectedCommand_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
-        private void AutomationWindowName_SelectedIndexChanged(object sender,System.EventArgs e)
+        private void AutomationWindowName_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-
             var senderBox = (ComboBox)sender;
 
             if (senderBox.Text != string.Empty)
@@ -796,11 +741,11 @@ namespace sharpRPA.UI.Forms
                 ComboBox handleControl;
                 if (selectedCommand is Core.AutomationCommands.ThickAppClickItemCommand)
                 {
-                     handleControl = (ComboBox)flw_InputVariables.Controls["v_AutomationHandleName"];
+                    handleControl = (ComboBox)flw_InputVariables.Controls["v_AutomationHandleName"];
                 }
                 else
                 {
-                     handleControl = (ComboBox)flw_InputVariables.Controls["v_AutomationHandleDisplayName"];
+                    handleControl = (ComboBox)flw_InputVariables.Controls["v_AutomationHandleDisplayName"];
                 }
 
                 if (handleControl != null)
@@ -809,13 +754,10 @@ namespace sharpRPA.UI.Forms
                     var handleList = newAppCommand.FindHandleObjects(senderBox.Text);
                     handleControl.DataSource = handleList;
                 }
-
             }
-
         }
         private void DisplayHandleSelected_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-
             var senderBox = (ComboBox)sender;
 
             if (senderBox.Text != string.Empty)
@@ -832,23 +774,21 @@ namespace sharpRPA.UI.Forms
                     Core.AutomationCommands.ThickAppGetTextCommand cmd = (Core.AutomationCommands.ThickAppGetTextCommand)selectedCommand;
                     cmd.v_AutomationID = AutomationID;
                 }
-
             }
-
         }
 
         private void SetComboBox()
         {
-
         }
-        #endregion
 
-        #region Save/Close Buttons 
+        #endregion ComboBox Events
+
+        #region Save/Close Buttons
+
         //handles returning DialogResult
 
         private void uiBtnAdd_Click(object sender, EventArgs e)
         {
-
             //commit any datagridviews
             foreach (Control ctrl in flw_InputVariables.Controls)
             {
@@ -858,9 +798,8 @@ namespace sharpRPA.UI.Forms
                     currentControl.EndEdit();
                 }
             }
-                   
 
-           this.DialogResult = DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
         }
 
         private void uiBtnCancel_Click(object sender, EventArgs e)
@@ -868,9 +807,10 @@ namespace sharpRPA.UI.Forms
             this.DialogResult = DialogResult.Cancel;
         }
 
-        #endregion
+        #endregion Save/Close Buttons
 
-        #region Assitance Forms Events 
+        #region Assitance Forms Events
+
         //handles forms to help capture additional details
 
         private void ShowElementCaptureForm(object sender, EventArgs e)
@@ -891,9 +831,8 @@ namespace sharpRPA.UI.Forms
                 dgvSearchView.DataSource = searchParameterTable;
                 cmd.v_WebSearchTable = searchParameterTable;
             }
-         
-            ShowAllForms();
 
+            ShowAllForms();
         }
         public static void ShowAllForms()
         {
@@ -904,13 +843,11 @@ namespace sharpRPA.UI.Forms
         }
         private void ShowMouseCaptureForm(object sender, EventArgs e)
         {
-
             sharpRPA.UI.Forms.Supplemental.frmShowCursorPosition frmShowCursorPos = new sharpRPA.UI.Forms.Supplemental.frmShowCursorPosition();
 
             //if user made a successful selection
             if (frmShowCursorPos.ShowDialog() == DialogResult.OK)
             {
-
                 //Todo - ideally one function to add to textbox which adds to class
 
                 //add selected variables to associated control text
@@ -921,13 +858,10 @@ namespace sharpRPA.UI.Forms
                 Core.AutomationCommands.SendMouseMoveCommand cmd = (Core.AutomationCommands.SendMouseMoveCommand)selectedCommand;
                 cmd.v_XMousePosition = frmShowCursorPos.xPos;
                 cmd.v_YMousePosition = frmShowCursorPos.yPos;
-
             }
-
         }
         private void ShowVariableSelector(object sender, EventArgs e)
         {
-
             //create variable selector form
             UI.Forms.Supplemental.frmVariableSelector newVariableSelector = new Supplemental.frmVariableSelector();
 
@@ -947,21 +881,16 @@ namespace sharpRPA.UI.Forms
                     return;
                 }
 
-            //grab the referenced input assigned to the 'insert variable' button instance
-             CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
-            //currently variable insertion is only available for simply textboxes
-             TextBox targetTextbox = (TextBox)inputBox.Tag;
-            //concat variable name with brackets [vVariable] as engine searches for the same
-             targetTextbox.Text = targetTextbox.Text + string.Concat("[", newVariableSelector.lstVariables.SelectedItem.ToString(), "]");
-
+                //grab the referenced input assigned to the 'insert variable' button instance
+                CustomControls.CommandItemControl inputBox = (CustomControls.CommandItemControl)sender;
+                //currently variable insertion is only available for simply textboxes
+                TextBox targetTextbox = (TextBox)inputBox.Tag;
+                //concat variable name with brackets [vVariable] as engine searches for the same
+                targetTextbox.Text = targetTextbox.Text + string.Concat("[", newVariableSelector.lstVariables.SelectedItem.ToString(), "]");
             }
-
-         
-
         }
         private void ShowFileSelector(object sender, EventArgs e)
         {
-
             OpenFileDialog ofd = new OpenFileDialog();
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -972,15 +901,9 @@ namespace sharpRPA.UI.Forms
                 //concat variable name with brackets [vVariable] as engine searches for the same
                 targetTextbox.Text = ofd.FileName;
             }
-
-          
         }
 
-        #endregion
-
-
-
-
+        #endregion Assitance Forms Events
     }
     /// <summary>
     /// Helper class for tracking command names and instances of the associated class
@@ -993,7 +916,4 @@ namespace sharpRPA.UI.Forms
         public String DisplayValue { get; set; }
         public sharpRPA.Core.AutomationCommands.ScriptCommand CommandInstance { get; set; }
     }
-
 }
-
-

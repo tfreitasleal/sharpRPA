@@ -13,11 +13,12 @@ using System.Runtime.InteropServices;
 
 namespace sharpRPA.UI.Forms.Supplemental
 {
-
     public partial class frmBrowserElementBuilder : UIForm
     {
         //overall form events
+
         #region Form Events
+
         InternetExplorer ie;
         DataTable searchParameters;
 
@@ -29,7 +30,6 @@ namespace sharpRPA.UI.Forms.Supplemental
 
         private void frmBrowserElementBuilder_Load(object sender, EventArgs e)
         {
-
             //find all IE windows
             FindIEWindows();
 
@@ -49,38 +49,36 @@ namespace sharpRPA.UI.Forms.Supplemental
             propertyValue.HeaderText = "Property Value";
             propertyValue.DataPropertyName = "Property Value";
             dgvSearchParameters.Columns.Add(propertyValue);
-
-           
         }
-        #endregion
+
+        #endregion Form Events
 
         //combobox events for form items
+
         #region ComboBox Events
+
         private void cboIEWindow_SelectionChangeCommitted(object sender, EventArgs e)
         {
             var shellWindows = new ShellWindows();
             foreach (IWebBrowser2 shellWindow in shellWindows)
             {
-
                 if (shellWindow.Document is MSHTML.HTMLDocument)
                 {
                     if (shellWindow.Document.Title == cboIEWindow.Text)
                     {
                         ie = shellWindow.Application;
                         var events = (HTMLDocumentEvents2_Event)ie.Document;
-                  
+
                         events.onclick += (evt) =>
                         {
-                                         
-                                searchParameters = new DataTable();
-                                searchParameters.Columns.Add("Enabled");
-                                searchParameters.Columns.Add("Property Name");
-                                searchParameters.Columns.Add("Property Value");
+                            searchParameters = new DataTable();
+                            searchParameters.Columns.Add("Enabled");
+                            searchParameters.Columns.Add("Property Name");
+                            searchParameters.Columns.Add("Property Value");
 
                             if (evt.srcElement is IHTMLElement)
- 
-                            {
 
+                            {
                                 IHTMLElement srcInfo = evt.srcElement;
                                 var elementProperties = srcInfo.GetType().GetProperties();
 
@@ -92,21 +90,12 @@ namespace sharpRPA.UI.Forms.Supplemental
                                         string propValue = Convert.ToString(prp.GetValue(srcInfo));
                                         searchParameters.Rows.Add(false, propName, propValue);
                                     }
-
                                 }
 
-
                                 dgvSearchParameters.Invoke((MethodInvoker)(() => dgvSearchParameters.DataSource = searchParameters));
-
-
                             }
 
-
-
-
                             return false;
-
-
                         };
 
                         var activateWindow = new Core.AutomationCommands.ActivateWindowCommand();
@@ -128,54 +117,50 @@ namespace sharpRPA.UI.Forms.Supplemental
                             {
                                 frm.WindowState = FormWindowState.Minimized;
                             }
-                          
                         }
-
-
                     }
                 }
             }
         }
 
-       
         private void cboAction_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            //if (cboAction.Text == "Invoke Click")
+            // {
+            //     dgvRequiredParameters.Visible = false;
+            //     dgvRequiredParameters.DataSource = null;
+            //     return;
+            // }
 
-           //if (cboAction.Text == "Invoke Click")
-           // {
-           //     dgvRequiredParameters.Visible = false;
-           //     dgvRequiredParameters.DataSource = null;
-           //     return;
-           // }
+            // actionParameters = new DataTable();
+            // actionParameters.Columns.Add("Parameter Name");
+            // actionParameters.Columns.Add("Parameter Value");
 
-           // actionParameters = new DataTable();
-           // actionParameters.Columns.Add("Parameter Name");
-           // actionParameters.Columns.Add("Parameter Value");
+            // switch (cboAction.Text)
+            // {
+            //     case "Get Attribute":
+            //         dgvRequiredParameters.Visible = true;
+            //         actionParameters.Rows.Add("Attribute Name");
+            //         actionParameters.Rows.Add("Variable Name");
+            //         break;
+            //     case "Set Attribute":
+            //         dgvRequiredParameters.Visible = true;
+            //         actionParameters.Rows.Add("Attribute Name");
+            //         actionParameters.Rows.Add("Value To Set");
+            //         break;
+            //     default:
+            //         break;
+            // }
 
-           // switch (cboAction.Text)
-           // {
-           //     case "Get Attribute":
-           //         dgvRequiredParameters.Visible = true;
-           //         actionParameters.Rows.Add("Attribute Name");
-           //         actionParameters.Rows.Add("Variable Name");
-           //         break;
-           //     case "Set Attribute":
-           //         dgvRequiredParameters.Visible = true;
-           //         actionParameters.Rows.Add("Attribute Name");
-           //         actionParameters.Rows.Add("Value To Set");
-           //         break;
-           //     default:
-           //         break;
-           // }
-
-           // dgvRequiredParameters.DataSource = actionParameters;
-
+            // dgvRequiredParameters.DataSource = actionParameters;
         }
 
-        #endregion
+        #endregion ComboBox Events
 
         //helper for locating IE windows
+
         #region IEWindowHelper
+
         private void uiBtnRefresh_Click(object sender, EventArgs e)
         {
             dgvSearchParameters.DataSource = null;
@@ -197,17 +182,16 @@ namespace sharpRPA.UI.Forms.Supplemental
                 }
                 catch (Exception)
                 {
-                     
-                    
                 }
-            
-                   
             }
         }
-        #endregion
+
+        #endregion IEWindowHelper
 
         //dialog result
+
         #region Ok/Cancel Buttons
+
         private void uiBtnOK_Click(object sender, EventArgs e)
         {
             dgvSearchParameters.EndEdit();
@@ -218,18 +202,15 @@ namespace sharpRPA.UI.Forms.Supplemental
         {
             this.DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Ok/Cancel Buttons
 
         private void cboIEWindow_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
 
         private void cboAction_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
     }
-
-    
 }

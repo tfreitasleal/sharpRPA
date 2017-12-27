@@ -15,6 +15,7 @@ namespace sharpRPA.UI.Forms
     public partial class frmScriptEngine : UIForm
     {
         #region Form Events
+
         public string filePath { get; set; }
         public string xmlInfo { get; set; }
         private System.Diagnostics.Stopwatch sw;
@@ -31,33 +32,26 @@ namespace sharpRPA.UI.Forms
             InitializeComponent();
         }
 
-
-
-
-
         private void frmProcessingStatus_Load(object sender, EventArgs e)
         {
-
-           // callBackForm.websocket.Send("Running");
+            // callBackForm.websocket.Send("Running");
             this.BringToFront();
-            MoveFormToBottomRight(this); 
+            MoveFormToBottomRight(this);
             bgwRunScript.RunWorkerAsync();
         }
-      
+
         public bool ShowMessage(string message, string title, UI.Forms.Supplemental.frmDialog.DialogType dialogType, int closeAfter)
         {
-            var confirmationForm = new UI.Forms.Supplemental.frmDialog(message,title,dialogType,closeAfter);
+            var confirmationForm = new UI.Forms.Supplemental.frmDialog(message, title, dialogType, closeAfter);
             return confirmationForm.ShowDialog() == DialogResult.OK;
         }
 
-        #endregion
+        #endregion Form Events
 
         #region BackgroundWorker
+
         private void bgwRunScript_DoWork(object sender, DoWorkEventArgs e)
         {
-
-          
-
             sw = new System.Diagnostics.Stopwatch();
             sw.Start();
 
@@ -74,13 +68,11 @@ namespace sharpRPA.UI.Forms
             {
                 automationScript = Core.Script.Script.DeserializeXML(xmlInfo);
             }
-      
+
             //track variables and app instances
             variableList = automationScript.Variables;
 
             appInstances = new Dictionary<string, object>();
-            
-        
 
             //create execution
             foreach (var executionCommand in automationScript.Commands)
@@ -92,9 +84,7 @@ namespace sharpRPA.UI.Forms
                 }
 
                 ExecuteCommand(executionCommand, bgwRunScript);
-
             }
-
         }
 
         public void ExecuteCommand(Core.Script.ScriptAction command, BackgroundWorker bgw)
@@ -114,8 +104,6 @@ namespace sharpRPA.UI.Forms
                 bgwRunScript.ReportProgress(0, new object[] { parentCommand.LineNumber, "Skipping Line " + parentCommand.LineNumber + ": " + parentCommand.GetDisplayValue() });
                 return;
             }
-                 
-
 
             //update listbox
             bgwRunScript.ReportProgress(0, new object[] { parentCommand.LineNumber, "Running Line " + parentCommand.LineNumber + ": " + parentCommand.GetDisplayValue() });
@@ -123,18 +111,17 @@ namespace sharpRPA.UI.Forms
             //handle any errors
             try
             {
-
-            //determine type of command
-            if ((parentCommand is Core.AutomationCommands.BeginLoopCommand) || (parentCommand is Core.AutomationCommands.BeginIfCommand))
-            {
-                //run the command and pass bgw/command as this command will recursively call this method for sub commands
-              parentCommand.RunCommand(this, command, bgw);
-            }
-            else
-            {
-                //run the command
-                parentCommand.RunCommand(this);
-            }
+                //determine type of command
+                if ((parentCommand is Core.AutomationCommands.BeginLoopCommand) || (parentCommand is Core.AutomationCommands.BeginIfCommand))
+                {
+                    //run the command and pass bgw/command as this command will recursively call this method for sub commands
+                    parentCommand.RunCommand(this, command, bgw);
+                }
+                else
+                {
+                    //run the command
+                    parentCommand.RunCommand(this);
+                }
             }
             catch (Exception ex)
             {
@@ -142,36 +129,32 @@ namespace sharpRPA.UI.Forms
                 if (errorHandling != null)
                 {
                     switch (errorHandling.v_ErrorHandlingAction)
-                    { 
+                    {
                         case "Continue Processing":
                             bgwRunScript.ReportProgress(0, new object[] { parentCommand.LineNumber, "Error Occured at Line " + parentCommand.LineNumber + ":" + ex.ToString() });
-                            bgwRunScript.ReportProgress(0, new object[] { parentCommand.LineNumber, "Continuing Per Error Handling"});
+                            bgwRunScript.ReportProgress(0, new object[] { parentCommand.LineNumber, "Continuing Per Error Handling" });
                             break;
+
                         default:
-                            throw new Exception(ex.ToString());              
+                            throw new Exception(ex.ToString());
                     }
                 }
                 else
                 {
                     throw new Exception(ex.ToString());
                 }
-              
             }
-
-
         }
 
         private void bgwRunScript_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             object[] progressUpdate = (object[])e.UserState;
 
-        
             if ((callBackForm != null) && (progressUpdate[0] != null))
                 callBackForm.DebugLine = (int)progressUpdate[0];
 
             lstSteppingCommands.Items.Add((string)progressUpdate[1] + "..");
             lstSteppingCommands.SelectedIndex = lstSteppingCommands.Items.Count - 1;
-
         }
 
         private void bgwRunScript_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -209,24 +192,17 @@ namespace sharpRPA.UI.Forms
                 lstSteppingCommands.Items.Add("Bot Had A Problem: " + e.Error.Message);
                 if (callBackForm != null)
                     callBackForm.Notify("Script Execution Encountered an Error!");
-        
             }
-
 
             lstSteppingCommands.Items.Add("Bot Engine Finished: " + DateTime.Now.ToString());
             lstSteppingCommands.Items.Add("Total Run Time: " + sw.Elapsed.ToString());
             lstSteppingCommands.SelectedIndex = lstSteppingCommands.Items.Count - 1;
 
-
-
-
             //callBackForm.websocket.Send("Available");
-
         }
 
         private void CleanUpMemory()
         {
-      
             //close out app sessions here eventually
 
             //foreach (var kvp in appInstances)
@@ -235,7 +211,6 @@ namespace sharpRPA.UI.Forms
             //    {
             //        if (kvp.Value is OpenQA.Selenium.Chrome.ChromeDriver)
             //        {
-                      
             //            OpenQA.Selenium.Chrome.ChromeDriver driver = (OpenQA.Selenium.Chrome.ChromeDriver)kvp.Value;
             //            driver.Quit();
             //            driver.Dispose();
@@ -245,16 +220,16 @@ namespace sharpRPA.UI.Forms
             //    {
             //        //should we throw an exception?
             //    }
-               
 
             //}
         }
 
         public void ReportProgress(string progressToReport)
         {
-            bgwRunScript.ReportProgress(0, new object[] { null, "Command Report: " + progressToReport});
+            bgwRunScript.ReportProgress(0, new object[] { null, "Command Report: " + progressToReport });
         }
-        #endregion
+
+        #endregion BackgroundWorker
 
         #region UI Elements
 
@@ -271,13 +246,10 @@ namespace sharpRPA.UI.Forms
         private void autoCloseTimer_Tick(object sender, EventArgs e)
         {
             this.Close();
-           
-      
         }
 
         private void uiBtnCancel_Click(object sender, EventArgs e)
         {
-
             if (uiBtnCancel.DisplayText == "Close")
             {
                 this.Close();
@@ -291,12 +263,10 @@ namespace sharpRPA.UI.Forms
             lstSteppingCommands.SelectedIndex = lstSteppingCommands.Items.Count - 1;
             lblMainLogo.Text = "debug info (cancelling)";
             bgwRunScript.CancelAsync();
-
         }
 
         private void uiBtnPause_Click(object sender, EventArgs e)
         {
-
             isPaused = !isPaused;
 
             if (isPaused)
@@ -313,10 +283,9 @@ namespace sharpRPA.UI.Forms
             }
 
             lstSteppingCommands.SelectedIndex = lstSteppingCommands.Items.Count - 1;
-
         }
 
-        #endregion
+        #endregion UI Elements
 
         private void frmScriptEngine_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -324,5 +293,4 @@ namespace sharpRPA.UI.Forms
             CleanUpMemory();
         }
     }
-
 }
