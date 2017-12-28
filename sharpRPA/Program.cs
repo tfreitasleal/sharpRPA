@@ -41,7 +41,12 @@ namespace sharpRPA
 
                 if (!System.IO.File.Exists(filePath))
                 {
-                    MessageBox.Show("Please pass a valid file as the parameter!", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    using (System.Diagnostics.EventLog eventLog = new System.Diagnostics.EventLog("Application"))
+                    {
+                        eventLog.Source = "Application";
+                        eventLog.WriteEntry("An attempt was made to run a sharpRPA script file from '" + filePath + "' but the file was not found.  Please verify that the file exists at the path indicated.", System.Diagnostics.EventLogEntryType.Error, 101, 1);
+                    }
+                    //MessageBox.Show("Please pass a valid file as the parameter!", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Application.Exit();
                     return;
                 }
