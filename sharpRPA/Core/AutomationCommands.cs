@@ -24,6 +24,8 @@ using MSHTML;
 using System.Windows.Automation;
 using System.Net.Mail;
 using sharpRPA.Core;
+using System.Net;
+using System.IO;
 
 namespace sharpRPA.Core.AutomationCommands
 {
@@ -78,6 +80,8 @@ namespace sharpRPA.Core.AutomationCommands
     [XmlInclude(typeof(EndIfCommand))]
     [XmlInclude(typeof(ElseCommand))]
     [XmlInclude(typeof(OCRCommand))]
+    [XmlInclude(typeof(HTTPRequestCommand))]
+    [XmlInclude(typeof(HTTPQueryResultCommand))]
     [Serializable]
     public abstract class ScriptCommand
     {
@@ -1159,11 +1163,11 @@ namespace sharpRPA.Core.AutomationCommands
         public override void RunCommand(object sender)
         {
             UI.Forms.frmScriptEngine engineForm = (UI.Forms.frmScriptEngine)sender;
+           string variableMessage = v_Message.ConvertToUserVariable(sender);
 
-            v_Message = v_Message.ConvertToUserVariable(sender);
             var result = engineForm.Invoke(new Action(() =>
             {
-                engineForm.ShowMessage(v_Message, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
+                engineForm.ShowMessage(variableMessage, "MessageBox Command", UI.Forms.Supplemental.frmDialog.DialogType.OkOnly, v_AutoCloseAfter);
             }
 
             ));
@@ -1575,6 +1579,8 @@ namespace sharpRPA.Core.AutomationCommands
         {
             var sendingInstance = (UI.Forms.frmScriptEngine)sender;
             var requiredVariable = sendingInstance.variableList.Where(var => var.variableName == v_userVariableName).FirstOrDefault();
+
+
 
             if (requiredVariable != null)
             {
@@ -2661,4 +2667,99 @@ namespace sharpRPA.Core.AutomationCommands
     }
 
     #endregion OCR and Image Commands
-}
+
+    #region HTTP Commands
+    [Serializable]
+    [Attributes.ClassAttributes.Group("WebAPI Commands")]
+    [Attributes.ClassAttributes.Description("This command downloads the HTML source of a web page for parsing")]
+    [Attributes.ClassAttributes.ImplementationDescription("This command implements System.Web to achieve automation")]
+    public class HTTPRequestCommand : ScriptCommand
+    {
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Please Enter the URL")]
+        public string v_WebRequestURL { get; set; }
+
+        [XmlAttribute]
+        [Attributes.PropertyAttributes.PropertyDescription("Apply Result To Variable")]
+        public string v_userVariableName { get; set; }
+
+        public HTTPRequestCommand()
+        {
+            this.CommandName = "HTTPRequestCommand";
+            this.SelectionName = "HTTP Request";
+            this.CommandEnabled = true;
+        }
+
+        public override void RunCommand(object sender)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(v_WebRequestURL);
+            request.Method = "GET";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string strResponse = reader.ReadToEnd();
+
+            strResponse.StoreInUserVariable(sender, v_userVariableName);
+
+        }
+
+        public override string GetDisplayValue()
+        {
+            return base.GetDisplayValue() + " [Target URL: '" + v_WebRequestURL + "' and apply result to '" + v_userVariableName + "']";
+        }
+
+    }
+
+        [Serializable]
+        [Attributes.ClassAttributes.Group("WebAPI Commands")]
+        [Attributes.ClassAttributes.Description("This command processes an HTML source object")]
+        [Attributes.ClassAttributes.ImplementationDescription("TBD")]
+        public class HTTPQueryResultCommand : ScriptCommand
+        {
+            [XmlAttribute]
+            [Attributes.PropertyAttributes.PropertyDescription("Select variable containing HTML")]
+            public string v_userVariableName { get; set; }
+
+            [XmlAttribute]
+            [Attributes.PropertyAttributes.PropertyDescription("XPath Query")]
+            public string v_xPathQuery { get; set; }
+
+            [XmlAttribute]
+            [Attributes.PropertyAttributes.PropertyDescription("Apply Query Result To Variable")]
+            public string v_applyToVariableName { get; set; }
+
+            public HTTPQueryResultCommand()
+            {
+                this.CommandName = "HTTPRequestQueryCommand";
+                this.SelectionName = "HTTP Result Query";
+                this.CommandEnabled = true;
+            }
+
+            public override void RunCommand(object sender)
+            {
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(v_userVariableName.ConvertToUserVariable(sender));
+
+            var div = doc.DocumentNode.SelectSingleNode(v_xPathQuery);
+            string divString = div.InnerText;
+
+            divString.StoreInUserVariable(sender, v_applyToVariableName);
+
+
+        }
+
+            public override string GetDisplayValue()
+            {
+                return base.GetDisplayValue() + " [Query Variable '" + v_userVariableName + "' and apply result to '" + v_applyToVariableName + "']";
+            }
+        }
+
+        #endregion
+    }
+
+
+
+
+

@@ -322,6 +322,8 @@ namespace sharpRPA.UI
             uiImages.Add("ElseCommand", sharpRPA.Properties.Resources.flag3);
             uiImages.Add("ScreenshotCommand", sharpRPA.Properties.Resources.photo_camera);
             uiImages.Add("OCRCommand", sharpRPA.Properties.Resources.photo_camera);
+            uiImages.Add("HTTPRequestCommand", sharpRPA.Properties.Resources.web);
+            uiImages.Add("HTTPQueryResultCommand", sharpRPA.Properties.Resources.search);
             return uiImages;
         }
         public static ImageList UIImageList()
