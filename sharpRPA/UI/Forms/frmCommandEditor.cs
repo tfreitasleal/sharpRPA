@@ -155,7 +155,7 @@ namespace sharpRPA.UI.Forms
                 //create a label for each variable name
                 Label inputLabel = new Label();
                 inputLabel.AutoSize = true;
-                inputLabel.Font = this.Font;
+                inputLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
                 inputLabel.ForeColor = Color.SteelBlue;
                 inputLabel.Name = "lbl_" + inputField.Name;
                 formHeight += 50;

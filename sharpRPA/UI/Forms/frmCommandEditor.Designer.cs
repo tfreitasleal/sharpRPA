@@ -43,14 +43,15 @@
             // 
             // cboSelectedCommand
             // 
-            this.cboSelectedCommand.BackColor = System.Drawing.Color.White;
+            this.cboSelectedCommand.BackColor = System.Drawing.Color.WhiteSmoke;
             this.cboSelectedCommand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSelectedCommand.Font = new System.Drawing.Font("Raleway", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboSelectedCommand.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cboSelectedCommand.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboSelectedCommand.FormattingEnabled = true;
             this.cboSelectedCommand.Location = new System.Drawing.Point(6, 5);
             this.cboSelectedCommand.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.cboSelectedCommand.Name = "cboSelectedCommand";
-            this.cboSelectedCommand.Size = new System.Drawing.Size(531, 27);
+            this.cboSelectedCommand.Size = new System.Drawing.Size(535, 28);
             this.cboSelectedCommand.TabIndex = 2;
             this.cboSelectedCommand.SelectedIndexChanged += new System.EventHandler(this.cboSelectedCommand_SelectedIndexChanged);
             this.cboSelectedCommand.SelectionChangeCommitted += new System.EventHandler(this.cboSelectedCommand_SelectionChangeCommitted);
@@ -61,12 +62,12 @@
             this.flw_InputVariables.BackColor = System.Drawing.Color.Transparent;
             this.flw_InputVariables.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flw_InputVariables.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flw_InputVariables.Font = new System.Drawing.Font("Raleway Medium", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flw_InputVariables.Location = new System.Drawing.Point(2, 47);
+            this.flw_InputVariables.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.flw_InputVariables.Location = new System.Drawing.Point(2, 35);
             this.flw_InputVariables.Margin = new System.Windows.Forms.Padding(2);
             this.flw_InputVariables.Name = "flw_InputVariables";
             this.flw_InputVariables.Padding = new System.Windows.Forms.Padding(10, 9, 10, 9);
-            this.flw_InputVariables.Size = new System.Drawing.Size(552, 423);
+            this.flw_InputVariables.Size = new System.Drawing.Size(552, 435);
             this.flw_InputVariables.TabIndex = 3;
             this.flw_InputVariables.WrapContents = false;
             // 
@@ -116,7 +117,7 @@
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 33F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 57F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(556, 529);

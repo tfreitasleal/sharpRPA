@@ -53,6 +53,8 @@
             this.lblMainLogo = new System.Windows.Forms.Label();
             this.pnlStatus = new System.Windows.Forms.Panel();
             this.pnlControlContainer = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.uiGroupBox3 = new sharpRPA.UI.CustomControls.UIGroupBox();
             this.uiBtnRunScript = new sharpRPA.UI.CustomControls.UIPictureButton();
             this.uiBtnScheduleManagement = new sharpRPA.UI.CustomControls.UIPictureButton();
@@ -72,6 +74,7 @@
             this.pauseBeforeExecutionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copySelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label7 = new System.Windows.Forms.Label();
             this.tlpControls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -147,7 +150,8 @@
             this.tvCommands.BackColor = System.Drawing.Color.White;
             this.tvCommands.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tvCommands.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tvCommands.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tvCommands.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tvCommands.ForeColor = System.Drawing.Color.SteelBlue;
             this.tvCommands.Location = new System.Drawing.Point(0, 0);
             this.tvCommands.Name = "tvCommands";
             this.tvCommands.ShowLines = false;
@@ -300,14 +304,14 @@
             // 
             // lblNote
             // 
-            this.lblNote.Font = new System.Drawing.Font("Segoe UI Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNote.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNote.ForeColor = System.Drawing.Color.SteelBlue;
             this.lblNote.Location = new System.Drawing.Point(5, 36);
             this.lblNote.Name = "lblNote";
             this.lblNote.Size = new System.Drawing.Size(358, 66);
             this.lblNote.TabIndex = 1;
-            this.lblNote.Text = "Start building automation by selecting \"Add\" at the top or quick-adding a command" +
-    " from the list to the left.";
+            this.lblNote.Text = "Start building automation by selecting \"Add\" at the top or double-clicking a comm" +
+    "and from the list to the left.";
             // 
             // lstScriptActions
             // 
@@ -377,12 +381,12 @@
             // lblMainLogo
             // 
             this.lblMainLogo.AutoSize = true;
-            this.lblMainLogo.Font = new System.Drawing.Font("Raleway", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMainLogo.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMainLogo.ForeColor = System.Drawing.Color.SteelBlue;
-            this.lblMainLogo.Location = new System.Drawing.Point(51, 6);
+            this.lblMainLogo.Location = new System.Drawing.Point(51, 2);
             this.lblMainLogo.Margin = new System.Windows.Forms.Padding(0);
             this.lblMainLogo.Name = "lblMainLogo";
-            this.lblMainLogo.Size = new System.Drawing.Size(164, 37);
+            this.lblMainLogo.Size = new System.Drawing.Size(165, 45);
             this.lblMainLogo.TabIndex = 0;
             this.lblMainLogo.Text = "sharpRPA";
             // 
@@ -403,6 +407,9 @@
             // 
             this.pnlControlContainer.BackColor = System.Drawing.Color.WhiteSmoke;
             this.tlpControls.SetColumnSpan(this.pnlControlContainer, 3);
+            this.pnlControlContainer.Controls.Add(this.label7);
+            this.pnlControlContainer.Controls.Add(this.label6);
+            this.pnlControlContainer.Controls.Add(this.label5);
             this.pnlControlContainer.Controls.Add(this.uiGroupBox3);
             this.pnlControlContainer.Controls.Add(this.uiGroupBox1);
             this.pnlControlContainer.Controls.Add(this.uiGroupBox2);
@@ -413,6 +420,24 @@
             this.pnlControlContainer.Size = new System.Drawing.Size(1029, 82);
             this.pnlControlContainer.TabIndex = 7;
             this.pnlControlContainer.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlControlContainer_Paint);
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.Gainsboro;
+            this.label6.ForeColor = System.Drawing.Color.DimGray;
+            this.label6.Location = new System.Drawing.Point(217, 5);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(2, 70);
+            this.label6.TabIndex = 20;
+            // 
+            // label5
+            // 
+            this.label5.BackColor = System.Drawing.Color.Gainsboro;
+            this.label5.ForeColor = System.Drawing.Color.DimGray;
+            this.label5.Location = new System.Drawing.Point(390, 5);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(2, 70);
+            this.label5.TabIndex = 19;
             // 
             // uiGroupBox3
             // 
@@ -425,9 +450,9 @@
             this.uiGroupBox3.TabIndex = 18;
             this.uiGroupBox3.TabStop = false;
             this.uiGroupBox3.Text = "Execute";
-            this.uiGroupBox3.TitleBackColor = System.Drawing.Color.SteelBlue;
-            this.uiGroupBox3.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uiGroupBox3.TitleForeColor = System.Drawing.Color.White;
+            this.uiGroupBox3.TitleBackColor = System.Drawing.Color.Transparent;
+            this.uiGroupBox3.TitleFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uiGroupBox3.TitleForeColor = System.Drawing.Color.SteelBlue;
             this.uiGroupBox3.TitleHatchStyle = System.Drawing.Drawing2D.HatchStyle.Horizontal;
             // 
             // uiBtnRunScript
@@ -474,9 +499,9 @@
             this.uiGroupBox1.TabIndex = 17;
             this.uiGroupBox1.TabStop = false;
             this.uiGroupBox1.Text = "Commands and Variables";
-            this.uiGroupBox1.TitleBackColor = System.Drawing.Color.SteelBlue;
-            this.uiGroupBox1.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uiGroupBox1.TitleForeColor = System.Drawing.Color.White;
+            this.uiGroupBox1.TitleBackColor = System.Drawing.Color.Transparent;
+            this.uiGroupBox1.TitleFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uiGroupBox1.TitleForeColor = System.Drawing.Color.SteelBlue;
             this.uiGroupBox1.TitleHatchStyle = System.Drawing.Drawing2D.HatchStyle.Horizontal;
             // 
             // uiBtnCommandExplorer
@@ -540,9 +565,9 @@
             this.uiGroupBox2.TabIndex = 16;
             this.uiGroupBox2.TabStop = false;
             this.uiGroupBox2.Text = "File Actions and Settings";
-            this.uiGroupBox2.TitleBackColor = System.Drawing.Color.SteelBlue;
-            this.uiGroupBox2.TitleFont = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uiGroupBox2.TitleForeColor = System.Drawing.Color.White;
+            this.uiGroupBox2.TitleBackColor = System.Drawing.Color.Transparent;
+            this.uiGroupBox2.TitleFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uiGroupBox2.TitleForeColor = System.Drawing.Color.SteelBlue;
             this.uiGroupBox2.TitleHatchStyle = System.Drawing.Drawing2D.HatchStyle.Horizontal;
             // 
             // uiBtnSettings
@@ -662,6 +687,15 @@
             this.pasteSelectedToolStripMenuItem.Text = "Paste Selected Action";
             this.pasteSelectedToolStripMenuItem.Click += new System.EventHandler(this.pasteSelectedToolStripMenuItem_Click);
             // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.Color.Gainsboro;
+            this.label7.ForeColor = System.Drawing.Color.DimGray;
+            this.label7.Location = new System.Drawing.Point(510, 5);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(2, 70);
+            this.label7.TabIndex = 21;
+            // 
             // frmScriptBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -746,6 +780,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblCurrentVersion;
         private CustomControls.UIFlowLayoutPanel flwRecentFiles;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label7;
     }
 }
 

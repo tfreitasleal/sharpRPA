@@ -152,8 +152,8 @@ namespace sharpRPA.UI.CustomControls
 
             if (DisplayText != null)
             {
-                var stringSize = e.Graphics.MeasureString(DisplayText, new Font("Raleway", 8, FontStyle.Regular), 200);
-                e.Graphics.DrawString(DisplayText, new Font("Raleway", 8, FontStyle.Regular), new SolidBrush(DisplayTextBrush), ((this.Width / 2) - (stringSize.Width / 2)), this.Height - 14);
+                var stringSize = e.Graphics.MeasureString(DisplayText, new Font("Segoe UI", 8, FontStyle.Regular), 200);
+                e.Graphics.DrawString(DisplayText, new Font("Segoe UI", 8, FontStyle.Regular), new SolidBrush(DisplayTextBrush), ((this.Width / 2) - (stringSize.Width / 2)), this.Height - 14);
             }
         }
         private Color displayTextBrush;
@@ -175,7 +175,7 @@ namespace sharpRPA.UI.CustomControls
             this.DisplayTextBrush = Color.White;
             this.Size = new Size(48, 48);
             this.DisplayText = "Text";
-            this.Font = new Font("Raleway", 8, FontStyle.Regular);
+            this.Font = new Font("Segoe UI", 8, FontStyle.Bold);
             this.MouseEnter += UIPictureButton_MouseEnter;
             this.MouseLeave += UIPictureButton1_MouseLeave;
         }
@@ -250,7 +250,7 @@ namespace sharpRPA.UI.CustomControls
             backColorBrush.Dispose();
 
             TextRenderer.DrawText(e.Graphics, Text, TitleFont, new Point(2, 2), TitleForeColor);
-            ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.SteelBlue, ButtonBorderStyle.Solid);
+            //ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.SteelBlue, ButtonBorderStyle.None);
         }
         public Color TitleBackColor { get; set; }
         public HatchStyle TitleHatchStyle { get; set; }

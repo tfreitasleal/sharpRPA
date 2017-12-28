@@ -49,5 +49,10 @@ namespace sharpRPA.UI.Forms.Supplemental
         {
             this.DialogResult = DialogResult.Cancel;
         }
+
+        private void lstVariables_DoubleClick(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
     }
 }

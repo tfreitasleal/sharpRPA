@@ -154,7 +154,15 @@ namespace sharpRPA.UI.Forms
 
             //instantiate and populate display icons for commands
             uiImages = UI.Images.UIImageList();
+
+
+
             lstScriptActions.SmallImageList = uiImages;
+
+
+
+           // tvCommands.ImageList = uiImages;
+           // tvCommands.ImageList.Images.Add(new Bitmap(1,1));
 
             //get commands
             var groupedCommands = Core.Common.GetGroupedCommands();
@@ -163,7 +171,8 @@ namespace sharpRPA.UI.Forms
 
                 var group = cmd.Key as Core.AutomationCommands.Attributes.ClassAttributes.Group;
                 TreeNode newGroup = new TreeNode(group.groupName);
-
+               // newGroup.ImageIndex = tvCommands.ImageList.Images.Count - 1;
+               // newGroup.SelectedImageIndex = tvCommands.ImageList.Images.Count - 1;
 
                 foreach (var subcmd in cmd)
                 {
@@ -171,7 +180,9 @@ namespace sharpRPA.UI.Forms
                     Core.AutomationCommands.ScriptCommand newCommand = (Core.AutomationCommands.ScriptCommand)Activator.CreateInstance(subcmd);
                     TreeNode subNode = new TreeNode(newCommand.SelectionName);
                     //subNode.ImageIndex = uiImages.Images.IndexOfKey(newCommand.GetType().Name);
+                   // subNode.SelectedImageIndex = uiImages.Images.IndexOfKey(newCommand.GetType().Name);
                     newGroup.Nodes.Add(subNode);
+
                 }
 
 

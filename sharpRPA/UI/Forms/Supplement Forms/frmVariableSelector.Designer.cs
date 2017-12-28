@@ -46,6 +46,7 @@
             this.lstVariables.Name = "lstVariables";
             this.lstVariables.Size = new System.Drawing.Size(328, 140);
             this.lstVariables.TabIndex = 0;
+            this.lstVariables.DoubleClick += new System.EventHandler(this.lstVariables_DoubleClick);
             // 
             // lblXPosition
             // 
